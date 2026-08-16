@@ -1,0 +1,767 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Port FC on Tour</title>
+  <meta name="description" content="Port FC Bangkok — spotted worldwide. Scan the sticker. Join the movement." />
+  <meta property="og:title" content="Port FC on Tour" />
+  <meta property="og:description" content="Port FC Bangkok fan community. Scan stickers, share your location, join the global movement." />
+  <meta property="og:image" content="assets/og-image.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --orange: #E87722;
+      --orange-dark: #C4641A;
+      --orange-light: #FFF0E3;
+      --blue: #1B4F91;
+      --blue-light: #E6EEF8;
+      --white: #ffffff;
+      --black: #0D0D0D;
+      --gray: #5E5E5E;
+      --gray-light: #F5F4F2;
+      --gray-border: #E2E0DC;
+      --radius-sm: 8px;
+      --radius-md: 14px;
+      --radius-lg: 20px;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--black);
+      color: var(--white);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1rem 1.5rem;
+      background: rgba(13,13,13,0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .nav-logo {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 22px;
+      letter-spacing: 0.04em;
+      color: var(--white);
+      text-decoration: none;
+    }
+
+    .nav-logo span { color: var(--orange); }
+
+    .nav-links {
+      display: flex;
+      gap: 1.5rem;
+      list-style: none;
+    }
+
+    .nav-links a {
+      font-size: 13px;
+      color: rgba(255,255,255,0.6);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover { color: var(--orange); }
+
+    .nav-ig {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--white);
+      text-decoration: none;
+      background: var(--orange);
+      padding: 6px 14px;
+      border-radius: 20px;
+      transition: background 0.2s;
+    }
+
+    .nav-ig:hover { background: var(--orange-dark); }
+
+    /* ── HERO ── */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 7rem 1.5rem 3rem;
+      position: relative;
+      overflow: hidden;
+      background: var(--black);
+    }
+
+    .hero-bg-circle {
+      position: absolute;
+      border-radius: 50%;
+      pointer-events: none;
+    }
+
+    .hero-bg-circle.c1 {
+      width: 500px; height: 500px;
+      top: -120px; right: -100px;
+      background: radial-gradient(circle, rgba(232,119,34,0.18) 0%, transparent 70%);
+    }
+
+    .hero-bg-circle.c2 {
+      width: 400px; height: 400px;
+      bottom: -80px; left: -80px;
+      background: radial-gradient(circle, rgba(27,79,145,0.22) 0%, transparent 70%);
+    }
+
+    .hero-eyebrow {
+      font-size: 11px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--orange);
+      margin-bottom: 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .hero-eyebrow::before {
+      content: '';
+      display: inline-block;
+      width: 20px;
+      height: 1px;
+      background: var(--orange);
+    }
+
+    .hero-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(72px, 18vw, 120px);
+      line-height: 0.92;
+      color: var(--white);
+      margin-bottom: 1.25rem;
+    }
+
+    .hero-title .highlight { color: var(--orange); }
+
+    .hero-sub {
+      font-size: 16px;
+      color: rgba(255,255,255,0.65);
+      max-width: 320px;
+      line-height: 1.6;
+      margin-bottom: 2rem;
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      background: var(--orange);
+      color: var(--white);
+      font-size: 15px;
+      font-weight: 500;
+      padding: 14px 24px;
+      border-radius: 50px;
+      text-decoration: none;
+      transition: background 0.2s, transform 0.15s;
+    }
+
+    .btn-primary:hover { background: var(--orange-dark); transform: translateY(-1px); }
+
+    .btn-secondary {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      background: transparent;
+      color: var(--white);
+      font-size: 15px;
+      font-weight: 500;
+      padding: 14px 24px;
+      border-radius: 50px;
+      border: 1px solid rgba(255,255,255,0.2);
+      text-decoration: none;
+      transition: border-color 0.2s, transform 0.15s;
+    }
+
+    .btn-secondary:hover { border-color: rgba(255,255,255,0.5); transform: translateY(-1px); }
+
+    .hero-scroll {
+      position: absolute;
+      bottom: 2rem;
+      right: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.3);
+    }
+
+    .hero-scroll-line {
+      width: 1px;
+      height: 40px;
+      background: linear-gradient(to bottom, transparent, rgba(255,255,255,0.25));
+    }
+
+    /* ── CONCEPT ── */
+    .section {
+      padding: 5rem 1.5rem;
+    }
+
+    .section-dark { background: #111111; }
+    .section-light { background: #161616; }
+
+    .section-label {
+      font-size: 10px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--orange);
+      margin-bottom: 0.75rem;
+    }
+
+    .section-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 42px;
+      line-height: 1;
+      color: var(--white);
+      margin-bottom: 1rem;
+    }
+
+    .section-body {
+      font-size: 15px;
+      color: rgba(255,255,255,0.55);
+      line-height: 1.7;
+      margin-bottom: 2.5rem;
+    }
+
+    /* ── HOW IT WORKS ── */
+    .steps {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+
+    .step {
+      display: flex;
+      gap: 1.25rem;
+      padding: 1.5rem 0;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      position: relative;
+    }
+
+    .step:last-child { border-bottom: none; }
+
+    .step-num {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 36px;
+      color: var(--orange);
+      opacity: 0.5;
+      min-width: 36px;
+      line-height: 1;
+      padding-top: 2px;
+    }
+
+    .step-content h3 {
+      font-size: 15px;
+      font-weight: 500;
+      color: var(--white);
+      margin-bottom: 4px;
+    }
+
+    .step-content p {
+      font-size: 13px;
+      color: rgba(255,255,255,0.45);
+      line-height: 1.6;
+    }
+
+    /* ── STICKER SECTION ── */
+    .sticker-showcase {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 2rem;
+    }
+
+    .sticker-card {
+      background: #1A1A1A;
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: var(--radius-md);
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .sticker-card svg { width: 100%; max-width: 140px; height: auto; }
+
+    .sticker-card-label {
+      font-size: 11px;
+      color: rgba(255,255,255,0.4);
+      text-align: center;
+    }
+
+    /* ── SIGHTING FEED ── */
+    .sightings {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .sighting {
+      background: #1A1A1A;
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: var(--radius-md);
+      padding: 1rem 1.25rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .sighting-flag {
+      font-size: 28px;
+      flex-shrink: 0;
+    }
+
+    .sighting-info h4 {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--white);
+      margin-bottom: 2px;
+    }
+
+    .sighting-info p {
+      font-size: 12px;
+      color: rgba(255,255,255,0.4);
+    }
+
+    .sighting-badge {
+      margin-left: auto;
+      font-size: 10px;
+      padding: 3px 8px;
+      border-radius: 20px;
+      background: rgba(232,119,34,0.12);
+      color: var(--orange);
+      flex-shrink: 0;
+    }
+
+    /* ── INSTAGRAM ── */
+    .ig-cta {
+      background: linear-gradient(135deg, #1B4F91 0%, #0D2E5A 100%);
+      border-radius: var(--radius-lg);
+      padding: 2.5rem 1.5rem;
+      text-align: center;
+    }
+
+    .ig-handle {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 38px;
+      color: var(--white);
+      margin-bottom: 0.5rem;
+    }
+
+    .ig-sub {
+      font-size: 14px;
+      color: rgba(255,255,255,0.6);
+      margin-bottom: 1.5rem;
+      line-height: 1.5;
+    }
+
+    .hashtags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      justify-content: center;
+      margin-bottom: 1.5rem;
+    }
+
+    .hashtag {
+      font-size: 12px;
+      padding: 4px 10px;
+      border-radius: 20px;
+      border: 1px solid rgba(255,255,255,0.2);
+      color: rgba(255,255,255,0.7);
+    }
+
+    /* ── QR SECTION ── */
+    .qr-block {
+      background: var(--orange);
+      border-radius: var(--radius-lg);
+      padding: 2rem 1.5rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1rem;
+      text-align: center;
+    }
+
+    .qr-box {
+      width: 100px;
+      height: 100px;
+      background: var(--white);
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .qr-block h3 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 28px;
+      color: var(--white);
+    }
+
+    .qr-block p {
+      font-size: 13px;
+      color: rgba(255,255,255,0.8);
+      line-height: 1.5;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      background: #0A0A0A;
+      padding: 2rem 1.5rem;
+      text-align: center;
+      border-top: 1px solid rgba(255,255,255,0.05);
+    }
+
+    .footer-logo {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 28px;
+      color: var(--white);
+      margin-bottom: 0.5rem;
+    }
+
+    .footer-logo span { color: var(--orange); }
+
+    footer p {
+      font-size: 12px;
+      color: rgba(255,255,255,0.3);
+      line-height: 1.6;
+    }
+
+    footer a { color: var(--orange); text-decoration: none; }
+
+    /* ── RESPONSIVE ── */
+    @media (min-width: 640px) {
+      .hero-actions { flex-direction: row; }
+      .sticker-showcase { grid-template-columns: repeat(3, 1fr); }
+      .section { padding: 6rem 2.5rem; }
+      nav { padding: 1rem 2.5rem; }
+    }
+
+    @media (min-width: 1024px) {
+      .hero { padding: 8rem 5rem 5rem; }
+      .hero-title { font-size: 140px; }
+      .section { padding: 7rem 5rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <a href="#" class="nav-logo">Port FC <span>on Tour</span></a>
+    <ul class="nav-links">
+      <li><a href="#concept">Concept</a></li>
+      <li><a href="#how">How it works</a></li>
+      <li><a href="#sightings">Sightings</a></li>
+    </ul>
+    <a href="https://instagram.com/portfc_tour" class="nav-ig" target="_blank" rel="noopener">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="5"/><circle cx="17.5" cy="6.5" r="1.5" fill="white" stroke="none"/></svg>
+      Follow
+    </a>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-bg-circle c1"></div>
+    <div class="hero-bg-circle c2"></div>
+    <div class="hero-eyebrow">Bangkok · Thailand · Worldwide</div>
+    <h1 class="hero-title">Port FC<br><span class="highlight">on Tour</span></h1>
+    <p class="hero-sub">Scan the sticker. Post your location. Join the global Port FC movement — one city at a time.</p>
+    <div class="hero-actions">
+      <a href="https://instagram.com/portfc_tour" class="btn-primary" target="_blank">Join on Instagram →</a>
+      <a href="#how" class="btn-secondary">How it works</a>
+    </div>
+    <div class="hero-scroll">
+      <div class="hero-scroll-line"></div>
+      Scroll
+    </div>
+  </section>
+
+  <!-- CONCEPT -->
+  <section class="section section-dark" id="concept">
+    <div class="section-label">The movement</div>
+    <h2 class="section-title">One Club.<br>Every Corner.</h2>
+    <p class="section-body">Port FC is Bangkok's oldest club — born in the harbour, loved across Thailand. Now the expat community is taking it global. Stickers appear in hostels, bars, airports, and city walls worldwide. Each one links back here. Each scan adds to the map.</p>
+
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">01</div>
+        <div class="step-content">
+          <h3>Spot a sticker</h3>
+          <p>QR stickers are dropped at expat spots, fan bars, and travel hubs worldwide by the community.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">02</div>
+        <div class="step-content">
+          <h3>Scan & land here</h3>
+          <p>One scan brings you to this page — the home base for the global Port FC community.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">03</div>
+        <div class="step-content">
+          <h3>Post your sighting</h3>
+          <p>Tag <strong>@portfc_tour</strong> on Instagram with your location. Every post gets reposted.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">04</div>
+        <div class="step-content">
+          <h3>Spread the colours</h3>
+          <p>Drop your own stickers wherever you travel. Orange and blue goes further every day.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- STICKER DESIGNS -->
+  <section class="section section-light" id="stickers">
+    <div class="section-label">Sticker designs</div>
+    <h2 class="section-title">The Stickers</h2>
+    <p class="section-body">Three formats — round, rectangular, and street-tag. All include a QR code linking to this page. Print them at any local shop and drop them wherever you go.</p>
+
+    <div class="sticker-showcase">
+      <!-- Round sticker -->
+      <div class="sticker-card">
+        <svg viewBox="0 0 160 160" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="80" cy="80" r="78" fill="#E87722"/>
+          <circle cx="80" cy="80" r="68" fill="#E87722" stroke="white" stroke-width="3"/>
+          <text x="80" y="55" font-family="'Bebas Neue', sans-serif" font-size="22" fill="white" text-anchor="middle">PORT FC</text>
+          <text x="80" y="78" font-family="'Bebas Neue', sans-serif" font-size="16" fill="rgba(255,255,255,0.75)" text-anchor="middle">ON TOUR</text>
+          <!-- Mini QR placeholder -->
+          <rect x="55" y="88" width="50" height="50" rx="4" fill="white"/>
+          <rect x="58" y="91" width="12" height="12" rx="1" fill="#1B4F91"/>
+          <rect x="59" y="92" width="10" height="10" rx="0.5" fill="white"/>
+          <rect x="60" y="93" width="8" height="8" rx="0.3" fill="#1B4F91"/>
+          <rect x="90" y="91" width="12" height="12" rx="1" fill="#1B4F91"/>
+          <rect x="91" y="92" width="10" height="10" rx="0.5" fill="white"/>
+          <rect x="92" y="93" width="8" height="8" rx="0.3" fill="#1B4F91"/>
+          <rect x="58" y="121" width="12" height="12" rx="1" fill="#1B4F91"/>
+          <rect x="59" y="122" width="10" height="10" rx="0.5" fill="white"/>
+          <rect x="60" y="123" width="8" height="8" rx="0.3" fill="#1B4F91"/>
+          <rect x="74" y="91" width="4" height="4" fill="#1B4F91"/>
+          <rect x="80" y="91" width="4" height="4" fill="#1B4F91"/>
+          <rect x="74" y="97" width="4" height="4" fill="#1B4F91"/>
+          <rect x="80" y="103" width="4" height="4" fill="#1B4F91"/>
+          <rect x="74" y="109" width="4" height="4" fill="#1B4F91"/>
+          <rect x="80" y="115" width="4" height="4" fill="#1B4F91"/>
+          <rect x="74" y="121" width="4" height="4" fill="#1B4F91"/>
+          <rect x="80" y="127" width="4" height="4" fill="#1B4F91"/>
+          <rect x="90" y="103" width="4" height="4" fill="#1B4F91"/>
+          <rect x="96" y="109" width="4" height="4" fill="#1B4F91"/>
+          <rect x="90" y="121" width="4" height="4" fill="#1B4F91"/>
+          <rect x="96" y="127" width="4" height="4" fill="#1B4F91"/>
+        </svg>
+        <div class="sticker-card-label">Round — 7cm</div>
+      </div>
+
+      <!-- Rectangular sticker -->
+      <div class="sticker-card">
+        <svg viewBox="0 0 160 100" xmlns="http://www.w3.org/2000/svg">
+          <rect width="160" height="100" rx="10" fill="#1B4F91"/>
+          <rect x="3" y="3" width="154" height="94" rx="8" fill="#1B4F91" stroke="rgba(255,255,255,0.25)" stroke-width="1"/>
+          <rect x="0" y="0" width="56" height="100" rx="10" fill="#E87722"/>
+          <rect x="46" y="0" width="10" height="100" fill="#E87722"/>
+          <text x="28" y="48" font-family="'Bebas Neue', sans-serif" font-size="18" fill="white" text-anchor="middle">PORT</text>
+          <text x="28" y="66" font-family="'Bebas Neue', sans-serif" font-size="12" fill="rgba(255,255,255,0.8)" text-anchor="middle">FC</text>
+          <text x="108" y="35" font-family="'Bebas Neue', sans-serif" font-size="13" fill="white" text-anchor="middle">ON TOUR</text>
+          <text x="108" y="52" font-family="'Bebas Neue', sans-serif" font-size="10" fill="rgba(255,255,255,0.5)" text-anchor="middle">SCAN · FOLLOW · SHARE</text>
+          <!-- QR mini -->
+          <rect x="82" y="60" width="28" height="28" rx="2" fill="white"/>
+          <rect x="84" y="62" width="7" height="7" rx="0.5" fill="#1B4F91"/>
+          <rect x="85" y="63" width="5" height="5" rx="0.2" fill="white"/>
+          <rect x="86" y="64" width="3" height="3" fill="#1B4F91"/>
+          <rect x="99" y="62" width="7" height="7" rx="0.5" fill="#1B4F91"/>
+          <rect x="100" y="63" width="5" height="5" rx="0.2" fill="white"/>
+          <rect x="101" y="64" width="3" height="3" fill="#1B4F91"/>
+          <rect x="84" y="79" width="7" height="7" rx="0.5" fill="#1B4F91"/>
+          <rect x="85" y="80" width="5" height="5" rx="0.2" fill="white"/>
+          <rect x="86" y="81" width="3" height="3" fill="#1B4F91"/>
+          <rect x="93" y="62" width="3" height="3" fill="#1B4F91"/>
+          <rect x="93" y="67" width="3" height="3" fill="#1B4F91"/>
+          <rect x="93" y="72" width="3" height="3" fill="#1B4F91"/>
+          <rect x="93" y="82" width="3" height="3" fill="#1B4F91"/>
+          <rect x="99" y="72" width="3" height="3" fill="#1B4F91"/>
+          <rect x="105" y="72" width="3" height="3" fill="#1B4F91"/>
+          <rect x="99" y="79" width="3" height="3" fill="#1B4F91"/>
+          <rect x="105" y="82" width="3" height="3" fill="#1B4F91"/>
+          <text x="125" y="73" font-family="'Inter', sans-serif" font-size="7" fill="rgba(255,255,255,0.5)" text-anchor="middle">@portfc_tour</text>
+        </svg>
+        <div class="sticker-card-label">Landscape — 10×6cm</div>
+      </div>
+
+      <!-- Street tag sticker -->
+      <div class="sticker-card" style="grid-column: span 2;">
+        <svg viewBox="0 0 300 100" xmlns="http://www.w3.org/2000/svg">
+          <rect width="300" height="100" rx="10" fill="#0D0D0D"/>
+          <rect x="1" y="1" width="298" height="98" rx="9" stroke="rgba(232,119,34,0.4)" stroke-width="1.5" fill="none"/>
+          <text x="20" y="65" font-family="'Bebas Neue', sans-serif" font-size="58" fill="#E87722" letter-spacing="2">PORT FC</text>
+          <text x="20" y="85" font-family="'Bebas Neue', sans-serif" font-size="20" fill="rgba(255,255,255,0.4)" letter-spacing="6">ON TOUR</text>
+          <rect x="230" y="20" width="52" height="52" rx="4" fill="white"/>
+          <rect x="233" y="23" width="13" height="13" rx="1" fill="#1B4F91"/>
+          <rect x="234" y="24" width="11" height="11" rx="0.5" fill="white"/>
+          <rect x="235" y="25" width="9" height="9" rx="0.3" fill="#1B4F91"/>
+          <rect x="251" y="23" width="13" height="13" rx="1" fill="#1B4F91"/>
+          <rect x="252" y="24" width="11" height="11" rx="0.5" fill="white"/>
+          <rect x="253" y="25" width="9" height="9" rx="0.3" fill="#1B4F91"/>
+          <rect x="233" y="57" width="13" height="13" rx="1" fill="#1B4F91"/>
+          <rect x="234" y="58" width="11" height="11" rx="0.5" fill="white"/>
+          <rect x="235" y="59" width="9" height="9" rx="0.3" fill="#1B4F91"/>
+          <rect x="248" y="23" width="3" height="3" fill="#1B4F91"/>
+          <rect x="248" y="28" width="3" height="3" fill="#1B4F91"/>
+          <rect x="248" y="37" width="3" height="3" fill="#1B4F91"/>
+          <rect x="248" y="48" width="3" height="3" fill="#1B4F91"/>
+          <rect x="251" y="48" width="8" height="3" fill="#1B4F91"/>
+          <rect x="262" y="37" width="3" height="8" fill="#1B4F91"/>
+          <rect x="256" y="57" width="8" height="3" fill="#1B4F91"/>
+          <rect x="262" y="62" width="3" height="8" fill="#1B4F91"/>
+          <rect x="256" y="67" width="8" height="3" fill="#1B4F91"/>
+          <text x="256" y="80" font-family="'Inter', sans-serif" font-size="6" fill="rgba(255,255,255,0.3)" text-anchor="middle">@portfc_tour</text>
+        </svg>
+        <div class="sticker-card-label">Street tag — 15×5cm</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SIGHTINGS -->
+  <section class="section section-dark" id="sightings">
+    <div class="section-label">Community sightings</div>
+    <h2 class="section-title">Port FC<br>Spotted Here</h2>
+    <p class="section-body">Every time a fan posts with #PortFConTour, it goes on the map. Here are recent sightings from the community.</p>
+
+    <div class="sightings">
+      <div class="sighting">
+        <div class="sighting-flag">🇩🇪</div>
+        <div class="sighting-info">
+          <h4>Berlin, Germany</h4>
+          <p>Spotted at Tempelhofer Feld · @thai_in_berlin</p>
+        </div>
+        <div class="sighting-badge">New</div>
+      </div>
+      <div class="sighting">
+        <div class="sighting-flag">🇯🇵</div>
+        <div class="sighting-info">
+          <h4>Tokyo, Japan</h4>
+          <p>Shibuya crossing bar toilet · @portfc_jp_fan</p>
+        </div>
+        <div class="sighting-badge">+2</div>
+      </div>
+      <div class="sighting">
+        <div class="sighting-flag">🇬🇧</div>
+        <div class="sighting-info">
+          <h4>London, UK</h4>
+          <p>Thai restaurant in Soho · @london_thais</p>
+        </div>
+        <div class="sighting-badge">Hot</div>
+      </div>
+      <div class="sighting">
+        <div class="sighting-flag">🇦🇺</div>
+        <div class="sighting-info">
+          <h4>Sydney, Australia</h4>
+          <p>Thai boxing gym notice board · @muay_sydney</p>
+        </div>
+        <div class="sighting-badge">+5</div>
+      </div>
+      <div class="sighting">
+        <div class="sighting-flag">🇺🇸</div>
+        <div class="sighting-info">
+          <h4>Los Angeles, USA</h4>
+          <p>Thai Town on Hollywood Blvd · @portfc_la</p>
+        </div>
+        <div class="sighting-badge">3 scans</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- INSTAGRAM CTA -->
+  <section class="section section-light" id="join">
+    <div class="ig-cta">
+      <div class="ig-handle">@portfc_tour</div>
+      <p class="ig-sub">Follow for live sightings, reposts, match results, and community drops. Every fan post gets reposted.</p>
+      <div class="hashtags">
+        <span class="hashtag">#PortFConTour</span>
+        <span class="hashtag">#PortFCBangkok</span>
+        <span class="hashtag">#ThaiFootball</span>
+        <span class="hashtag">#ท่าเรือ</span>
+        <span class="hashtag">#ExpatsUnited</span>
+      </div>
+      <a href="https://instagram.com/portfc_tour" class="btn-primary" target="_blank">Follow on Instagram →</a>
+    </div>
+  </section>
+
+  <!-- QR / STICKER CTA -->
+  <section class="section section-dark">
+    <div class="qr-block">
+      <div class="qr-box">
+        <svg width="80" height="80" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="4" y="4" width="26" height="26" rx="3" fill="#1B4F91"/>
+          <rect x="7" y="7" width="20" height="20" rx="2" fill="white"/>
+          <rect x="10" y="10" width="14" height="14" rx="1" fill="#1B4F91"/>
+          <rect x="50" y="4" width="26" height="26" rx="3" fill="#1B4F91"/>
+          <rect x="53" y="7" width="20" height="20" rx="2" fill="white"/>
+          <rect x="56" y="10" width="14" height="14" rx="1" fill="#1B4F91"/>
+          <rect x="4" y="50" width="26" height="26" rx="3" fill="#1B4F91"/>
+          <rect x="7" y="53" width="20" height="20" rx="2" fill="white"/>
+          <rect x="10" y="56" width="14" height="14" rx="1" fill="#1B4F91"/>
+          <rect x="38" y="4" width="6" height="6" fill="#1B4F91"/>
+          <rect x="38" y="12" width="6" height="6" fill="#1B4F91"/>
+          <rect x="38" y="20" width="6" height="6" fill="#1B4F91"/>
+          <rect x="38" y="38" width="6" height="6" fill="#1B4F91"/>
+          <rect x="38" y="50" width="6" height="6" fill="#1B4F91"/>
+          <rect x="50" y="38" width="6" height="6" fill="#1B4F91"/>
+          <rect x="62" y="38" width="6" height="6" fill="#1B4F91"/>
+          <rect x="50" y="62" width="6" height="6" fill="#1B4F91"/>
+          <rect x="62" y="50" width="6" height="6" fill="#1B4F91"/>
+          <rect x="50" y="50" width="6" height="6" fill="#E87722"/>
+          <rect x="62" y="62" width="6" height="6" fill="#E87722"/>
+        </svg>
+      </div>
+      <h3>Get the sticker files</h3>
+      <p>Print-ready PDF files for all three sticker formats. Drop them wherever you go and add your city to the map.</p>
+      <a href="https://github.com/portfc-tour/stickers" class="btn-secondary" target="_blank">Download on GitHub →</a>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-logo">Port FC <span>on Tour</span></div>
+    <p>A fan project. Not affiliated with Port FC official club.<br>
+    Built with 🟠 by the community · <a href="https://instagram.com/portfc_tour">@portfc_tour</a></p>
+  </footer>
+
+</body>
+</html>

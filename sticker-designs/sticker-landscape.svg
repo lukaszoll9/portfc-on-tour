@@ -1,0 +1,72 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 240" width="400" height="240">
+
+  <!-- Background blue -->
+  <rect width="400" height="240" rx="20" fill="#1B4F91"/>
+
+  <!-- Orange left block -->
+  <rect x="0" y="0" width="148" height="240" rx="20" fill="#E87722"/>
+  <rect x="128" y="0" width="20" height="240" fill="#E87722"/>
+
+  <!-- Orange/Blue transition shape -->
+  <polygon points="128,0 148,0 148,240 128,240" fill="#C4641A" opacity="0.4"/>
+
+  <!-- PORT FC on orange side -->
+  <text x="74" y="100" font-family="'Bebas Neue', 'Arial Black', sans-serif" font-size="52" fill="white" text-anchor="middle" letter-spacing="2">PORT</text>
+  <text x="74" y="148" font-family="'Bebas Neue', 'Arial Black', sans-serif" font-size="52" fill="white" text-anchor="middle" letter-spacing="2">FC</text>
+
+  <!-- Horizontal rule on orange -->
+  <line x1="24" y1="160" x2="124" y2="160" stroke="rgba(255,255,255,0.35)" stroke-width="1.5"/>
+
+  <!-- Bangkok text -->
+  <text x="74" y="185" font-family="'Inter', Arial, sans-serif" font-size="13" fill="rgba(255,255,255,0.7)" text-anchor="middle" letter-spacing="2">BANGKOK</text>
+
+  <!-- ON TOUR text on blue side -->
+  <text x="274" y="78" font-family="'Bebas Neue', 'Arial Black', sans-serif" font-size="46" fill="white" text-anchor="middle" letter-spacing="4">ON TOUR</text>
+
+  <!-- Tagline -->
+  <text x="274" y="108" font-family="'Inter', Arial, sans-serif" font-size="13" fill="rgba(255,255,255,0.55)" text-anchor="middle" letter-spacing="2">SCAN · FOLLOW · SHARE</text>
+
+  <!-- Divider -->
+  <line x1="168" y1="120" x2="380" y2="120" stroke="rgba(255,255,255,0.12)" stroke-width="1"/>
+
+  <!-- QR Code -->
+  <rect x="168" y="132" width="88" height="88" rx="6" fill="white"/>
+
+  <!-- QR corners -->
+  <rect x="174" y="138" width="20" height="20" rx="2" fill="#1B4F91"/>
+  <rect x="177" y="141" width="14" height="14" rx="1" fill="white"/>
+  <rect x="180" y="144" width="8" height="8" fill="#1B4F91"/>
+
+  <rect x="230" y="138" width="20" height="20" rx="2" fill="#1B4F91"/>
+  <rect x="233" y="141" width="14" height="14" rx="1" fill="white"/>
+  <rect x="236" y="144" width="8" height="8" fill="#1B4F91"/>
+
+  <rect x="174" y="194" width="20" height="20" rx="2" fill="#1B4F91"/>
+  <rect x="177" y="197" width="14" height="14" rx="1" fill="white"/>
+  <rect x="180" y="200" width="8" height="8" fill="#1B4F91"/>
+
+  <!-- QR data dots -->
+  <rect x="196" y="138" width="6" height="6" fill="#1B4F91"/>
+  <rect x="204" y="138" width="6" height="6" fill="#1B4F91"/>
+  <rect x="212" y="138" width="6" height="6" fill="#1B4F91"/>
+  <rect x="196" y="146" width="6" height="6" fill="#1B4F91"/>
+  <rect x="212" y="154" width="6" height="6" fill="#1B4F91"/>
+  <rect x="204" y="162" width="6" height="6" fill="#1B4F91"/>
+  <rect x="196" y="170" width="6" height="6" fill="#1B4F91"/>
+  <rect x="230" y="162" width="6" height="6" fill="#1B4F91"/>
+  <rect x="230" y="170" width="6" height="6" fill="#1B4F91"/>
+  <rect x="196" y="194" width="6" height="6" fill="#1B4F91"/>
+  <rect x="212" y="194" width="6" height="6" fill="#1B4F91"/>
+  <rect x="230" y="194" width="6" height="6" fill="#1B4F91"/>
+  <rect x="196" y="202" width="6" height="6" fill="#1B4F91"/>
+  <rect x="212" y="202" width="6" height="6" fill="#1B4F91"/>
+
+  <!-- Right side text block -->
+  <text x="296" y="152" font-family="'Inter', Arial, sans-serif" font-size="12" fill="rgba(255,255,255,0.45)" text-anchor="middle">Scan to join the</text>
+  <text x="296" y="168" font-family="'Inter', Arial, sans-serif" font-size="12" fill="rgba(255,255,255,0.45)" text-anchor="middle">global community</text>
+
+  <!-- Orange dot accent -->
+  <circle cx="296" cy="195" r="3" fill="#E87722"/>
+  <text x="296" y="218" font-family="'Bebas Neue', 'Arial Black', sans-serif" font-size="18" fill="rgba(255,255,255,0.7)" text-anchor="middle" letter-spacing="2">@PORTFC_TOUR</text>
+
+</svg>
