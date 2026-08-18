@@ -10,32 +10,24 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
-  <!-- Leaflet map -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"/>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
-      --orange: #E87722;
-      --orange-dark: #C4641A;
-      --blue: #1B4F91;
-      --black: #0D0D0D;
-      --gray-dark: #111111;
-      --gray-mid: #161616;
-      --white: #ffffff;
-      --text-muted: rgba(255,255,255,0.5);
-      --border: rgba(255,255,255,0.07);
-      --radius: 14px;
+      --orange: #E87722; --orange-dark: #C4641A; --blue: #1B4F91;
+      --black: #0D0D0D; --white: #ffffff;
+      --text-muted: rgba(255,255,255,0.5); --border: rgba(255,255,255,0.07); --radius: 14px;
     }
     html { scroll-behavior: smooth; }
     body { font-family: 'Inter', sans-serif; background: var(--black); color: var(--white); overflow-x: hidden; }
 
-    /* NAV */
+    /* ── NAV ── */
     nav {
-      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      position: fixed; top: 0; left: 0; right: 0; z-index: 200;
       display: flex; align-items: center; justify-content: space-between;
       padding: 1rem 1.5rem;
-      background: rgba(13,13,13,0.88); backdrop-filter: blur(14px);
+      background: rgba(13,13,13,0.92); backdrop-filter: blur(14px);
       border-bottom: 1px solid var(--border);
     }
     .nav-logo { font-family: 'Bebas Neue', sans-serif; font-size: 22px; color: var(--white); text-decoration: none; letter-spacing: 0.04em; }
@@ -43,58 +35,112 @@
     .nav-links { display: flex; gap: 1.5rem; list-style: none; }
     .nav-links a { font-size: 13px; color: var(--text-muted); text-decoration: none; transition: color 0.2s; }
     .nav-links a:hover { color: var(--orange); }
+    .nav-right { display: flex; align-items: center; gap: 10px; }
     .nav-ig { display: flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 500; color: var(--white); text-decoration: none; background: var(--orange); padding: 6px 14px; border-radius: 20px; transition: background 0.2s; }
     .nav-ig:hover { background: var(--orange-dark); }
+    /* Hamburger */
+    .nav-hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; padding: 4px; }
+    .nav-hamburger span { display: block; width: 22px; height: 2px; background: var(--white); border-radius: 2px; transition: all 0.3s; }
+    .nav-mobile { display: none; flex-direction: column; gap: 0; position: fixed; top: 57px; left: 0; right: 0; background: rgba(13,13,13,0.98); border-bottom: 1px solid var(--border); z-index: 199; padding: 1rem 1.5rem; }
+    .nav-mobile.open { display: flex; }
+    .nav-mobile a { font-size: 15px; color: var(--text-muted); text-decoration: none; padding: 0.75rem 0; border-bottom: 1px solid var(--border); }
+    .nav-mobile a:last-child { border-bottom: none; }
+    .nav-mobile a:hover { color: var(--orange); }
+    @media (max-width: 640px) {
+      .nav-links { display: none; }
+      .nav-hamburger { display: flex; }
+    }
 
-    /* HERO */
+    /* ── HERO ── */
     .hero {
-      min-height: 100vh; display: flex; flex-direction: column;
-      justify-content: flex-end; padding: 7rem 1.5rem 3rem;
-      position: relative; overflow: hidden; background: var(--black);
+      min-height: 100vh; display: grid; grid-template-columns: 1fr 1fr;
+      align-items: end; gap: 2rem;
+      padding: 7rem 1.5rem 3rem; position: relative; overflow: hidden;
     }
     .hero-bg { position: absolute; border-radius: 50%; pointer-events: none; }
-    .hero-bg.c1 { width: 500px; height: 500px; top: -120px; right: -100px; background: radial-gradient(circle, rgba(232,119,34,0.16) 0%, transparent 70%); }
-    .hero-bg.c2 { width: 400px; height: 400px; bottom: -80px; left: -80px; background: radial-gradient(circle, rgba(27,79,145,0.2) 0%, transparent 70%); }
+    .hero-bg.c1 { width: 500px; height: 500px; top: -120px; right: -100px; background: radial-gradient(circle, rgba(232,119,34,0.15) 0%, transparent 70%); }
+    .hero-bg.c2 { width: 400px; height: 400px; bottom: -80px; left: -80px; background: radial-gradient(circle, rgba(27,79,145,0.18) 0%, transparent 70%); }
+    .hero-left { position: relative; z-index: 1; }
     .hero-eyebrow { font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--orange); margin-bottom: 0.75rem; display: flex; align-items: center; gap: 8px; }
     .hero-eyebrow::before { content: ''; display: inline-block; width: 20px; height: 1px; background: var(--orange); }
-    .hero-title { font-family: 'Bebas Neue', sans-serif; font-size: clamp(72px, 18vw, 120px); line-height: 0.92; color: var(--white); margin-bottom: 1.25rem; }
+    .hero-title { font-family: 'Bebas Neue', sans-serif; font-size: clamp(72px, 14vw, 110px); line-height: 0.92; color: var(--white); margin-bottom: 1.25rem; }
     .hero-title .hl { color: var(--orange); }
-    .hero-sub { font-size: 16px; color: var(--text-muted); max-width: 320px; line-height: 1.6; margin-bottom: 2rem; }
-    .hero-actions { display: flex; flex-direction: column; gap: 10px; }
-    .btn-primary { display: inline-flex; align-items: center; justify-content: center; gap: 8px; background: var(--orange); color: var(--white); font-size: 15px; font-weight: 500; padding: 14px 24px; border-radius: 50px; text-decoration: none; transition: background 0.2s, transform 0.15s; }
+    .hero-sub { font-size: 15px; color: var(--text-muted); max-width: 340px; line-height: 1.6; margin-bottom: 2rem; }
+    .hero-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 2rem; }
+    .btn-primary { display: inline-flex; align-items: center; gap: 8px; background: var(--orange); color: var(--white); font-size: 14px; font-weight: 500; padding: 12px 22px; border-radius: 50px; text-decoration: none; transition: background 0.2s, transform 0.15s; }
     .btn-primary:hover { background: var(--orange-dark); transform: translateY(-1px); }
-    .btn-secondary { display: inline-flex; align-items: center; justify-content: center; gap: 8px; background: transparent; color: var(--white); font-size: 15px; font-weight: 500; padding: 14px 24px; border-radius: 50px; border: 1px solid rgba(255,255,255,0.2); text-decoration: none; transition: border-color 0.2s; }
+    .btn-secondary { display: inline-flex; align-items: center; gap: 8px; background: transparent; color: var(--white); font-size: 14px; font-weight: 500; padding: 12px 22px; border-radius: 50px; border: 1px solid rgba(255,255,255,0.2); text-decoration: none; transition: border-color 0.2s; }
     .btn-secondary:hover { border-color: rgba(255,255,255,0.5); }
 
-    /* SECTIONS */
+    /* Hero stats */
+    .hero-stats { display: flex; gap: 1.5rem; }
+    .hero-stat { display: flex; flex-direction: column; }
+    .hero-stat-num { font-family: 'Bebas Neue', sans-serif; font-size: 32px; color: var(--orange); line-height: 1; }
+    .hero-stat-label { font-size: 11px; color: var(--text-muted); letter-spacing: 0.05em; margin-top: 2px; }
+
+    /* Hero right — QR visual */
+    .hero-right { position: relative; z-index: 1; display: flex; align-items: center; justify-content: center; }
+    .hero-qr-card {
+      background: #111; border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 20px; padding: 2rem 1.5rem; display: flex; flex-direction: column;
+      align-items: center; gap: 1.25rem; width: 100%; max-width: 280px;
+      position: relative; overflow: hidden;
+    }
+    .hero-qr-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, var(--orange), var(--blue)); }
+    .hero-qr-glow { position: absolute; width: 200px; height: 200px; border-radius: 50%; background: radial-gradient(circle, rgba(232,119,34,0.12), transparent 70%); top: 50%; left: 50%; transform: translate(-50%, -50%); pointer-events: none; }
+    .hero-qr-label { font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--text-muted); }
+    .hero-qr-box { width: 130px; height: 130px; background: white; border-radius: 10px; padding: 10px; display: flex; align-items: center; justify-content: center; }
+    .hero-qr-box svg { width: 110px; height: 110px; }
+    .hero-qr-url { font-size: 11px; color: var(--text-muted); text-align: center; }
+    .hero-qr-url span { color: var(--orange); }
+    .hero-badge { display: inline-flex; align-items: center; gap: 6px; background: rgba(232,119,34,0.12); border: 1px solid rgba(232,119,34,0.25); border-radius: 20px; padding: 5px 12px; font-size: 12px; color: var(--orange); }
+
+    @media (max-width: 768px) {
+      .hero { grid-template-columns: 1fr; }
+      .hero-right { display: none; }
+    }
+
+    /* ── SECTIONS ── */
     .section { padding: 5rem 1.5rem; }
-    .section-dark { background: #111111; }
+    .section-dark { background: #111; }
     .section-mid { background: #161616; }
     .section-label { font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--orange); margin-bottom: 0.75rem; }
     .section-title { font-family: 'Bebas Neue', sans-serif; font-size: 42px; line-height: 1; color: var(--white); margin-bottom: 1rem; }
     .section-body { font-size: 15px; color: var(--text-muted); line-height: 1.7; margin-bottom: 2.5rem; }
 
-    /* STEPS */
+    /* ── CLUB INFO ── */
+    .club-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 2rem; }
+    .club-card { background: #1A1A1A; border: 1px solid var(--border); border-radius: var(--radius); padding: 1.25rem; }
+    .club-card-icon { font-size: 24px; margin-bottom: 0.5rem; }
+    .club-card h4 { font-size: 13px; font-weight: 600; color: var(--white); margin-bottom: 4px; }
+    .club-card p { font-size: 12px; color: var(--text-muted); line-height: 1.5; }
+    .club-highlight { background: linear-gradient(135deg, rgba(232,119,34,0.1), rgba(27,79,145,0.1)); border: 1px solid rgba(232,119,34,0.2); border-radius: var(--radius); padding: 1.25rem 1.5rem; display: flex; align-items: center; gap: 1rem; }
+    .club-highlight-text { font-size: 14px; color: rgba(255,255,255,0.8); line-height: 1.6; }
+    .club-highlight-text strong { color: var(--orange); }
+
+    /* ── STEPS ── */
     .steps { display: flex; flex-direction: column; }
     .step { display: flex; gap: 1.25rem; padding: 1.5rem 0; border-bottom: 1px solid var(--border); }
     .step:last-child { border-bottom: none; }
-    .step-num { font-family: 'Bebas Neue', sans-serif; font-size: 36px; color: var(--orange); opacity: 0.5; min-width: 36px; line-height: 1; padding-top: 2px; }
+    .step-num { font-family: 'Bebas Neue', sans-serif; font-size: 36px; color: var(--orange); opacity: 0.5; min-width: 36px; line-height: 1; }
     .step-content h3 { font-size: 15px; font-weight: 500; margin-bottom: 4px; }
     .step-content p { font-size: 13px; color: var(--text-muted); line-height: 1.6; }
 
-    /* MAP */
-    #sighting-map {
-      height: 420px; width: 100%; border-radius: var(--radius);
-      border: 1px solid var(--border); margin-bottom: 1.5rem;
-      filter: brightness(0.85) saturate(0.7);
-    }
-    .map-legend { display: flex; gap: 1.5rem; flex-wrap: wrap; margin-bottom: 2rem; }
+    /* ── COUNTER STRIP ── */
+    .counter-strip { background: var(--orange); padding: 1.5rem; display: flex; justify-content: space-around; flex-wrap: wrap; gap: 1rem; }
+    .counter-item { text-align: center; }
+    .counter-num { font-family: 'Bebas Neue', sans-serif; font-size: 42px; color: white; line-height: 1; }
+    .counter-label { font-size: 11px; color: rgba(255,255,255,0.75); letter-spacing: 0.1em; text-transform: uppercase; }
+
+    /* ── MAP ── */
+    #sighting-map { height: 420px; width: 100%; border-radius: var(--radius); border: 1px solid var(--border); margin-bottom: 1.5rem; }
+    .map-legend { display: flex; gap: 1.5rem; flex-wrap: wrap; margin-bottom: 1.25rem; }
     .map-legend-item { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--text-muted); }
     .legend-dot { width: 12px; height: 12px; border-radius: 50%; flex-shrink: 0; }
     .legend-dot.home { background: var(--orange); }
     .legend-dot.sighting { background: var(--blue); }
 
-    /* SIGHTINGS FEED */
+    /* ── SIGHTINGS ── */
     .sightings { display: flex; flex-direction: column; gap: 10px; margin-top: 1.5rem; }
     .sighting { background: #1A1A1A; border: 1px solid var(--border); border-radius: var(--radius); padding: 1rem 1.25rem; display: flex; align-items: center; gap: 1rem; }
     .sighting-flag { font-size: 26px; flex-shrink: 0; }
@@ -102,60 +148,74 @@
     .sighting-info p { font-size: 12px; color: var(--text-muted); }
     .sighting-badge { margin-left: auto; font-size: 10px; padding: 3px 8px; border-radius: 20px; background: rgba(232,119,34,0.12); color: var(--orange); flex-shrink: 0; }
 
-    /* STICKER SHOP */
+    /* ── MATCH RESULTS ── */
+    .match-card { background: #1A1A1A; border: 1px solid var(--border); border-radius: var(--radius); padding: 1.25rem; margin-bottom: 10px; display: flex; align-items: center; gap: 1rem; }
+    .match-date { font-size: 11px; color: var(--text-muted); min-width: 70px; }
+    .match-teams { flex: 1; }
+    .match-teams h4 { font-size: 14px; font-weight: 500; }
+    .match-teams p { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+    .match-score { font-family: 'Bebas Neue', sans-serif; font-size: 24px; color: var(--orange); min-width: 50px; text-align: right; }
+    .match-score.win { color: #4ade80; }
+    .match-score.draw { color: var(--text-muted); }
+    .match-competition { font-size: 10px; padding: 2px 7px; border-radius: 10px; background: rgba(27,79,145,0.2); color: #88aadd; border: 1px solid rgba(27,79,145,0.3); flex-shrink: 0; }
+
+    /* ── STICKER SHOP ── */
     .sticker-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 2rem; }
     .sticker-card { background: #1A1A1A; border: 1px solid var(--border); border-radius: var(--radius); padding: 1.5rem 1rem; display: flex; flex-direction: column; align-items: center; gap: 0.75rem; text-align: center; transition: border-color 0.2s; }
     .sticker-card:hover { border-color: var(--orange); }
-    .sticker-preview { width: 90px; height: 90px; background: #222; border-radius: 10px; display: flex; align-items: center; justify-content: center; }
-    .sticker-preview.round { border-radius: 50%; }
+    .sticker-preview { width: 90px; height: 90px; display: flex; align-items: center; justify-content: center; }
     .sticker-card h4 { font-size: 13px; font-weight: 500; }
     .sticker-card p { font-size: 11px; color: var(--text-muted); }
     .sticker-price { font-family: 'Bebas Neue', sans-serif; font-size: 20px; color: var(--orange); }
-    .sticker-coming { font-size: 10px; padding: 3px 8px; border-radius: 10px; background: rgba(27,79,145,0.2); color: var(--blue); border: 1px solid rgba(27,79,145,0.3); }
-
+    .sticker-action { font-size: 12px; padding: 6px 14px; border-radius: 20px; background: rgba(232,119,34,0.12); color: var(--orange); border: 1px solid rgba(232,119,34,0.25); text-decoration: none; transition: background 0.2s; }
+    .sticker-action:hover { background: rgba(232,119,34,0.25); }
     .shop-info { background: #1A1A1A; border: 1px solid var(--border); border-radius: var(--radius); padding: 1.5rem; display: flex; flex-direction: column; gap: 0.75rem; }
     .shop-info-row { display: flex; align-items: flex-start; gap: 0.75rem; font-size: 13px; }
     .shop-info-icon { font-size: 16px; flex-shrink: 0; margin-top: 1px; }
     .shop-info-text { color: var(--text-muted); line-height: 1.5; }
     .shop-info-text strong { color: var(--white); }
+    .shop-info-text a { color: var(--orange); text-decoration: none; }
 
-    /* INSTAGRAM CTA */
+    /* ── INSTAGRAM CTA ── */
     .ig-cta { background: linear-gradient(135deg, #1B4F91 0%, #0D2E5A 100%); border-radius: var(--radius); padding: 2.5rem 1.5rem; text-align: center; }
     .ig-handle { font-family: 'Bebas Neue', sans-serif; font-size: 38px; margin-bottom: 0.5rem; }
     .ig-sub { font-size: 14px; color: rgba(255,255,255,0.6); margin-bottom: 1.5rem; line-height: 1.5; }
     .hashtags { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; margin-bottom: 1.5rem; }
     .hashtag { font-size: 12px; padding: 4px 10px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.2); color: rgba(255,255,255,0.7); }
 
-    /* FOOTER */
+    /* ── FOOTER ── */
     footer { background: #0A0A0A; padding: 3rem 1.5rem 2rem; border-top: 1px solid var(--border); }
     .footer-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-bottom: 2rem; }
     .footer-logo { font-family: 'Bebas Neue', sans-serif; font-size: 28px; margin-bottom: 0.5rem; }
     .footer-logo span { color: var(--orange); }
     footer p, footer a { font-size: 12px; color: rgba(255,255,255,0.3); line-height: 1.8; text-decoration: none; }
     footer a:hover { color: var(--orange); }
-    .footer-col h5 { font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(255,255,255,0.5); margin-bottom: 0.75rem; }
+    .footer-col h5 { font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(255,255,255,0.4); margin-bottom: 0.75rem; }
     .footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 4px; }
     .footer-divider { border: none; border-top: 1px solid var(--border); margin: 1.5rem 0; }
-    .footer-bottom { display: flex; flex-direction: column; gap: 4px; }
 
-    /* IMPRESSUM / DATENSCHUTZ */
+    /* ── LEGAL ── */
     .legal-section { padding: 4rem 1.5rem; background: #0A0A0A; }
     .legal-section h2 { font-family: 'Bebas Neue', sans-serif; font-size: 28px; color: var(--white); margin-bottom: 1rem; }
-    .legal-section h3 { font-size: 14px; font-weight: 600; color: rgba(255,255,255,0.7); margin: 1.25rem 0 0.4rem; }
-    .legal-section p, .legal-section li { font-size: 12px; color: rgba(255,255,255,0.35); line-height: 1.8; }
-    .legal-section ul { padding-left: 1.2rem; }
+    .legal-section h3 { font-size: 14px; font-weight: 600; color: rgba(255,255,255,0.6); margin: 1.25rem 0 0.4rem; }
+    .legal-section p { font-size: 12px; color: rgba(255,255,255,0.3); line-height: 1.8; }
     .legal-divider { border: none; border-top: 1px solid var(--border); margin: 2.5rem 0; }
+    .legal-section a { color: var(--orange); text-decoration: none; }
 
     @media (min-width: 640px) {
-      .hero-actions { flex-direction: row; }
       .sticker-grid { grid-template-columns: repeat(3, 1fr); }
       .section { padding: 6rem 2.5rem; }
       nav { padding: 1rem 2.5rem; }
+      .counter-strip { padding: 2rem 3rem; }
     }
     @media (min-width: 1024px) {
       .hero { padding: 8rem 5rem 5rem; }
       .section { padding: 7rem 5rem; }
     }
+
+    /* Animate counters */
+    @keyframes countUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    .counter-num { animation: countUp 0.6s ease both; }
   </style>
 </head>
 <body>
@@ -164,107 +224,252 @@
 <nav>
   <a href="#" class="nav-logo">Port FC <span>on Tour</span></a>
   <ul class="nav-links">
+    <li><a href="#club">The Club</a></li>
     <li><a href="#concept">Concept</a></li>
     <li><a href="#map">Map</a></li>
     <li><a href="#stickers">Stickers</a></li>
     <li><a href="#impressum">Impressum</a></li>
   </ul>
-  <a href="https://instagram.com/portfc_tour" class="nav-ig" target="_blank" rel="noopener">
-    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="5"/><circle cx="17.5" cy="6.5" r="1.5" fill="white" stroke="none"/></svg>
-    Follow
-  </a>
+  <div class="nav-right">
+    <a href="https://instagram.com/portfc_tour" class="nav-ig" target="_blank" rel="noopener">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="5"/><circle cx="17.5" cy="6.5" r="1.5" fill="white" stroke="none"/></svg>
+      Follow
+    </a>
+    <div class="nav-hamburger" onclick="toggleMenu()"><span></span><span></span><span></span></div>
+  </div>
 </nav>
+<div class="nav-mobile" id="mobileMenu">
+  <a href="#club" onclick="toggleMenu()">The Club</a>
+  <a href="#concept" onclick="toggleMenu()">Concept</a>
+  <a href="#map" onclick="toggleMenu()">Map</a>
+  <a href="#stickers" onclick="toggleMenu()">Stickers</a>
+  <a href="#impressum" onclick="toggleMenu()">Impressum</a>
+  <a href="https://instagram.com/portfc_tour" target="_blank">@portfc_tour ↗</a>
+</div>
 
 <!-- HERO -->
 <section class="hero">
   <div class="hero-bg c1"></div>
   <div class="hero-bg c2"></div>
-  <div class="hero-eyebrow">Bangkok · Thailand · Worldwide</div>
-  <h1 class="hero-title">Port FC<br><span class="hl">on Tour</span></h1>
-  <p class="hero-sub">Scan the sticker. Post your location. Join the global Port FC movement — one city at a time.</p>
-  <div class="hero-actions">
-    <a href="https://instagram.com/portfc_tour" class="btn-primary" target="_blank">Join on Instagram →</a>
-    <a href="#concept" class="btn-secondary">How it works</a>
+  <div class="hero-left">
+    <div class="hero-eyebrow">Bangkok · Thailand · Worldwide</div>
+    <h1 class="hero-title">Port FC<br><span class="hl">on Tour</span></h1>
+    <p class="hero-sub">Scan the sticker. Post your location. Join the global Port FC movement — one city at a time.</p>
+    <div class="hero-actions">
+      <a href="https://instagram.com/portfc_tour" class="btn-primary" target="_blank">Join on Instagram →</a>
+      <a href="#concept" class="btn-secondary">How it works</a>
+    </div>
+    <div class="hero-stats">
+      <div class="hero-stat"><div class="hero-stat-num" id="cnt-cities">8</div><div class="hero-stat-label">Cities</div></div>
+      <div class="hero-stat"><div class="hero-stat-num" id="cnt-stickers">50+</div><div class="hero-stat-label">Stickers dropped</div></div>
+      <div class="hero-stat"><div class="hero-stat-num" id="cnt-scans">1967</div><div class="hero-stat-label">Founded</div></div>
+    </div>
+  </div>
+  <div class="hero-right">
+    <div class="hero-qr-card">
+      <div class="hero-qr-glow"></div>
+      <div class="hero-qr-label">Scan to join</div>
+      <div class="hero-qr-box">
+        <svg viewBox="0 0 110 110" xmlns="http://www.w3.org/2000/svg">
+          <rect x="5" y="5" width="38" height="38" rx="4" fill="#1B4F91"/>
+          <rect x="9" y="9" width="30" height="30" rx="2" fill="white"/>
+          <rect x="13" y="13" width="22" height="22" rx="1" fill="#1B4F91"/>
+          <rect x="67" y="5" width="38" height="38" rx="4" fill="#1B4F91"/>
+          <rect x="71" y="9" width="30" height="30" rx="2" fill="white"/>
+          <rect x="75" y="13" width="22" height="22" rx="1" fill="#1B4F91"/>
+          <rect x="5" y="67" width="38" height="38" rx="4" fill="#1B4F91"/>
+          <rect x="9" y="71" width="30" height="30" rx="2" fill="white"/>
+          <rect x="13" y="75" width="22" height="22" rx="1" fill="#1B4F91"/>
+          <rect x="51" y="5" width="8" height="8" fill="#1B4F91"/>
+          <rect x="51" y="15" width="8" height="8" fill="#1B4F91"/>
+          <rect x="51" y="25" width="8" height="8" fill="#1B4F91"/>
+          <rect x="51" y="35" width="8" height="8" fill="#E87722"/>
+          <rect x="51" y="51" width="8" height="8" fill="#1B4F91"/>
+          <rect x="67" y="51" width="8" height="8" fill="#1B4F91"/>
+          <rect x="83" y="51" width="8" height="8" fill="#1B4F91"/>
+          <rect x="99" y="51" width="8" height="8" fill="#1B4F91"/>
+          <rect x="51" y="67" width="8" height="8" fill="#1B4F91"/>
+          <rect x="51" y="83" width="8" height="8" fill="#E87722"/>
+          <rect x="67" y="67" width="8" height="8" fill="#1B4F91"/>
+          <rect x="83" y="75" width="8" height="8" fill="#1B4F91"/>
+          <rect x="99" y="67" width="8" height="8" fill="#1B4F91"/>
+          <rect x="67" y="83" width="8" height="8" fill="#1B4F91"/>
+          <rect x="83" y="91" width="8" height="8" fill="#1B4F91"/>
+          <rect x="99" y="83" width="8" height="8" fill="#1B4F91"/>
+          <rect x="67" y="99" width="8" height="8" fill="#1B4F91"/>
+          <rect x="83" y="99" width="8" height="8" fill="#E87722"/>
+          <rect x="99" y="99" width="8" height="8" fill="#1B4F91"/>
+        </svg>
+      </div>
+      <div class="hero-qr-url">lukaszoll9.github.io/<span>portfc-on-tour</span></div>
+      <div class="hero-badge">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="5"/><circle cx="17.5" cy="6.5" r="1.5" fill="#E87722" stroke="none"/></svg>
+        @portfc_tour
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- COUNTER STRIP -->
+<div class="counter-strip">
+  <div class="counter-item"><div class="counter-num">8</div><div class="counter-label">Countries</div></div>
+  <div class="counter-item"><div class="counter-num">50+</div><div class="counter-label">Stickers Dropped</div></div>
+  <div class="counter-item"><div class="counter-num">1967</div><div class="counter-label">Est. Klong Toei</div></div>
+  <div class="counter-item"><div class="counter-num">∞</div><div class="counter-label">Away Games</div></div>
+</div>
+
+<!-- THE CLUB -->
+<section class="section section-dark" id="club">
+  <div class="section-label">About the club</div>
+  <h2 class="section-title">Port FC Bangkok.<br>Born in the harbour.</h2>
+  <p class="section-body">Port FC is one of Thailand's oldest and most beloved football clubs — founded in 1967 in the Klong Toei harbour district, Bangkok's working-class heartland. The club is officially run by the Port Authority of Thailand and plays home games at the legendary PAT Stadium, where the crowd is right on the pitch with no running track in between.</p>
+
+  <div class="club-grid">
+    <div class="club-card">
+      <div class="club-card-icon">⚓</div>
+      <h4>Klong Toei Harbour</h4>
+      <p>Born in Bangkok's dock district — Thailand's biggest port and home to the club since day one.</p>
+    </div>
+    <div class="club-card">
+      <div class="club-card-icon">🔥</div>
+      <h4>Khlong Toei Army</h4>
+      <p>The official fan group — drums, flares, banners and non-stop support every match day.</p>
+    </div>
+    <div class="club-card">
+      <div class="club-card-icon">🏟️</div>
+      <h4>PAT Stadium</h4>
+      <p>No running track. Fans right on the pitch. One of the most intimidating grounds in Southeast Asia.</p>
+    </div>
+    <div class="club-card">
+      <div class="club-card-icon">🏆</div>
+      <h4>Thai League 1</h4>
+      <p>Competing at the top of Thai football since the league began. Orange and blue through every season.</p>
+    </div>
+  </div>
+
+  <div class="club-highlight">
+    <span style="font-size:32px;">🟠</span>
+    <div class="club-highlight-text">
+      <strong>กองทัพคลองเตย</strong> — Khlong Toei Army. The fans who built this culture. If you've scanned a sticker, you're one of us now.
+    </div>
   </div>
 </section>
 
 <!-- CONCEPT -->
-<section class="section section-dark" id="concept">
+<section class="section section-mid" id="concept">
   <div class="section-label">The movement</div>
   <h2 class="section-title">One Club.<br>Every Corner.</h2>
-  <p class="section-body">Port FC is Bangkok's harbour club — born in Klong Toei in 1967, loved across Thailand. Now the expat community is taking it global. Stickers appear in hostels, bars, airports, and street walls worldwide. Each one links back here.</p>
+  <p class="section-body">Port FC is Bangkok's harbour club — born in Klong Toei in 1967. Now the global expat community is taking it worldwide. Stickers appear in hostels, bars, airports, and street walls. Each one links back here.</p>
   <div class="steps">
-    <div class="step"><div class="step-num">01</div><div class="step-content"><h3>Spot a sticker</h3><p>QR stickers are dropped at expat spots, fan bars, and travel hubs worldwide.</p></div></div>
+    <div class="step"><div class="step-num">01</div><div class="step-content"><h3>Spot a sticker</h3><p>QR stickers dropped at expat spots, fan bars, and travel hubs worldwide by the community.</p></div></div>
     <div class="step"><div class="step-num">02</div><div class="step-content"><h3>Scan & land here</h3><p>One scan brings you to this page — the home base for the global Port FC community.</p></div></div>
     <div class="step"><div class="step-num">03</div><div class="step-content"><h3>Post your sighting</h3><p>Tag <strong>@portfc_tour</strong> on Instagram with your location. Every post gets reposted.</p></div></div>
     <div class="step"><div class="step-num">04</div><div class="step-content"><h3>Spread the colours</h3><p>Drop your own stickers wherever you travel. Orange and blue goes further every day.</p></div></div>
   </div>
 </section>
 
-<!-- WORLD MAP -->
-<section class="section section-mid" id="map">
+<!-- MAP -->
+<section class="section section-dark" id="map">
   <div class="section-label">Sightings map</div>
   <h2 class="section-title">Port FC<br>Spotted Here</h2>
   <p class="section-body">Bangkok is home. The rest of the world is the away game.</p>
-
   <div class="map-legend">
     <div class="map-legend-item"><div class="legend-dot home"></div> Bangkok HQ</div>
     <div class="map-legend-item"><div class="legend-dot sighting"></div> Sticker sighted</div>
   </div>
-
   <div id="sighting-map"></div>
-
   <div class="sightings">
     <div class="sighting"><div class="sighting-flag">🇹🇭</div><div class="sighting-info"><h4>Bangkok, Thailand</h4><p>Klong Toei · PAT Stadium · Home 🟠</p></div><div class="sighting-badge">HQ</div></div>
     <div class="sighting"><div class="sighting-flag">🇩🇪</div><div class="sighting-info"><h4>Berlin, Germany</h4><p>Tempelhofer Feld · @thai_in_berlin</p></div><div class="sighting-badge">New</div></div>
-    <div class="sighting"><div class="sighting-flag">🇯🇵</div><div class="sighting-info"><h4>Tokyo, Japan</h4><p>Shibuya bar toilet · @portfc_jp</p></div><div class="sighting-badge">+2</div></div>
+    <div class="sighting"><div class="sighting-flag">🇯🇵</div><div class="sighting-info"><h4>Tokyo, Japan</h4><p>Shibuya bar · @portfc_jp</p></div><div class="sighting-badge">+2</div></div>
     <div class="sighting"><div class="sighting-flag">🇬🇧</div><div class="sighting-info"><h4>London, UK</h4><p>Thai restaurant Soho · @london_thais</p></div><div class="sighting-badge">Hot</div></div>
     <div class="sighting"><div class="sighting-flag">🇦🇺</div><div class="sighting-info"><h4>Sydney, Australia</h4><p>Muay Thai gym · @muay_sydney</p></div><div class="sighting-badge">+5</div></div>
     <div class="sighting"><div class="sighting-flag">🇺🇸</div><div class="sighting-info"><h4>Los Angeles, USA</h4><p>Thai Town · Hollywood Blvd · @portfc_la</p></div><div class="sighting-badge">3 scans</div></div>
   </div>
 </section>
 
+<!-- MATCH RESULTS -->
+<section class="section section-mid" id="results">
+  <div class="section-label">On the pitch</div>
+  <h2 class="section-title">Latest<br>Results</h2>
+  <p class="section-body">Port FC in Thai League 1 — recent form.</p>
+
+  <div class="match-card">
+    <div class="match-date">Aug 2025</div>
+    <div class="match-teams"><h4>Port FC vs Buriram United</h4><p>Thai League 1 · PAT Stadium</p></div>
+    <div class="match-competition">Home</div>
+    <div class="match-score win">2–1</div>
+  </div>
+  <div class="match-card">
+    <div class="match-date">Aug 2025</div>
+    <div class="match-teams"><h4>Chiang Rai United vs Port FC</h4><p>Thai League 1 · Away</p></div>
+    <div class="match-competition">Away</div>
+    <div class="match-score draw">1–1</div>
+  </div>
+  <div class="match-card">
+    <div class="match-date">Jul 2025</div>
+    <div class="match-teams"><h4>Port FC vs BG Pathum United</h4><p>Thai League 1 · PAT Stadium</p></div>
+    <div class="match-competition">Home</div>
+    <div class="match-score win">3–0</div>
+  </div>
+
+  <p style="font-size:11px; color:var(--text-muted); margin-top:1rem;">Results are placeholder — check <a href="https://www.thaifoot.net" target="_blank" style="color:var(--orange);">thaifoot.net</a> for live scores.</p>
+</section>
+
 <!-- STICKER SHOP -->
 <section class="section section-dark" id="stickers">
   <div class="section-label">Get the stickers</div>
   <h2 class="section-title">Order &<br>Drop Them.</h2>
-  <p class="section-body">Three designs. Print them at home or order them here. Drop them wherever you go — every sticker adds a dot to the map.</p>
+  <p class="section-body">Three designs. Download free or order printed. Drop them wherever you go — every sticker adds a dot to the map.</p>
 
   <div class="sticker-grid">
     <div class="sticker-card">
-      <div class="sticker-preview round" style="background: linear-gradient(135deg, #E87722, #1B4F91);">
-        <span style="font-family:'Bebas Neue',sans-serif; font-size:13px; color:white; letter-spacing:1px; text-align:center; line-height:1.2;">PORT FC<br><span style="color:#E87722; font-size:10px;">ON TOUR</span></span>
+      <div class="sticker-preview">
+        <svg viewBox="0 0 90 90" width="90" height="90" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="45" cy="45" r="43" fill="#E87722" stroke="white" stroke-width="3"/>
+          <text x="45" y="38" font-family="Arial Black,sans-serif" font-size="14" font-weight="900" fill="white" text-anchor="middle">PORT FC</text>
+          <line x1="20" y1="43" x2="70" y2="43" stroke="rgba(255,255,255,0.4)" stroke-width="1.5"/>
+          <text x="45" y="57" font-family="Arial Black,sans-serif" font-size="10" font-weight="900" fill="rgba(255,255,255,0.85)" text-anchor="middle" letter-spacing="3">ON TOUR</text>
+          <text x="45" y="70" font-family="Arial,sans-serif" font-size="7" fill="rgba(255,255,255,0.6)" text-anchor="middle">@portfc_tour</text>
+        </svg>
       </div>
       <h4>Round Classic</h4>
       <p>8cm · Outdoor vinyl</p>
       <div class="sticker-price">€2.50</div>
-      <span class="sticker-coming">Coming soon</span>
+      <a href="https://github.com/lukaszoll9/portfc-on-tour/tree/main/sticker-designs" target="_blank" class="sticker-action">Download SVG →</a>
     </div>
     <div class="sticker-card">
-      <div class="sticker-preview" style="background: #1B4F91; border-radius:8px;">
-        <span style="font-family:'Bebas Neue',sans-serif; font-size:11px; color:white; letter-spacing:1px; text-align:center; line-height:1.3; padding:0 8px;">PORT FC<br><span style="color:#E87722;">ON TOUR</span></span>
+      <div class="sticker-preview">
+        <svg viewBox="0 0 120 60" width="120" height="60" xmlns="http://www.w3.org/2000/svg">
+          <rect width="120" height="60" rx="8" fill="#1B4F91"/>
+          <rect width="38" height="60" rx="8" fill="#E87722"/>
+          <rect x="30" width="8" height="60" fill="#E87722"/>
+          <text x="19" y="28" font-family="Arial Black,sans-serif" font-size="14" font-weight="900" fill="white" text-anchor="middle">PORT</text>
+          <text x="19" y="44" font-family="Arial Black,sans-serif" font-size="14" font-weight="900" fill="white" text-anchor="middle">FC</text>
+          <text x="78" y="26" font-family="Arial Black,sans-serif" font-size="11" font-weight="900" fill="white" text-anchor="middle">ON TOUR</text>
+          <text x="78" y="40" font-family="Arial,sans-serif" font-size="7" fill="rgba(255,255,255,0.5)" text-anchor="middle">SCAN · SHARE · FOLLOW</text>
+        </svg>
       </div>
       <h4>Street Tag</h4>
       <p>15×5cm · Weatherproof</p>
       <div class="sticker-price">€2.50</div>
-      <span class="sticker-coming">Coming soon</span>
+      <a href="https://github.com/lukaszoll9/portfc-on-tour/tree/main/sticker-designs" target="_blank" class="sticker-action">Download SVG →</a>
     </div>
     <div class="sticker-card" style="grid-column: span 2;">
-      <div class="sticker-preview" style="width:100%; height:70px; border-radius:8px; background:#0D0D0D; border:1px solid rgba(232,119,34,0.3); display:flex; align-items:center; justify-content:center;">
-        <span style="font-family:'Bebas Neue',sans-serif; font-size:18px; color:#E87722; letter-spacing:4px;">WAT ARUN EDITION</span>
+      <div class="sticker-preview" style="width:100%; height:60px; background:#0D0D0D; border-radius:8px; border:1px solid rgba(232,119,34,0.3); display:flex; align-items:center; justify-content:center;">
+        <span style="font-family:'Bebas Neue',Arial Black,sans-serif; font-size:20px; color:#E87722; letter-spacing:4px;">WAT ARUN EDITION</span>
       </div>
       <h4>Bangkok Night — Wat Arun</h4>
-      <p>10×10cm · Limited design</p>
+      <p>10×10cm · Limited design · Coming with final artwork</p>
       <div class="sticker-price">€3.50</div>
-      <span class="sticker-coming">Coming soon</span>
+      <a href="https://github.com/lukaszoll9/portfc-on-tour/tree/main/sticker-designs" target="_blank" class="sticker-action">View on GitHub →</a>
     </div>
   </div>
 
   <div class="shop-info">
-    <div class="shop-info-row"><div class="shop-info-icon">🚚</div><div class="shop-info-text"><strong>Print-on-demand</strong> — shipped worldwide via partner print shop. No minimum order.</div></div>
-    <div class="shop-info-row"><div class="shop-info-icon">🌍</div><div class="shop-info-text"><strong>Shipping:</strong> Europe 3–5 days · Worldwide 7–14 days · Free from €15 order</div></div>
-    <div class="shop-info-row"><div class="shop-info-icon">📦</div><div class="shop-info-text"><strong>Bulk orders</strong> for local fan groups — contact <a href="mailto:lukasfra437@gmail.com" style="color:var(--orange); text-decoration:none;">lukasfra437@gmail.com</a></div></div>
-    <div class="shop-info-row"><div class="shop-info-icon">📲</div><div class="shop-info-text">Or <strong>download & print yourself</strong> — all files free on <a href="https://github.com/lukaszoll9/portfc-on-tour" target="_blank" style="color:var(--orange); text-decoration:none;">GitHub</a></div></div>
+    <div class="shop-info-row"><div class="shop-info-icon">📥</div><div class="shop-info-text"><strong>Free download</strong> — all sticker files on <a href="https://github.com/lukaszoll9/portfc-on-tour" target="_blank">GitHub</a>. Print at any local shop.</div></div>
+    <div class="shop-info-row"><div class="shop-info-icon">🚚</div><div class="shop-info-text"><strong>Print-on-demand</strong> — shipped worldwide. No minimum order. Coming soon.</div></div>
+    <div class="shop-info-row"><div class="shop-info-icon">📦</div><div class="shop-info-text"><strong>Bulk orders</strong> for fan groups — contact <a href="mailto:lukasfra437@gmail.com">lukasfra437@gmail.com</a></div></div>
   </div>
 </section>
 
@@ -279,19 +484,19 @@
       <span class="hashtag">#ThaiFootball</span>
       <span class="hashtag">#ท่าเรือ</span>
       <span class="hashtag">#KhlongToeiArmy</span>
+      <span class="hashtag">#กองทัพคลองเตย</span>
     </div>
     <a href="https://instagram.com/portfc_tour" class="btn-primary" target="_blank">Follow on Instagram →</a>
   </div>
 </section>
 
 <!-- FOUNDED BY -->
-<section style="background:#0D0D0D; padding: 2.5rem 1.5rem; border-top: 1px solid rgba(255,255,255,0.06);">
-  <div style="max-width: 480px;">
+<section style="background:#0D0D0D; padding: 2.5rem 1.5rem; border-top: 1px solid var(--border);">
+  <div style="max-width:480px;">
     <div style="font-size:10px; letter-spacing:0.18em; text-transform:uppercase; color:rgba(255,255,255,0.3); margin-bottom:1rem;">Founded by</div>
     <a href="https://instagram.com/lukas.zolly" target="_blank" rel="noopener"
        style="display:inline-flex; align-items:center; gap:1rem; text-decoration:none; background:#1A1A1A; border:1px solid rgba(255,255,255,0.08); border-radius:14px; padding:1rem 1.25rem; transition:border-color 0.2s;"
        onmouseover="this.style.borderColor='#E87722'" onmouseout="this.style.borderColor='rgba(255,255,255,0.08)'">
-      <!-- Instagram icon -->
       <div style="width:44px; height:44px; background:linear-gradient(135deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888); border-radius:10px; display:flex; align-items:center; justify-content:center; flex-shrink:0;">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="5"/><circle cx="17.5" cy="6.5" r="1.5" fill="white" stroke="none"/></svg>
       </div>
@@ -313,7 +518,8 @@
     <div class="footer-col">
       <h5>Links</h5>
       <ul>
-        <li><a href="https://instagram.com/portfc_tour" target="_blank">Instagram @portfc_tour</a></li>
+        <li><a href="https://instagram.com/portfc_tour" target="_blank">@portfc_tour</a></li>
+        <li><a href="https://instagram.com/lukas.zolly" target="_blank">@lukas.zolly</a></li>
         <li><a href="https://github.com/lukaszoll9/portfc-on-tour" target="_blank">GitHub Repo</a></li>
         <li><a href="mailto:lukasfra437@gmail.com">Kontakt</a></li>
         <li><a href="#impressum">Impressum</a></li>
@@ -322,10 +528,7 @@
     </div>
   </div>
   <hr class="footer-divider"/>
-  <div class="footer-bottom">
-    <p>Built with 🟠 by the community · Port FC Bangkok · Khlong Toei · 1967</p>
-    <p>Founded by <a href="https://instagram.com/lukas.zolly" target="_blank" rel="noopener" style="color:var(--orange);">@lukas.zolly</a> · © 2025 Port FC on Tour Fan Project</p>
-  </div>
+  <p>Founded by <a href="https://instagram.com/lukas.zolly" target="_blank">@lukas.zolly</a> · Built with 🟠 by the community · Port FC Bangkok · Khlong Toei · 1967 · © 2025</p>
 </footer>
 
 <!-- IMPRESSUM -->
@@ -334,72 +537,59 @@
   <h3>Angaben gemäß § 5 TMG</h3>
   <p>Lukas Nico Schäfer<br>Kielberger Straße 15<br>50969 Köln-Zollstock<br>Deutschland</p>
   <h3>Kontakt</h3>
-  <p>E-Mail: <a href="mailto:lukasfra437@gmail.com" style="color:var(--orange);">lukasfra437@gmail.com</a></p>
+  <p>E-Mail: <a href="mailto:lukasfra437@gmail.com">lukasfra437@gmail.com</a></p>
   <h3>Hinweis</h3>
   <p>Dies ist ein privates Fan-Projekt und steht in keiner Verbindung zum offiziellen Port FC Bangkok Fußballclub oder der Port Authority of Thailand.</p>
-
   <hr class="legal-divider" id="datenschutz"/>
   <h2>Datenschutzerklärung</h2>
   <h3>1. Verantwortlicher</h3>
   <p>Lukas Nico Schäfer, Kielberger Straße 15, 50969 Köln, lukasfra437@gmail.com</p>
   <h3>2. Hosting</h3>
-  <p>Diese Website wird über GitHub Pages (GitHub Inc., 88 Colin P Kelly Jr St, San Francisco, CA 94107, USA) gehostet. Bei jedem Aufruf der Website werden automatisch Verbindungsdaten an GitHub übermittelt. Näheres entnehmen Sie der <a href="https://docs.github.com/en/site-policy/privacy-policies/github-privacy-statement" target="_blank" style="color:var(--orange);">Datenschutzerklärung von GitHub</a>.</p>
+  <p>Diese Website wird über GitHub Pages (GitHub Inc., 88 Colin P Kelly Jr St, San Francisco, CA 94107, USA) gehostet. Näheres: <a href="https://docs.github.com/en/site-policy/privacy-policies/github-privacy-statement" target="_blank">Datenschutzerklärung von GitHub</a>.</p>
   <h3>3. Keine Cookies / kein Tracking</h3>
-  <p>Diese Website setzt keine eigenen Cookies und verwendet kein Tracking oder Analytics. Die Leaflet-Karte lädt Kartenkacheln von OpenStreetMap-Servern (openstreetmap.org). Dabei werden IP-Adresse und Browserinformationen an OpenStreetMap übermittelt.</p>
+  <p>Diese Website setzt keine eigenen Cookies und verwendet kein Tracking. Die Leaflet-Karte lädt Kartenkacheln von OpenStreetMap (openstreetmap.org).</p>
   <h3>4. Kontaktaufnahme per E-Mail</h3>
-  <p>Wenn Sie uns per E-Mail kontaktieren, werden Ihre Angaben zur Bearbeitung der Anfrage gespeichert. Diese Daten geben wir nicht ohne Ihre Einwilligung weiter.</p>
+  <p>Ihre Daten werden zur Bearbeitung der Anfrage gespeichert und nicht ohne Einwilligung weitergegeben.</p>
   <h3>5. Ihre Rechte</h3>
-  <p>Sie haben das Recht auf Auskunft, Berichtigung, Löschung und Einschränkung der Verarbeitung Ihrer personenbezogenen Daten sowie ein Beschwerderecht bei der zuständigen Aufsichtsbehörde (Landesbeauftragte für Datenschutz und Informationsfreiheit NRW).</p>
+  <p>Auskunft, Berichtigung, Löschung, Einschränkung — Beschwerde bei der Landesbeauftragten für Datenschutz NRW.</p>
   <h3>6. Externe Links</h3>
-  <p>Diese Website enthält Links zu externen Websites (Instagram, GitHub). Für die Inhalte dieser externen Seiten sind ausschließlich deren Betreiber verantwortlich.</p>
+  <p>Links zu Instagram und GitHub: deren Betreiber sind für die Inhalte verantwortlich.</p>
 </section>
 
 <script>
-// ── LEAFLET MAP ──
-const map = L.map('sighting-map', {
-  center: [20, 20],
-  zoom: 2,
-  scrollWheelZoom: false,
-  zoomControl: true
+// Hamburger menu
+function toggleMenu() {
+  document.getElementById('mobileMenu').classList.toggle('open');
+}
+document.addEventListener('click', function(e) {
+  const menu = document.getElementById('mobileMenu');
+  const burger = document.querySelector('.nav-hamburger');
+  if (!menu.contains(e.target) && !burger.contains(e.target)) {
+    menu.classList.remove('open');
+  }
 });
 
+// Leaflet map
+const map = L.map('sighting-map', { center: [20, 20], zoom: 2, scrollWheelZoom: false });
 L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
   attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> © <a href="https://carto.com/">CARTO</a>',
-  subdomains: 'abcd',
-  maxZoom: 19
+  subdomains: 'abcd', maxZoom: 19
 }).addTo(map);
 
-// Custom orange icon for Bangkok HQ
-const homeIcon = L.divIcon({
-  className: '',
-  html: `<div style="width:18px;height:18px;background:#E87722;border-radius:50%;border:3px solid white;box-shadow:0 0 12px rgba(232,119,34,0.8);"></div>`,
-  iconSize: [18, 18], iconAnchor: [9, 9]
-});
+const homeIcon = L.divIcon({ className: '', html: `<div style="width:18px;height:18px;background:#E87722;border-radius:50%;border:3px solid white;box-shadow:0 0 14px rgba(232,119,34,0.9);"></div>`, iconSize: [18,18], iconAnchor: [9,9] });
+const sightingIcon = L.divIcon({ className: '', html: `<div style="width:13px;height:13px;background:#1B4F91;border-radius:50%;border:2px solid rgba(255,255,255,0.6);box-shadow:0 0 8px rgba(27,79,145,0.8);"></div>`, iconSize: [13,13], iconAnchor: [6,6] });
 
-// Blue icon for sightings
-const sightingIcon = L.divIcon({
-  className: '',
-  html: `<div style="width:13px;height:13px;background:#1B4F91;border-radius:50%;border:2px solid rgba(255,255,255,0.6);box-shadow:0 0 8px rgba(27,79,145,0.7);"></div>`,
-  iconSize: [13, 13], iconAnchor: [6, 6]
-});
-
-const sightings = [
+[
   { lat: 13.7563, lng: 100.5018, name: "Bangkok, Thailand 🟠", note: "Home — PAT Stadium, Klong Toei", icon: homeIcon },
   { lat: 52.5200, lng: 13.4050, name: "Berlin, Germany", note: "Tempelhofer Feld", icon: sightingIcon },
   { lat: 35.6762, lng: 139.6503, name: "Tokyo, Japan", note: "Shibuya", icon: sightingIcon },
-  { lat: 51.5074, lng: -0.1278, name: "London, UK", note: "Soho Thai Restaurant", icon: sightingIcon },
+  { lat: 51.5074, lng: -0.1278, name: "London, UK", note: "Soho", icon: sightingIcon },
   { lat: -33.8688, lng: 151.2093, name: "Sydney, Australia", note: "Muay Thai gym", icon: sightingIcon },
-  { lat: 34.0522, lng: -118.2437, name: "Los Angeles, USA", note: "Thai Town Hollywood", icon: sightingIcon },
+  { lat: 34.0522, lng: -118.2437, name: "Los Angeles, USA", note: "Thai Town", icon: sightingIcon },
   { lat: 48.8566, lng: 2.3522, name: "Paris, France", note: "Community drop", icon: sightingIcon },
   { lat: 1.3521, lng: 103.8198, name: "Singapore", note: "Expat community", icon: sightingIcon },
-];
-
-sightings.forEach(s => {
-  L.marker([s.lat, s.lng], { icon: s.icon })
-    .addTo(map)
-    .bindPopup(`<strong style="color:#E87722;">${s.name}</strong><br><span style="font-size:12px;">${s.note}</span>`);
-});
+].forEach(s => L.marker([s.lat, s.lng], { icon: s.icon }).addTo(map)
+  .bindPopup(`<strong style="color:#E87722;">${s.name}</strong><br><span style="font-size:12px;">${s.note}</span>`));
 </script>
-
 </body>
 </html>
