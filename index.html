@@ -473,6 +473,74 @@
   </div>
 </section>
 
+<!-- SIGHTING UPLOAD -->
+<section class="section section-dark" id="submit">
+  <div class="section-label">Share your sighting</div>
+  <h2 class="section-title">Spotted a<br>Sticker? 📍</h2>
+  <p class="section-body">Drop us your location — we'll add it to the map and repost you on Instagram.</p>
+
+  <form id="sighting-form" action="https://formspree.io/f/xwlewgne" method="POST"
+        style="display:flex; flex-direction:column; gap:12px; max-width:480px;">
+
+    <div style="display:flex; flex-direction:column; gap:6px;">
+      <label style="font-size:11px; letter-spacing:0.1em; text-transform:uppercase; color:rgba(255,255,255,0.5);">Your city & country *</label>
+      <input type="text" name="city" required placeholder="e.g. Berlin, Germany"
+             style="background:#1A1A1A; border:1px solid rgba(255,255,255,0.1); border-radius:10px; padding:12px 16px; color:white; font-size:14px; font-family:inherit; outline:none; transition:border-color 0.2s;"
+             onfocus="this.style.borderColor='#E87722'" onblur="this.style.borderColor='rgba(255,255,255,0.1)'"/>
+    </div>
+
+    <div style="display:flex; flex-direction:column; gap:6px;">
+      <label style="font-size:11px; letter-spacing:0.1em; text-transform:uppercase; color:rgba(255,255,255,0.5);">Your Instagram handle</label>
+      <input type="text" name="instagram" placeholder="@yourhandle"
+             style="background:#1A1A1A; border:1px solid rgba(255,255,255,0.1); border-radius:10px; padding:12px 16px; color:white; font-size:14px; font-family:inherit; outline:none; transition:border-color 0.2s;"
+             onfocus="this.style.borderColor='#E87722'" onblur="this.style.borderColor='rgba(255,255,255,0.1)'"/>
+    </div>
+
+    <div style="display:flex; flex-direction:column; gap:6px;">
+      <label style="font-size:11px; letter-spacing:0.1em; text-transform:uppercase; color:rgba(255,255,255,0.5);">Where did you spot it?</label>
+      <input type="text" name="location_detail" placeholder="e.g. Bar toilet, lamppost near the market..."
+             style="background:#1A1A1A; border:1px solid rgba(255,255,255,0.1); border-radius:10px; padding:12px 16px; color:white; font-size:14px; font-family:inherit; outline:none; transition:border-color 0.2s;"
+             onfocus="this.style.borderColor='#E87722'" onblur="this.style.borderColor='rgba(255,255,255,0.1)'"/>
+    </div>
+
+    <input type="hidden" name="_subject" value="🟠 New Port FC Sighting!"/>
+    <input type="hidden" name="_next" value="https://lukaszoll9.github.io/portfc-on-tour"/>
+
+    <button type="submit"
+            style="background:#E87722; color:white; border:none; border-radius:50px; padding:14px 24px; font-size:15px; font-weight:500; font-family:inherit; cursor:pointer; transition:background 0.2s; margin-top:4px;"
+            onmouseover="this.style.background='#C4641A'" onmouseout="this.style.background='#E87722'">
+      📍 Submit my sighting →
+    </button>
+
+    <p style="font-size:11px; color:rgba(255,255,255,0.3); line-height:1.5;">
+      We'll add your city to the map and repost you on <a href="https://instagram.com/portfc_tour" target="_blank" style="color:#E87722;">@portfc_tour</a> within 48h.
+    </p>
+  </form>
+
+  <script>
+    document.getElementById('sighting-form').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const form = this;
+      const btn = form.querySelector('button[type="submit"]');
+      btn.textContent = 'Sending...';
+      btn.disabled = true;
+      fetch(form.action, {
+        method: 'POST',
+        body: new FormData(form),
+        headers: { 'Accept': 'application/json' }
+      }).then(r => {
+        if (r.ok) {
+          form.innerHTML = '<div style="background:rgba(232,119,34,0.1);border:1px solid rgba(232,119,34,0.3);border-radius:14px;padding:2rem;text-align:center;"><div style="font-size:32px;margin-bottom:0.5rem;">🟠</div><h3 style="font-family:Bebas Neue,sans-serif;font-size:28px;color:white;margin-bottom:0.5rem;">Sighting received!</h3><p style="font-size:14px;color:rgba(255,255,255,0.6);">We\'ll add you to the map and repost you on @portfc_tour within 48h.</p></div>';
+        } else {
+          btn.textContent = '📍 Submit my sighting →';
+          btn.disabled = false;
+          alert('Something went wrong. Please try again.');
+        }
+      });
+    });
+  </script>
+</section>
+
 <!-- INSTAGRAM CTA -->
 <section class="section section-mid" id="join">
   <div class="ig-cta">
