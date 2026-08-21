@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Port FC Admin</title>
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:-apple-system,BlinkMacSystemFont,'Inter',sans-serif;background:#0D0D0D;color:#fff;min-height:100vh}
+    
+    /* LOGIN */
+    #login{display:flex;align-items:center;justify-content:center;min-height:100vh;padding:1rem}
+    .login-box{background:#111;border:1px solid rgba(255,255,255,0.08);border-radius:16px;padding:2rem;width:100%;max-width:340px;text-align:center}
+    .login-logo{font-family:Georgia,serif;font-size:22px;font-weight:700;margin-bottom:.25rem}
+    .login-logo span{color:#E87722}
+    .login-sub{font-size:12px;color:rgba(255,255,255,0.4);margin-bottom:1.5rem}
+    .inp{background:#1a1a1a;border:1px solid rgba(255,255,255,0.1);border-radius:10px;padding:12px 14px;color:#fff;font-size:14px;width:100%;outline:none;margin-bottom:10px;font-family:inherit}
+    .inp:focus{border-color:#E87722}
+    .btn-o{background:#E87722;color:#fff;border:none;border-radius:10px;padding:12px;font-size:14px;font-weight:600;width:100%;cursor:pointer;font-family:inherit}
+    .err{font-size:12px;color:#ff6b6b;margin-top:.5rem;display:none}
+
+    /* ADMIN */
+    #admin{display:none}
+    .header{background:#111;border-bottom:1px solid rgba(255,255,255,0.08);padding:1rem 1.5rem;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:10}
+    .header-logo{font-size:16px;font-weight:700}
+    .header-logo span{color:#E87722}
+    .header-right{display:flex;align-items:center;gap:1rem}
+    .badge{background:rgba(232,119,34,0.15);color:#E87722;border:1px solid rgba(232,119,34,0.3);border-radius:20px;padding:4px 12px;font-size:12px;font-weight:600}
+    .logout-btn{background:transparent;border:1px solid rgba(255,255,255,0.15);color:rgba(255,255,255,0.5);border-radius:8px;padding:6px 12px;font-size:12px;cursor:pointer;font-family:inherit}
+
+    .main{padding:1.5rem;max-width:900px;margin:0 auto}
+    .page-title{font-size:22px;font-weight:700;margin-bottom:.25rem}
+    .page-sub{font-size:13px;color:rgba(255,255,255,0.4);margin-bottom:1.5rem}
+
+    /* STATS */
+    .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:1.5rem}
+    .stat{background:#111;border:1px solid rgba(255,255,255,0.07);border-radius:12px;padding:1rem}
+    .stat-n{font-size:28px;font-weight:700;color:#E87722}
+    .stat-l{font-size:11px;color:rgba(255,255,255,0.4);margin-top:2px;text-transform:uppercase;letter-spacing:.05em}
+
+    /* TABS */
+    .tabs{display:flex;gap:4px;margin-bottom:1.25rem;background:#111;border-radius:10px;padding:4px}
+    .tab{flex:1;padding:8px;text-align:center;font-size:13px;font-weight:500;border-radius:7px;cursor:pointer;color:rgba(255,255,255,0.4);border:none;background:transparent;font-family:inherit;transition:all .2s}
+    .tab.active{background:#1a1a1a;color:#fff}
+
+    /* SIGHTING CARDS */
+    .sightings-grid{display:flex;flex-direction:column;gap:10px}
+    .card{background:#111;border:1px solid rgba(255,255,255,0.07);border-radius:12px;overflow:hidden}
+    .card-inner{display:grid;grid-template-columns:120px 1fr;gap:0}
+    .card-img{width:120px;height:120px;object-fit:cover;display:block}
+    .card-img-placeholder{width:120px;height:120px;background:#1a1a1a;display:flex;align-items:center;justify-content:center;font-size:32px;flex-shrink:0}
+    .card-body{padding:.9rem 1rem}
+    .card-city{font-size:15px;font-weight:600;margin-bottom:3px}
+    .card-loc{font-size:12px;color:rgba(255,255,255,0.45);margin-bottom:6px}
+    .card-ig{font-size:12px;color:#E87722;margin-bottom:8px}
+    .card-time{font-size:11px;color:rgba(255,255,255,0.25)}
+    .card-actions{display:flex;gap:6px;margin-top:.6rem}
+    .btn-approve{background:rgba(34,197,94,0.12);color:#4ade80;border:1px solid rgba(34,197,94,0.25);border-radius:8px;padding:6px 14px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;transition:background .2s}
+    .btn-approve:hover{background:rgba(34,197,94,0.2)}
+    .btn-approve.done{background:rgba(34,197,94,0.08);color:rgba(255,255,255,0.3);border-color:rgba(255,255,255,0.08);cursor:default}
+    .btn-reject{background:rgba(239,68,68,0.1);color:#f87171;border:1px solid rgba(239,68,68,0.2);border-radius:8px;padding:6px 14px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit}
+    .btn-reject:hover{background:rgba(239,68,68,0.18)}
+    .btn-photo{background:rgba(255,255,255,0.06);color:rgba(255,255,255,0.6);border:1px solid rgba(255,255,255,0.1);border-radius:8px;padding:6px 14px;font-size:12px;cursor:pointer;font-family:inherit;text-decoration:none;display:inline-flex;align-items:center;gap:4px}
+    .status-badge{display:inline-flex;align-items:center;gap:4px;font-size:10px;padding:3px 8px;border-radius:10px;margin-left:6px}
+    .status-pending{background:rgba(251,191,36,0.12);color:#fbbf24}
+    .status-approved{background:rgba(34,197,94,0.12);color:#4ade80}
+    .status-rejected{background:rgba(239,68,68,0.1);color:#f87171}
+
+    /* MAP SECTION */
+    #admin-map{height:400px;border-radius:12px;border:1px solid rgba(255,255,255,0.07);margin-bottom:1.5rem}
+
+    /* EMPTY STATE */
+    .empty{text-align:center;padding:3rem;color:rgba(255,255,255,0.3)}
+    .empty-icon{font-size:48px;margin-bottom:.75rem}
+
+    /* LOADING */
+    .loading{text-align:center;padding:2rem;color:rgba(255,255,255,0.4);font-size:13px}
+
+    @media(max-width:480px){.stats{grid-template-columns:1fr 1fr}.card-inner{grid-template-columns:90px 1fr}.card-img,.card-img-placeholder{width:90px;height:90px}}
+  </style>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"/>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="login">
+  <div class="login-box">
+    <div class="login-logo">Port FC <span>Admin</span></div>
+    <div class="login-sub">Sighting Management</div>
+    <input type="password" class="inp" id="pwInput" placeholder="Passwort" onkeydown="if(event.key==='Enter')doLogin()"/>
+    <button class="btn-o" onclick="doLogin()">Einloggen →</button>
+    <div class="err" id="loginErr">Falsches Passwort</div>
+  </div>
+</div>
+
+<!-- ADMIN PANEL -->
+<div id="admin">
+  <div class="header">
+    <div class="header-logo">Port FC <span>Admin</span></div>
+    <div class="header-right">
+      <span class="badge" id="pendingBadge">0 ausstehend</span>
+      <button class="logout-btn" onclick="logout()">Logout</button>
+    </div>
+  </div>
+
+  <div class="main">
+    <div class="page-title">Sighting Dashboard</div>
+    <div class="page-sub">Hier verwaltest du alle eingegangenen Spots.</div>
+
+    <div class="stats">
+      <div class="stat"><div class="stat-n" id="statTotal">0</div><div class="stat-l">Gesamt</div></div>
+      <div class="stat"><div class="stat-n" id="statPending" style="color:#fbbf24">0</div><div class="stat-l">Ausstehend</div></div>
+      <div class="stat"><div class="stat-n" id="statApproved" style="color:#4ade80">0</div><div class="stat-l">Bestätigt</div></div>
+    </div>
+
+    <!-- MAP -->
+    <div id="admin-map"></div>
+
+    <!-- TABS -->
+    <div class="tabs">
+      <button class="tab active" onclick="showTab('pending')">⏳ Ausstehend</button>
+      <button class="tab" onclick="showTab('approved')">✅ Bestätigt</button>
+      <button class="tab" onclick="showTab('all')">📋 Alle</button>
+    </div>
+
+    <div class="sightings-grid" id="sightingsList">
+      <div class="loading">Lade Sightings...</div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── CONFIG ──
+const ADMIN_PW = 'portfc2025'; // Passwort ändern!
+const STORAGE_KEY = 'portfc_sightings_v1';
+
+// ── LOGIN ──
+function doLogin() {
+  const pw = document.getElementById('pwInput').value;
+  if (pw === ADMIN_PW) {
+    sessionStorage.setItem('portfc_admin', '1');
+    document.getElementById('login').style.display = 'none';
+    document.getElementById('admin').style.display = 'block';
+    initAdmin();
+  } else {
+    document.getElementById('loginErr').style.display = 'block';
+  }
+}
+
+function logout() {
+  sessionStorage.removeItem('portfc_admin');
+  location.reload();
+}
+
+// Check if already logged in
+if (sessionStorage.getItem('portfc_admin')) {
+  document.getElementById('login').style.display = 'none';
+  document.getElementById('admin').style.display = 'block';
+}
+
+// ── DATA ──
+// Sightings werden lokal im Browser gespeichert
+// Du kannst sie auch manuell über die Formspree-E-Mails eintragen
+let sightings = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+let currentTab = 'pending';
+let adminMap = null;
+let approvedMarkers = [];
+
+// Demo-Daten falls noch keine vorhanden
+if (sightings.length === 0) {
+  sightings = [
+    {
+      id: 'demo1',
+      city: 'Berlin, Deutschland',
+      location: 'Tempelhofer Feld, Eingang Ost',
+      instagram: '@thai_in_berlin',
+      photo: '',
+      status: 'pending',
+      time: new Date().toISOString(),
+      lat: 52.4817,
+      lng: 13.4127
+    },
+    {
+      id: 'demo2',
+      city: 'Tokyo, Japan',
+      location: 'Shibuya, HMV Bar Toilette',
+      instagram: '@portfc_jp',
+      photo: '',
+      status: 'approved',
+      time: new Date(Date.now() - 86400000).toISOString(),
+      lat: 35.6595,
+      lng: 139.7004
+    }
+  ];
+  save();
+}
+
+function save() {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(sightings));
+}
+
+// ── INIT ──
+function initAdmin() {
+  updateStats();
+  initMap();
+  renderList();
+
+  // Check if called from approve link
+  const urlParams = new URLSearchParams(window.location.search);
+  const approveId = urlParams.get('approve');
+  if (approveId) {
+    approve(approveId);
+    history.replaceState({}, '', '/admin.html');
+  }
+}
+
+function updateStats() {
+  const pending = sightings.filter(s => s.status === 'pending').length;
+  const approved = sightings.filter(s => s.status === 'approved').length;
+  document.getElementById('statTotal').textContent = sightings.length;
+  document.getElementById('statPending').textContent = pending;
+  document.getElementById('statApproved').textContent = approved;
+  document.getElementById('pendingBadge').textContent = pending + ' ausstehend';
+}
+
+// ── MAP ──
+function initMap() {
+  adminMap = L.map('admin-map', { center: [20, 20], zoom: 2, scrollWheelZoom: false });
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+    attribution: '© OSM © CARTO', subdomains: 'abcd', maxZoom: 19
+  }).addTo(adminMap);
+
+  // Bangkok HQ
+  const hi = L.divIcon({ className: '', html: '<div style="width:14px;height:14px;background:#E87722;border-radius:50%;border:2px solid white;box-shadow:0 0 10px rgba(232,119,34,0.8)"></div>', iconSize:[14,14], iconAnchor:[7,7] });
+  L.marker([13.7563, 100.5018], {icon: hi}).addTo(adminMap).bindPopup('<strong style="color:#E87722">Bangkok HQ</strong>');
+
+  renderMapMarkers();
+}
+
+function renderMapMarkers() {
+  if (!adminMap) return;
+  approvedMarkers.forEach(m => adminMap.removeLayer(m));
+  approvedMarkers = [];
+  const si = L.divIcon({ className: '', html: '<div style="width:12px;height:12px;background:#4ade80;border-radius:50%;border:2px solid rgba(255,255,255,0.6)"></div>', iconSize:[12,12], iconAnchor:[6,6] });
+  sightings.filter(s => s.status === 'approved' && s.lat).forEach(s => {
+    const m = L.marker([s.lat, s.lng], {icon: si}).addTo(adminMap)
+      .bindPopup('<strong style="color:#4ade80">'+s.city+'</strong><br><span style="font-size:11px">'+s.location+'</span>');
+    approvedMarkers.push(m);
+  });
+}
+
+// ── LIST ──
+function showTab(tab) {
+  currentTab = tab;
+  document.querySelectorAll('.tab').forEach((t,i) => {
+    t.classList.toggle('active', ['pending','approved','all'][i] === tab);
+  });
+  renderList();
+}
+
+function renderList() {
+  const list = document.getElementById('sightingsList');
+  let filtered = sightings;
+  if (currentTab === 'pending') filtered = sightings.filter(s => s.status === 'pending');
+  if (currentTab === 'approved') filtered = sightings.filter(s => s.status === 'approved');
+  
+  filtered = [...filtered].sort((a,b) => new Date(b.time) - new Date(a.time));
+
+  if (filtered.length === 0) {
+    list.innerHTML = '<div class="empty"><div class="empty-icon">📭</div><div>Keine Sightings hier</div></div>';
+    return;
+  }
+
+  list.innerHTML = filtered.map(s => `
+    <div class="card" id="card-${s.id}">
+      <div class="card-inner">
+        ${s.photo
+          ? `<img class="card-img" src="${s.photo}" alt="Sighting" onerror="this.parentElement.innerHTML='<div class=\\"card-img-placeholder\\">📸</div>'">`
+          : `<div class="card-img-placeholder">📸</div>`
+        }
+        <div class="card-body">
+          <div class="card-city">
+            📍 ${s.city}
+            <span class="status-badge status-${s.status}">${s.status === 'pending' ? '⏳ Ausstehend' : s.status === 'approved' ? '✅ Bestätigt' : '❌ Abgelehnt'}</span>
+          </div>
+          ${s.location ? `<div class="card-loc">${s.location}</div>` : ''}
+          ${s.instagram ? `<div class="card-ig">${s.instagram}</div>` : ''}
+          <div class="card-time">${new Date(s.time).toLocaleDateString('de-DE', {day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'})}</div>
+          <div class="card-actions">
+            ${s.status !== 'approved'
+              ? `<button class="btn-approve" onclick="approve('${s.id}')">✅ Auf Karte</button>`
+              : `<button class="btn-approve done" disabled>✅ Bestätigt</button>`
+            }
+            ${s.status !== 'rejected'
+              ? `<button class="btn-reject" onclick="reject('${s.id}')">❌ Ablehnen</button>`
+              : ''
+            }
+            ${s.photo ? `<a class="btn-photo" href="${s.photo}" target="_blank">📸 Foto</a>` : ''}
+          </div>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function approve(id) {
+  const s = sightings.find(x => x.id === id);
+  if (!s) return;
+  s.status = 'approved';
+  save();
+  updateStats();
+  renderList();
+  renderMapMarkers();
+}
+
+function reject(id) {
+  const s = sightings.find(x => x.id === id);
+  if (!s) return;
+  s.status = 'rejected';
+  save();
+  updateStats();
+  renderList();
+}
+
+// ── ADD SIGHTING MANUALLY ──
+// Du kannst Sightings aus Formspree-E-Mails manuell hinzufügen
+function addFromEmail(city, location, instagram, photoUrl, lat, lng) {
+  const s = {
+    id: Date.now().toString(),
+    city, location, instagram,
+    photo: photoUrl || '',
+    status: 'pending',
+    time: new Date().toISOString(),
+    lat: lat || null,
+    lng: lng || null
+  };
+  sightings.unshift(s);
+  save();
+  updateStats();
+  renderList();
+}
+
+// Auto-init if logged in
+if (sessionStorage.getItem('portfc_admin')) {
+  initAdmin();
+}
+</script>
+</body>
+</html>
