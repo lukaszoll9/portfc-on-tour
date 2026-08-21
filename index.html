@@ -9,76 +9,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"/>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js">
-
-// Upload flow
-let photoFile = null;
-
-function previewPhoto(input) {
-  if(input.files && input.files[0]) {
-    photoFile = input.files[0];
-    const reader = new FileReader();
-    reader.onload = e => {
-      document.getElementById('photo-preview').src = e.target.result;
-      document.getElementById('preview-thumb').src = e.target.result;
-      document.getElementById('photo-preview-wrap').style.display = 'block';
-      document.getElementById('photo-placeholder').style.display = 'none';
-      document.getElementById('btn-step1').disabled = false;
-    };
-    reader.readAsDataURL(photoFile);
-  }
-}
-
-function goStep(n) {
-  const city = document.getElementById('u-city')?.value;
-  if(n === 3 && !city) { document.getElementById('u-city').focus(); return; }
-  document.querySelectorAll('.upload-step').forEach(s => s.style.display = 'none');
-  const step = document.getElementById('step' + n);
-  if(step) step.style.display = 'block';
-  if(n === 3) {
-    document.getElementById('summary-city').textContent = '📍 ' + (document.getElementById('u-city').value || '');
-    document.getElementById('summary-location').textContent = document.getElementById('u-location').value || '';
-    document.getElementById('summary-ig').textContent = document.getElementById('u-instagram').value || '';
-  }
-}
-
-async function submitSighting() {
-  const btn = document.getElementById('submit-btn');
-  btn.textContent = 'Wird hochgeladen...'; btn.disabled = true;
-
-  try {
-    // 1. Upload photo to Cloudinary
-    let photoUrl = '';
-    if(photoFile) {
-      const fd = new FormData();
-      fd.append('file', photoFile);
-      fd.append('upload_preset', 'portfc_sightings');
-      fd.append('folder', 'portfc_sightings');
-      const res = await fetch('https://api.cloudinary.com/v1_1/nwrw8zei/image/upload', {method:'POST',body:fd});
-      const data = await res.json();
-      photoUrl = data.secure_url || '';
-    }
-
-    // 2. Send to Formspree with photo URL
-    const formData = new FormData();
-    formData.append('city', document.getElementById('u-city').value);
-    formData.append('instagram', document.getElementById('u-instagram').value);
-    formData.append('location_detail', document.getElementById('u-location').value);
-    formData.append('photo_url', photoUrl);
-    formData.append('_subject', '🟠 New Port FC Sighting mit Foto!');
-
-    await fetch('https://formspree.io/f/xwlewgne', {method:'POST',body:formData,headers:{'Accept':'application/json'}});
-
-    // 3. Show success
-    document.querySelectorAll('.upload-step').forEach(s => s.style.display = 'none');
-    document.getElementById('step-success').style.display = 'block';
-
-  } catch(err) {
-    btn.textContent = '🟠 Jetzt auf die Karte!'; btn.disabled = false;
-    alert('Fehler beim Upload. Bitte nochmal versuchen.');
-  }
-}
-</script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
   <style>
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
     :root{--o:#E87722;--od:#C4641A;--b:#1B4F91;--bk:#0D0D0D;--w:#fff;--m:rgba(255,255,255,0.5);--br:rgba(255,255,255,0.07);--r:14px}
@@ -506,6 +437,74 @@ async function submitSighting() {
 </section>
 
 <script>
+// Upload flow
+let photoFile = null;
+
+function previewPhoto(input) {
+  if(input.files && input.files[0]) {
+    photoFile = input.files[0];
+    const reader = new FileReader();
+    reader.onload = e => {
+      document.getElementById('photo-preview').src = e.target.result;
+      document.getElementById('preview-thumb').src = e.target.result;
+      document.getElementById('photo-preview-wrap').style.display = 'block';
+      document.getElementById('photo-placeholder').style.display = 'none';
+      document.getElementById('btn-step1').disabled = false;
+    };
+    reader.readAsDataURL(photoFile);
+  }
+}
+
+function goStep(n) {
+  const city = document.getElementById('u-city')?.value;
+  if(n === 3 && !city) { document.getElementById('u-city').focus(); return; }
+  document.querySelectorAll('.upload-step').forEach(s => s.style.display = 'none');
+  const step = document.getElementById('step' + n);
+  if(step) step.style.display = 'block';
+  if(n === 3) {
+    document.getElementById('summary-city').textContent = '📍 ' + (document.getElementById('u-city').value || '');
+    document.getElementById('summary-location').textContent = document.getElementById('u-location').value || '';
+    document.getElementById('summary-ig').textContent = document.getElementById('u-instagram').value || '';
+  }
+}
+
+async function submitSighting() {
+  const btn = document.getElementById('submit-btn');
+  btn.textContent = 'Wird hochgeladen...'; btn.disabled = true;
+
+  try {
+    // 1. Upload photo to Cloudinary
+    let photoUrl = '';
+    if(photoFile) {
+      const fd = new FormData();
+      fd.append('file', photoFile);
+      fd.append('upload_preset', 'portfc_sightings');
+      fd.append('folder', 'portfc_sightings');
+      const res = await fetch('https://api.cloudinary.com/v1_1/nwrw8zei/image/upload', {method:'POST',body:fd});
+      const data = await res.json();
+      photoUrl = data.secure_url || '';
+    }
+
+    // 2. Send to Formspree with photo URL
+    const formData = new FormData();
+    formData.append('city', document.getElementById('u-city').value);
+    formData.append('instagram', document.getElementById('u-instagram').value);
+    formData.append('location_detail', document.getElementById('u-location').value);
+    formData.append('photo_url', photoUrl);
+    formData.append('_subject', '🟠 New Port FC Sighting mit Foto!');
+
+    await fetch('https://formspree.io/f/xwlewgne', {method:'POST',body:formData,headers:{'Accept':'application/json'}});
+
+    // 3. Show success
+    document.querySelectorAll('.upload-step').forEach(s => s.style.display = 'none');
+    document.getElementById('step-success').style.display = 'block';
+
+  } catch(err) {
+    btn.textContent = '🟠 Jetzt auf die Karte!'; btn.disabled = false;
+    alert('Fehler beim Upload. Bitte nochmal versuchen.');
+  }
+}
+
 // Hamburger
 function toggleMenu(){document.getElementById('mobNav').classList.toggle('open')}
 document.addEventListener('click',function(e){
