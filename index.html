@@ -9,7 +9,76 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"/>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js">
+
+// Upload flow
+let photoFile = null;
+
+function previewPhoto(input) {
+  if(input.files && input.files[0]) {
+    photoFile = input.files[0];
+    const reader = new FileReader();
+    reader.onload = e => {
+      document.getElementById('photo-preview').src = e.target.result;
+      document.getElementById('preview-thumb').src = e.target.result;
+      document.getElementById('photo-preview-wrap').style.display = 'block';
+      document.getElementById('photo-placeholder').style.display = 'none';
+      document.getElementById('btn-step1').disabled = false;
+    };
+    reader.readAsDataURL(photoFile);
+  }
+}
+
+function goStep(n) {
+  const city = document.getElementById('u-city')?.value;
+  if(n === 3 && !city) { document.getElementById('u-city').focus(); return; }
+  document.querySelectorAll('.upload-step').forEach(s => s.style.display = 'none');
+  const step = document.getElementById('step' + n);
+  if(step) step.style.display = 'block';
+  if(n === 3) {
+    document.getElementById('summary-city').textContent = '📍 ' + (document.getElementById('u-city').value || '');
+    document.getElementById('summary-location').textContent = document.getElementById('u-location').value || '';
+    document.getElementById('summary-ig').textContent = document.getElementById('u-instagram').value || '';
+  }
+}
+
+async function submitSighting() {
+  const btn = document.getElementById('submit-btn');
+  btn.textContent = 'Wird hochgeladen...'; btn.disabled = true;
+
+  try {
+    // 1. Upload photo to Cloudinary
+    let photoUrl = '';
+    if(photoFile) {
+      const fd = new FormData();
+      fd.append('file', photoFile);
+      fd.append('upload_preset', 'portfc_sightings');
+      fd.append('folder', 'portfc_sightings');
+      const res = await fetch('https://api.cloudinary.com/v1_1/nwrw8zei/image/upload', {method:'POST',body:fd});
+      const data = await res.json();
+      photoUrl = data.secure_url || '';
+    }
+
+    // 2. Send to Formspree with photo URL
+    const formData = new FormData();
+    formData.append('city', document.getElementById('u-city').value);
+    formData.append('instagram', document.getElementById('u-instagram').value);
+    formData.append('location_detail', document.getElementById('u-location').value);
+    formData.append('photo_url', photoUrl);
+    formData.append('_subject', '🟠 New Port FC Sighting mit Foto!');
+
+    await fetch('https://formspree.io/f/xwlewgne', {method:'POST',body:formData,headers:{'Accept':'application/json'}});
+
+    // 3. Show success
+    document.querySelectorAll('.upload-step').forEach(s => s.style.display = 'none');
+    document.getElementById('step-success').style.display = 'block';
+
+  } catch(err) {
+    btn.textContent = '🟠 Jetzt auf die Karte!'; btn.disabled = false;
+    alert('Fehler beim Upload. Bitte nochmal versuchen.');
+  }
+}
+</script>
   <style>
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
     :root{--o:#E87722;--od:#C4641A;--b:#1B4F91;--bk:#0D0D0D;--w:#fff;--m:rgba(255,255,255,0.5);--br:rgba(255,255,255,0.07);--r:14px}
@@ -150,6 +219,13 @@
     .legal a{color:var(--o);text-decoration:none}
     hr.ld{border:none;border-top:1px solid var(--br);margin:2rem 0}
 
+    /* Upload steps */
+    .upload-step{}
+    .step-label{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--o);margin-bottom:1rem}
+    .photo-drop{background:#1c1c1c;border:2px dashed rgba(255,255,255,0.15);border-radius:12px;padding:2rem;text-align:center;cursor:pointer;transition:border-color .2s;margin-bottom:1rem;min-height:160px;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
+    .photo-drop:hover{border-color:var(--o)}
+    .photo-drop img{width:100%;max-height:200px;object-fit:cover;border-radius:8px}
+    .preview-summary{display:flex;align-items:center;gap:1rem;background:#1c1c1c;border-radius:10px;padding:1rem}
     @media(min-width:640px){.sec{padding:5.5rem 2.5rem}nav{padding:.9rem 2.5rem}}
     @media(min-width:1024px){.hero{padding:7rem 5rem 4rem}.sec{padding:6rem 5rem}}
   </style>
@@ -222,21 +298,68 @@
       <div class="upload-icon">📍</div>
       <div>
         <h2>Sticker gesehen?</h2>
-        <p>Sag uns wo — wir setzen dich auf die Karte & reposten dich auf Instagram.</p>
+        <p>Foto hochladen · Ort angeben · auf die Karte kommen. Fertig in 20 Sekunden.</p>
       </div>
     </div>
-    <form id="sighting-form" action="https://formspree.io/f/xwlewgne" method="POST" class="uform">
-      <div class="urow">
-        <input type="text" name="city" required placeholder="Stadt & Land *" class="uinput" />
-        <input type="text" name="instagram" placeholder="@dein_instagram (optional)" class="uinput" />
+
+    <div id="upload-form-wrap">
+      <!-- STEP 1: Foto -->
+      <div id="step1" class="upload-step active">
+        <div class="step-label">Schritt 1 von 3 — Foto vom Sticker</div>
+        <div id="photo-drop" class="photo-drop" onclick="document.getElementById('photo-input').click()">
+          <div id="photo-preview-wrap" style="display:none">
+            <img id="photo-preview" src="" alt="Preview" />
+          </div>
+          <div id="photo-placeholder">
+            <div style="font-size:40px;margin-bottom:.5rem">📸</div>
+            <div style="font-size:14px;font-weight:600;color:white;margin-bottom:4px">Foto auswählen</div>
+            <div style="font-size:12px;color:rgba(255,255,255,0.4)">oder hier reinziehen</div>
+          </div>
+        </div>
+        <input type="file" id="photo-input" accept="image/*" capture="environment" style="display:none" onchange="previewPhoto(this)" />
+        <button class="ubtn" onclick="goStep(2)" id="btn-step1" disabled>Weiter →</button>
       </div>
-      <input type="text" name="location_detail" placeholder="Wo genau? z.B. Bar, Laterne, Wand..." class="uinput" />
-      <input type="hidden" name="_subject" value="🟠 New Port FC Sighting!" />
-      <button type="submit" class="ubtn">📍 Spot melden → wir reposten dich!</button>
-      <p class="unote">Kein Account nötig. Deine Daten werden nur für den Community-Repost verwendet.</p>
-    </form>
-    <div class="upload-how">
-      <p>💡 <strong>Noch besser:</strong> Mach ein Foto vom Sticker und poste es auf Instagram mit <strong>@portfc_tour + #PortFConTour</strong> — wir reposten innerhalb von 48h!</p>
+
+      <!-- STEP 2: Ort -->
+      <div id="step2" class="upload-step" style="display:none">
+        <div class="step-label">Schritt 2 von 3 — Wo hast du ihn gesehen?</div>
+        <div class="uform">
+          <div class="urow">
+            <input type="text" id="u-city" required placeholder="Stadt & Land *" class="uinput" />
+            <input type="text" id="u-instagram" placeholder="@dein_instagram (optional)" class="uinput" />
+          </div>
+          <input type="text" id="u-location" placeholder="Wo genau? Bar, Laterne, Hostel..." class="uinput" />
+          <div style="display:flex;gap:8px">
+            <button class="ubtn" style="background:rgba(255,255,255,0.1);flex:0 0 auto" onclick="goStep(1)">← Zurück</button>
+            <button class="ubtn" style="flex:1" onclick="goStep(3)">Weiter →</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- STEP 3: Absenden -->
+      <div id="step3" class="upload-step" style="display:none">
+        <div class="step-label">Schritt 3 von 3 — Alles prüfen & abschicken</div>
+        <div class="preview-summary">
+          <img id="preview-thumb" src="" style="width:80px;height:80px;object-fit:cover;border-radius:10px;flex-shrink:0" />
+          <div>
+            <div id="summary-city" style="font-size:14px;font-weight:600;color:white"></div>
+            <div id="summary-location" style="font-size:12px;color:rgba(255,255,255,0.5);margin-top:2px"></div>
+            <div id="summary-ig" style="font-size:12px;color:#E87722;margin-top:2px"></div>
+          </div>
+        </div>
+        <div style="display:flex;gap:8px;margin-top:1rem">
+          <button class="ubtn" style="background:rgba(255,255,255,0.1);flex:0 0 auto" onclick="goStep(2)">← Zurück</button>
+          <button class="ubtn" style="flex:1" id="submit-btn" onclick="submitSighting()">🟠 Jetzt auf die Karte!</button>
+        </div>
+        <p class="unote" style="margin-top:.75rem">Wir reposten deinen Spot auf @portfc_tour innerhalb von 48h.</p>
+      </div>
+
+      <!-- SUCCESS -->
+      <div id="step-success" style="display:none;background:rgba(232,119,34,0.1);border:1px solid rgba(232,119,34,0.3);border-radius:12px;padding:1.5rem;text-align:center">
+        <div style="font-size:32px;margin-bottom:.5rem">🟠</div>
+        <h3 style="font-family:'Bebas Neue',sans-serif;font-size:24px;color:white;margin-bottom:.3rem">Spot received!</h3>
+        <p style="font-size:13px;color:rgba(255,255,255,0.6)">Dein Spot kommt auf die Karte. Wir reposten dich auf @portfc_tour!</p>
+      </div>
     </div>
   </div>
 </section>
