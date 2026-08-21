@@ -262,13 +262,19 @@
 
     <!-- STEP 2: Ort -->
     <div class="step-block" id="s2">
-      <!-- GPS Status -->
-      <div id="gpsStatus" style="display:none;background:#1a1a1a;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:.75rem 1rem;margin-bottom:10px;font-size:13px;display:flex;align-items:center;gap:8px">
-        <span id="gpsIcon">📍</span>
-        <span id="gpsText" style="color:rgba(255,255,255,0.6)">GPS wird ausgelesen...</span>
+      <!-- GPS Button — Browser Geolocation (zuverlässiger als EXIF) -->
+      <div id="gpsBox" style="background:#1a1a1a;border:1px solid rgba(255,255,255,0.1);border-radius:12px;padding:1rem;margin-bottom:12px">
+        <div style="font-size:12px;color:rgba(255,255,255,0.4);margin-bottom:8px">Standort</div>
+        <button id="gpsBtn" onclick="getLocation()" style="width:100%;background:rgba(27,79,145,0.2);border:1px solid rgba(27,79,145,0.4);color:#fff;border-radius:10px;padding:11px;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:8px">
+          <span>📍</span> Standort automatisch erkennen
+        </button>
+        <div id="gpsResult" style="display:none;margin-top:8px;font-size:13px;color:#4ade80;display:flex;align-items:center;gap:6px">
+          <span>✅</span><span id="gpsResultText"></span>
+        </div>
       </div>
-      <input type="text" class="inp" id="inpCity" placeholder="Stadt & Land (optional wenn GPS erkannt)"/>
-      <input type="text" class="inp" id="inpIg" placeholder="@dein_instagram (optional)"/>
+      <input type="text" class="inp" id="inpCity" placeholder="Oder Stadt manuell eingeben (z.B. Berlin, Deutschland)"/>
+      <input type="text" class="inp" id="inpName" placeholder="Dein Name / Spitzname für das Ranking *" required/>
+      <input type="text" class="inp" id="inpIg" placeholder="@instagram (optional)"/>
       <div class="step-nav">
         <button class="btn-back" onclick="goStep(1)">← Zurück</button>
         <button class="btn-p" onclick="goStep(3)" style="flex:1;justify-content:center">Weiter → Prüfen</button>
@@ -338,6 +344,38 @@
     <div class="ptip"><div class="ptip-icon">🖨️</div><h5>Drucken</h5><p>Flyeralarm.de, Stickermule.com oder DM Drogerie Fotoabzüge.</p></div>
     <div class="ptip"><div class="ptip-icon">📍</div><h5>Beste Spots</h5><p>Thai Restaurants, Muay Thai Gyms, Expat-Bars, Hostels, Flughäfen.</p></div>
     <div class="ptip"><div class="ptip-icon">📸</div><h5>Foto machen</h5><p>Immer Foto machen & oben hochladen oder @portfc_tour taggen.</p></div>
+  </div>
+</section>
+
+<!-- RANKING -->
+<section class="sec sec-dark" id="ranking">
+  <div class="sec-label">Community Ranking</div>
+  <h2>Top Spotter 🏆</h2>
+  <p class="body">Die aktivsten Sticker-Dropper weltweit.</p>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.5rem">
+    <!-- TOP SPOTTER -->
+    <div style="background:#1a1a1a;border:1px solid rgba(255,255,255,0.07);border-radius:14px;padding:1.25rem">
+      <div style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,0.35);margin-bottom:.9rem">👤 Top Spotter</div>
+      <div id="rankingSpotter">
+        <div style="color:rgba(255,255,255,0.25);font-size:12px;text-align:center;padding:1rem 0">Noch keine Spots — sei der Erste!</div>
+      </div>
+    </div>
+    <!-- TOP LÄNDER -->
+    <div style="background:#1a1a1a;border:1px solid rgba(255,255,255,0.07);border-radius:14px;padding:1.25rem">
+      <div style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,0.35);margin-bottom:.9rem">🌍 Top Länder</div>
+      <div id="rankingCountries">
+        <div style="color:rgba(255,255,255,0.25);font-size:12px;text-align:center;padding:1rem 0">Noch keine Länder</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOP STÄDTE -->
+  <div style="background:#1a1a1a;border:1px solid rgba(255,255,255,0.07);border-radius:14px;padding:1.25rem">
+    <div style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,0.35);margin-bottom:.9rem">🏙️ Top Städte</div>
+    <div id="rankingCities" style="display:flex;flex-wrap:wrap;gap:8px">
+      <div style="color:rgba(255,255,255,0.25);font-size:12px">Noch keine Städte</div>
+    </div>
   </div>
 </section>
 
@@ -425,95 +463,52 @@ let detectedLat = null;
 let detectedLng = null;
 let detectedCity = '';
 
-// ── EXIF GPS READER ──
-function readExifGPS(file) {
-  return new Promise(resolve => {
-    const reader = new FileReader();
-    reader.onload = function(e) {
+// ── BROWSER GEOLOCATION (zuverlässiger als EXIF) ──
+function getLocation() {
+  const btn = document.getElementById('gpsBtn');
+  btn.innerHTML = '<span>🔍</span> Standort wird ermittelt...';
+  btn.disabled = true;
+
+  if (!navigator.geolocation) {
+    btn.innerHTML = '<span>❌</span> GPS nicht verfügbar';
+    btn.disabled = false;
+    return;
+  }
+
+  navigator.geolocation.getCurrentPosition(
+    async (pos) => {
+      detectedLat = pos.coords.latitude;
+      detectedLng = pos.coords.longitude;
+      btn.innerHTML = '<span>🔍</span> Stadt wird ermittelt...';
+
+      // Reverse geocoding via OpenStreetMap
       try {
-        const view = new DataView(e.target.result);
-        // Check JPEG marker
-        if (view.getUint16(0) !== 0xFFD8) { resolve(null); return; }
-        let offset = 2;
-        while (offset < view.byteLength) {
-          const marker = view.getUint16(offset);
-          if (marker === 0xFFE1) { // APP1 / EXIF
-            const exifData = parseExif(view, offset + 4);
-            resolve(exifData);
-            return;
-          }
-          if (marker === 0xFFDA) break; // SOS
-          offset += 2 + view.getUint16(offset + 2);
-        }
-        resolve(null);
-      } catch(err) { resolve(null); }
-    };
-    reader.readAsArrayBuffer(file);
-  });
-}
+        const res = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${detectedLat}&lon=${detectedLng}&format=json&accept-language=de`);
+        const data = await res.json();
+        const a = data.address;
+        const city = a.city || a.town || a.village || a.municipality || '';
+        const country = a.country || '';
+        detectedCity = city && country ? `${city}, ${country}` : (city || country || '');
+        if (detectedCity) document.getElementById('inpCity').value = detectedCity;
+      } catch(e) {}
 
-function parseExif(view, start) {
-  // Find GPS IFD
-  const littleEndian = view.getUint16(start) === 0x4949;
-  const ifdOffset = view.getUint32(start + 4, littleEndian);
-  let offset = start + ifdOffset;
-  const numEntries = view.getUint16(offset, littleEndian);
-  offset += 2;
-  let gpsOffset = null;
-  for (let i = 0; i < numEntries; i++) {
-    const tag = view.getUint16(offset, littleEndian);
-    if (tag === 0x8825) { // GPS IFD tag
-      gpsOffset = view.getUint32(offset + 8, littleEndian);
-      break;
-    }
-    offset += 12;
-  }
-  if (gpsOffset === null) return null;
-  offset = start + gpsOffset;
-  const gpsEntries = view.getUint16(offset, littleEndian);
-  offset += 2;
-  let lat = null, lng = null, latRef = 'N', lngRef = 'E';
-  for (let i = 0; i < gpsEntries; i++) {
-    const tag = view.getUint16(offset, littleEndian);
-    const type = view.getUint16(offset + 2, littleEndian);
-    const count = view.getUint32(offset + 4, littleEndian);
-    const valOffset = view.getUint32(offset + 8, littleEndian);
-    if (tag === 1) latRef = String.fromCharCode(view.getUint8(start + valOffset));
-    if (tag === 3) lngRef = String.fromCharCode(view.getUint8(start + valOffset));
-    if (tag === 2) lat = readRational3(view, start + valOffset, littleEndian);
-    if (tag === 4) lng = readRational3(view, start + valOffset, littleEndian);
-    offset += 12;
-  }
-  if (lat === null || lng === null) return null;
-  const latDec = lat[0] + lat[1]/60 + lat[2]/3600;
-  const lngDec = lng[0] + lng[1]/60 + lng[2]/3600;
-  return {
-    lat: latRef === 'S' ? -latDec : latDec,
-    lng: lngRef === 'W' ? -lngDec : lngDec
-  };
-}
-
-function readRational3(view, offset, le) {
-  return [
-    view.getUint32(offset, le) / view.getUint32(offset+4, le),
-    view.getUint32(offset+8, le) / view.getUint32(offset+12, le),
-    view.getUint32(offset+16, le) / view.getUint32(offset+20, le)
-  ];
-}
-
-async function reverseGeocode(lat, lng) {
-  try {
-    const res = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json&accept-language=de`);
-    const data = await res.json();
-    const a = data.address;
-    const city = a.city || a.town || a.village || a.municipality || '';
-    const country = a.country || '';
-    return city && country ? `${city}, ${country}` : (city || country || '');
-  } catch { return ''; }
+      const displayCity = detectedCity || `${detectedLat.toFixed(3)}, ${detectedLng.toFixed(3)}`;
+      btn.innerHTML = '<span>✅</span> Standort erkannt: ' + displayCity;
+      btn.style.background = 'rgba(74,222,128,0.1)';
+      btn.style.borderColor = 'rgba(74,222,128,0.3)';
+      btn.style.color = '#4ade80';
+    },
+    (err) => {
+      btn.innerHTML = '<span>📍</span> Standort manuell eingeben';
+      btn.disabled = false;
+      btn.style.opacity = '0.7';
+    },
+    { timeout: 10000, maximumAge: 60000 }
+  );
 }
 
 // Photo input handler
-document.getElementById('photoInput').addEventListener('change', async function() {
+document.getElementById('photoInput').addEventListener('change', function() {
   if (!this.files || !this.files[0]) return;
   photoFile = this.files[0];
   const url = URL.createObjectURL(photoFile);
@@ -523,36 +518,6 @@ document.getElementById('photoInput').addEventListener('change', async function(
   document.getElementById('photoPlaceholder').style.display = 'none';
   document.getElementById('btn1').disabled = false;
   document.getElementById('btn1').textContent = 'Weiter →';
-
-  // GPS aus EXIF auslesen
-  detectedLat = null; detectedLng = null; detectedCity = '';
-  const gpsStatus = document.getElementById('gpsStatus');
-  const gpsText = document.getElementById('gpsText');
-  const gpsIcon = document.getElementById('gpsIcon');
-  gpsStatus.style.display = 'flex';
-  gpsText.textContent = 'GPS wird ausgelesen...';
-  gpsIcon.textContent = '🔍';
-
-  const gps = await readExifGPS(photoFile);
-  if (gps) {
-    detectedLat = gps.lat;
-    detectedLng = gps.lng;
-    gpsText.textContent = 'Standort erkannt — Stadt wird ermittelt...';
-    gpsIcon.textContent = '📍';
-    const city = await reverseGeocode(gps.lat, gps.lng);
-    if (city) {
-      detectedCity = city;
-      document.getElementById('inpCity').value = city;
-      gpsText.textContent = '✅ Standort automatisch erkannt: ' + city;
-      gpsIcon.textContent = '✅';
-      gpsStatus.style.borderColor = 'rgba(74,222,128,0.3)';
-    } else {
-      gpsText.textContent = '📍 GPS-Koordinaten erkannt — bitte Stadt eingeben';
-    }
-  } else {
-    gpsText.textContent = '📍 Kein GPS im Foto — bitte Stadt eingeben';
-    gpsIcon.textContent = '📝';
-  }
 });
 
 function goStep(n) {
@@ -565,12 +530,16 @@ function goStep(n) {
       document.getElementById('inpCity').placeholder = 'Stadt & Land * (kein GPS erkannt)';
       return;
     }
+    const name = document.getElementById('inpName').value.trim();
+    if (!name) {
+      document.getElementById('inpName').focus();
+      document.getElementById('inpName').style.borderColor = '#E87722';
+      return;
+    }
     document.getElementById('summaryImg').src = document.getElementById('photoPreview').src;
-    const displayCity = city || detectedCity || 'Standort via GPS';
+    const displayCity = city || detectedCity || 'via GPS';
     document.getElementById('summaryCity').textContent = '📍 ' + displayCity;
-    document.getElementById('summaryLoc').textContent = detectedLat
-      ? '🛰️ GPS: ' + detectedLat.toFixed(5) + ', ' + detectedLng.toFixed(5)
-      : '';
+    document.getElementById('summaryLoc').textContent = '👤 ' + name + (detectedLat ? ' · 🛰️ GPS erkannt' : '');
     document.getElementById('summaryIg').textContent = document.getElementById('inpIg').value || '';
   }
   // Hide all steps
@@ -602,14 +571,16 @@ async function submitSighting() {
       photoUrl = data.secure_url || '';
     }
 
-    // 2. Send to Formspree
     const body = new FormData();
-    body.append('city', document.getElementById('inpCity').value || detectedCity);
+    const cityVal = document.getElementById('inpCity').value || detectedCity;
+    const nameVal = document.getElementById('inpName').value;
+    body.append('name', nameVal);
+    body.append('city', cityVal);
     body.append('instagram', document.getElementById('inpIg').value);
     body.append('photo_url', photoUrl);
     body.append('lat', detectedLat || '');
     body.append('lng', detectedLng || '');
-    body.append('_subject', '🟠 New Port FC Sighting' + (detectedLat ? ' 📍 GPS' : '') + '!');
+    body.append('_subject', '🟠 New Port FC Sighting' + (detectedLat ? ' 📍 GPS' : '') + ' von ' + nameVal + '!');
 
     await fetch('https://formspree.io/f/xwlewgne', {
       method: 'POST',
@@ -617,9 +588,13 @@ async function submitSighting() {
       headers: { 'Accept': 'application/json' }
     });
 
+    // Save to local ranking
+    saveToRanking(nameVal, cityVal, document.getElementById('inpIg').value);
+
     // 3. Show success
     ['s1','s2','s3'].forEach(id => document.getElementById(id).classList.remove('show'));
     document.getElementById('successBox').classList.add('show');
+    updateRankingDisplay();
 
   } catch(err) {
     btn.textContent = '🟠 Auf die Karte!';
@@ -627,6 +602,70 @@ async function submitSighting() {
     alert('Fehler beim Hochladen. Bitte nochmal versuchen.');
   }
 }
+
+// ── RANKING ──
+const RANK_KEY = 'portfc_ranking_v1';
+
+function saveToRanking(name, city, ig) {
+  const data = JSON.parse(localStorage.getItem(RANK_KEY) || '[]');
+  data.push({ name, city, ig, time: new Date().toISOString() });
+  localStorage.setItem(RANK_KEY, JSON.stringify(data));
+}
+
+function updateRankingDisplay() {
+  const data = JSON.parse(localStorage.getItem(RANK_KEY) || '[]');
+  if (data.length === 0) return;
+
+  // Top Spotter
+  const spotterCount = {};
+  data.forEach(d => { spotterCount[d.name] = (spotterCount[d.name] || 0) + 1; });
+  const topSpotters = Object.entries(spotterCount).sort((a,b) => b[1]-a[1]).slice(0, 5);
+  const medals = ['🥇','🥈','🥉','4️⃣','5️⃣'];
+  document.getElementById('rankingSpotter').innerHTML = topSpotters.map((s,i) =>
+    `<div style="display:flex;align-items:center;justify-content:space-between;padding:.4rem 0;${i<topSpotters.length-1?'border-bottom:1px solid rgba(255,255,255,0.05)':''}">
+      <span style="font-size:13px">${medals[i]} ${s[0]}</span>
+      <span style="font-family:'Bebas Neue',sans-serif;font-size:18px;color:#E87722">${s[1]}</span>
+    </div>`
+  ).join('');
+
+  // Top Länder
+  const countryCount = {};
+  data.forEach(d => {
+    if (!d.city) return;
+    const parts = d.city.split(',');
+    const country = parts[parts.length-1].trim();
+    if (country) countryCount[country] = (countryCount[country] || 0) + 1;
+  });
+  const topCountries = Object.entries(countryCount).sort((a,b) => b[1]-a[1]).slice(0, 5);
+  document.getElementById('rankingCountries').innerHTML = topCountries.length > 0
+    ? topCountries.map((c,i) =>
+      `<div style="display:flex;align-items:center;justify-content:space-between;padding:.4rem 0;${i<topCountries.length-1?'border-bottom:1px solid rgba(255,255,255,0.05)':''}">
+        <span style="font-size:13px">${medals[i]} ${c[0]}</span>
+        <span style="font-family:'Bebas Neue',sans-serif;font-size:18px;color:#E87722">${c[1]}</span>
+      </div>`
+    ).join('')
+    : '<div style="color:rgba(255,255,255,0.25);font-size:12px">Noch keine Länder</div>';
+
+  // Top Städte
+  const cityCount = {};
+  data.forEach(d => {
+    if (!d.city) return;
+    const parts = d.city.split(',');
+    const city = parts[0].trim();
+    if (city) cityCount[city] = (cityCount[city] || 0) + 1;
+  });
+  const topCities = Object.entries(cityCount).sort((a,b) => b[1]-a[1]).slice(0, 8);
+  document.getElementById('rankingCities').innerHTML = topCities.length > 0
+    ? topCities.map(c =>
+      `<div style="background:rgba(232,119,34,0.1);border:1px solid rgba(232,119,34,0.2);border-radius:20px;padding:5px 12px;font-size:12px;display:flex;align-items:center;gap:6px">
+        <span style="color:#E87722;font-weight:600">${c[1]}x</span> ${c[0]}
+      </div>`
+    ).join('')
+    : '<div style="color:rgba(255,255,255,0.25);font-size:12px">Noch keine Städte</div>';
+}
+
+// Init ranking on load
+updateRankingDisplay();
 
 // ── MAP ──
 const map = L.map('portfc-map', { center: [20, 20], zoom: 2, scrollWheelZoom: false });
