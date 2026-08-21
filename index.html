@@ -5,196 +5,153 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Port FC on Tour — Bangkok Worldwide</title>
   <meta name="description" content="Port FC Bangkok fan community. Scan the sticker. Post your city. Join the movement." />
-  <meta property="og:title" content="Port FC on Tour" />
-  <meta property="og:description" content="Scan the sticker. Post your city. Join the global Port FC movement." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"/>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
   <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    :root {
-      --orange: #E87722; --orange-dark: #C4641A; --blue: #1B4F91;
-      --black: #0D0D0D; --white: #fff;
-      --muted: rgba(255,255,255,0.5); --border: rgba(255,255,255,0.07); --r: 14px;
-    }
-    html { scroll-behavior: smooth; }
-    body { font-family: 'Inter', sans-serif; background: var(--black); color: var(--white); overflow-x: hidden; }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{--o:#E87722;--od:#C4641A;--b:#1B4F91;--bk:#0D0D0D;--w:#fff;--m:rgba(255,255,255,0.5);--br:rgba(255,255,255,0.07);--r:14px}
+    html{scroll-behavior:smooth}
+    body{font-family:'Inter',sans-serif;background:var(--bk);color:var(--w);overflow-x:hidden}
 
     /* NAV */
-    nav {
-      position: fixed; top: 0; left: 0; right: 0; z-index: 200;
-      display: flex; align-items: center; justify-content: space-between;
-      padding: 1rem 1.5rem;
-      background: rgba(13,13,13,0.94); backdrop-filter: blur(16px);
-      border-bottom: 1px solid var(--border);
-    }
-    .nav-logo { font-family: 'Bebas Neue', sans-serif; font-size: 22px; color: var(--white); text-decoration: none; }
-    .nav-logo span { color: var(--orange); }
-    .nav-links { display: flex; gap: 1.5rem; list-style: none; }
-    .nav-links a { font-size: 13px; color: var(--muted); text-decoration: none; transition: color 0.2s; }
-    .nav-links a:hover { color: var(--orange); }
-    .nav-right { display: flex; gap: 8px; align-items: center; }
-    .btn-nav { display: flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 500; color: var(--white); text-decoration: none; background: var(--orange); padding: 6px 14px; border-radius: 20px; transition: background 0.2s; }
-    .btn-nav:hover { background: var(--orange-dark); }
-    .btn-nav-secondary { background: transparent; border: 1px solid rgba(255,255,255,0.2); color: var(--white); padding: 6px 14px; border-radius: 20px; font-size: 13px; font-weight: 500; text-decoration: none; transition: border-color 0.2s; cursor: pointer; font-family: inherit; }
-    .btn-nav-secondary:hover { border-color: var(--orange); color: var(--orange); }
-    .nav-hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; padding: 4px; }
-    .nav-hamburger span { display: block; width: 22px; height: 2px; background: var(--white); border-radius: 2px; }
-    .nav-mobile { display: none; flex-direction: column; position: fixed; top: 57px; left: 0; right: 0; background: rgba(13,13,13,0.98); border-bottom: 1px solid var(--border); z-index: 199; padding: 1rem 1.5rem; }
-    .nav-mobile.open { display: flex; }
-    .nav-mobile a { font-size: 15px; color: var(--muted); text-decoration: none; padding: 0.75rem 0; border-bottom: 1px solid var(--border); }
-    .nav-mobile a:last-child { border-bottom: none; }
-    @media (max-width: 640px) { .nav-links { display: none; } .nav-hamburger { display: flex; } }
+    nav{position:fixed;top:0;left:0;right:0;z-index:200;display:flex;align-items:center;justify-content:space-between;padding:.9rem 1.5rem;background:rgba(13,13,13,0.95);backdrop-filter:blur(16px);border-bottom:1px solid var(--br)}
+    .nav-logo{font-family:'Bebas Neue',sans-serif;font-size:21px;color:var(--w);text-decoration:none}
+    .nav-logo span{color:var(--o)}
+    .nav-links{display:flex;gap:1.25rem;list-style:none}
+    .nav-links a{font-size:13px;color:var(--m);text-decoration:none;transition:color .2s}
+    .nav-links a:hover{color:var(--o)}
+    .nav-right{display:flex;gap:8px;align-items:center}
+    .btn-nav{display:flex;align-items:center;gap:6px;font-size:13px;font-weight:500;color:var(--w);text-decoration:none;background:var(--o);padding:6px 14px;border-radius:20px;transition:background .2s;white-space:nowrap}
+    .btn-nav:hover{background:var(--od)}
+    .btn-nav-ghost{background:transparent;border:1px solid rgba(255,255,255,0.2);color:var(--w);padding:6px 14px;border-radius:20px;font-size:13px;font-weight:500;text-decoration:none;transition:border-color .2s;cursor:pointer;font-family:inherit;white-space:nowrap}
+    .btn-nav-ghost:hover{border-color:var(--o);color:var(--o)}
+    .hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:4px}
+    .hamburger span{display:block;width:22px;height:2px;background:var(--w);border-radius:2px}
+    .mob-nav{display:none;flex-direction:column;position:fixed;top:56px;left:0;right:0;background:rgba(13,13,13,0.98);border-bottom:1px solid var(--br);z-index:199;padding:1rem 1.5rem}
+    .mob-nav.open{display:flex}
+    .mob-nav a{font-size:15px;color:var(--m);text-decoration:none;padding:.7rem 0;border-bottom:1px solid var(--br)}
+    .mob-nav a:last-child{border-bottom:none}
+    @media(max-width:640px){.nav-links{display:none}.hamburger{display:flex}}
 
     /* HERO */
-    .hero {
-      min-height: 100vh; padding: 6rem 1.5rem 3rem;
-      display: grid; grid-template-columns: 1fr 1fr; gap: 3rem;
-      align-items: center; position: relative; overflow: hidden;
-    }
-    .hero::before { content:''; position:absolute; top:-120px; right:-100px; width:500px; height:500px; border-radius:50%; background:radial-gradient(circle,rgba(232,119,34,0.14) 0%,transparent 70%); pointer-events:none; }
-    .hero::after { content:''; position:absolute; bottom:-80px; left:-80px; width:400px; height:400px; border-radius:50%; background:radial-gradient(circle,rgba(27,79,145,0.16) 0%,transparent 70%); pointer-events:none; }
-    .hero-left { position: relative; z-index: 1; }
-    .hero-disclaimer { display:inline-flex; align-items:center; gap:6px; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); border-radius:20px; padding:4px 12px; font-size:11px; color:var(--muted); margin-bottom:1rem; }
-    .hero-eyebrow { font-size:11px; letter-spacing:0.14em; text-transform:uppercase; color:var(--orange); margin-bottom:0.75rem; display:flex; align-items:center; gap:8px; }
-    .hero-eyebrow::before { content:''; display:inline-block; width:20px; height:1px; background:var(--orange); }
-    .hero-title { font-family:'Bebas Neue',sans-serif; font-size:clamp(64px,13vw,100px); line-height:0.92; margin-bottom:1.25rem; }
-    .hero-title .hl { color:var(--orange); }
-    .hero-sub { font-size:16px; color:var(--muted); line-height:1.6; margin-bottom:2rem; max-width:360px; }
-    .hero-actions { display:flex; flex-wrap:wrap; gap:10px; margin-bottom:2rem; }
-    .btn-primary { display:inline-flex; align-items:center; gap:8px; background:var(--orange); color:var(--white); font-size:14px; font-weight:500; padding:12px 22px; border-radius:50px; text-decoration:none; transition:background 0.2s; }
-    .btn-primary:hover { background:var(--orange-dark); }
-    .btn-secondary { display:inline-flex; align-items:center; gap:8px; background:transparent; color:var(--white); font-size:14px; font-weight:500; padding:12px 22px; border-radius:50px; border:1px solid rgba(255,255,255,0.2); text-decoration:none; transition:border-color 0.2s; }
-    .btn-secondary:hover { border-color:var(--orange); color:var(--orange); }
-    .hero-stats { display:flex; gap:2rem; }
-    .hero-stat-num { font-family:'Bebas Neue',sans-serif; font-size:34px; color:var(--orange); line-height:1; }
-    .hero-stat-label { font-size:11px; color:var(--muted); margin-top:2px; }
+    .hero{min-height:100vh;padding:5.5rem 1.5rem 3rem;display:grid;grid-template-columns:1fr 1fr;gap:2.5rem;align-items:center;position:relative;overflow:hidden}
+    .hero::before{content:'';position:absolute;top:-100px;right:-80px;width:480px;height:480px;border-radius:50%;background:radial-gradient(circle,rgba(232,119,34,0.13) 0%,transparent 70%);pointer-events:none}
+    .hero::after{content:'';position:absolute;bottom:-60px;left:-60px;width:380px;height:380px;border-radius:50%;background:radial-gradient(circle,rgba(27,79,145,0.15) 0%,transparent 70%);pointer-events:none}
+    .hero-left{position:relative;z-index:1}
+    .disclaimer{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:20px;padding:4px 12px;font-size:11px;color:var(--m);margin-bottom:.9rem}
+    .eyebrow{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--o);margin-bottom:.6rem;display:flex;align-items:center;gap:8px}
+    .eyebrow::before{content:'';display:inline-block;width:18px;height:1px;background:var(--o)}
+    .hero-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(60px,12vw,96px);line-height:.92;margin-bottom:1.1rem}
+    .hero-title .hl{color:var(--o)}
+    .hero-sub{font-size:15px;color:var(--m);line-height:1.65;margin-bottom:1.75rem;max-width:380px}
+    .hero-actions{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:1.75rem}
+    .btn-p{display:inline-flex;align-items:center;gap:8px;background:var(--o);color:var(--w);font-size:14px;font-weight:500;padding:12px 22px;border-radius:50px;text-decoration:none;transition:background .2s}
+    .btn-p:hover{background:var(--od)}
+    .btn-s{display:inline-flex;align-items:center;gap:8px;background:transparent;color:var(--w);font-size:14px;font-weight:500;padding:12px 22px;border-radius:50px;border:1px solid rgba(255,255,255,0.2);text-decoration:none;transition:border-color .2s}
+    .btn-s:hover{border-color:var(--o);color:var(--o)}
+    .hero-stats{display:flex;gap:1.75rem}
+    .stat-num{font-family:'Bebas Neue',sans-serif;font-size:32px;color:var(--o);line-height:1}
+    .stat-label{font-size:11px;color:var(--m);margin-top:2px}
+    .hero-right{position:relative;z-index:1;display:flex;align-items:center;justify-content:center}
+    .sticker-hero{position:relative}
+    .sticker-hero img{width:100%;max-width:300px;border-radius:14px;box-shadow:0 25px 70px rgba(0,0,0,0.6),0 0 50px rgba(232,119,34,0.12)}
+    .sticker-hero-badge{position:absolute;bottom:-14px;left:50%;transform:translateX(-50%);background:var(--o);color:var(--w);font-size:11px;font-weight:600;padding:5px 14px;border-radius:20px;white-space:nowrap;box-shadow:0 4px 16px rgba(232,119,34,0.4)}
+    @media(max-width:768px){.hero{grid-template-columns:1fr;padding-top:5rem}.hero-right{display:none}}
 
-    /* Hero sticker image */
-    .hero-right { position:relative; z-index:1; display:flex; align-items:center; justify-content:center; }
-    .hero-sticker-wrap { position:relative; }
-    .hero-sticker-wrap img { width:100%; max-width:320px; border-radius:16px; box-shadow:0 30px 80px rgba(0,0,0,0.6), 0 0 60px rgba(232,119,34,0.15); }
-    .hero-sticker-badge { position:absolute; bottom:-16px; left:50%; transform:translateX(-50%); background:var(--orange); color:var(--white); font-size:12px; font-weight:600; padding:6px 16px; border-radius:20px; white-space:nowrap; box-shadow:0 4px 20px rgba(232,119,34,0.4); }
-
-    @media (max-width: 768px) { .hero { grid-template-columns:1fr; } .hero-right { display:none; } }
-
-    /* UPLOAD STRIP — direkt unter Hero */
-    .upload-strip {
-      background: linear-gradient(135deg, #1a1008 0%, #0e1520 100%);
-      border-top: 1px solid rgba(232,119,34,0.2);
-      border-bottom: 1px solid rgba(232,119,34,0.2);
-      padding: 2rem 1.5rem;
-    }
-    .upload-strip-inner { max-width: 600px; margin: 0 auto; }
-    .upload-strip h3 { font-family:'Bebas Neue',sans-serif; font-size:28px; color:var(--white); margin-bottom:0.4rem; }
-    .upload-strip p { font-size:13px; color:var(--muted); margin-bottom:1.25rem; }
-    .upload-form { display:flex; flex-direction:column; gap:10px; }
-    .upload-row { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
-    .upload-input { background:#1A1A1A; border:1px solid rgba(255,255,255,0.1); border-radius:10px; padding:11px 14px; color:var(--white); font-size:13px; font-family:inherit; outline:none; transition:border-color 0.2s; }
-    .upload-input:focus { border-color:var(--orange); }
-    .upload-input::placeholder { color:rgba(255,255,255,0.3); }
-    .btn-upload { background:var(--orange); color:var(--white); border:none; border-radius:50px; padding:13px 24px; font-size:14px; font-weight:500; font-family:inherit; cursor:pointer; transition:background 0.2s; }
-    .btn-upload:hover { background:var(--orange-dark); }
-    .upload-note { font-size:11px; color:rgba(255,255,255,0.25); }
-    @media (max-width: 480px) { .upload-row { grid-template-columns:1fr; } }
+    /* UPLOAD */
+    .upload{background:linear-gradient(135deg,#130d04 0%,#0a0f1a 100%);border-top:1px solid rgba(232,119,34,0.25);border-bottom:1px solid rgba(232,119,34,0.1);padding:2.5rem 1.5rem}
+    .upload-inner{max-width:560px;margin:0 auto}
+    .upload-top{display:flex;align-items:center;gap:1rem;margin-bottom:1.25rem}
+    .upload-icon{font-size:36px}
+    .upload-top h2{font-family:'Bebas Neue',sans-serif;font-size:30px}
+    .upload-top p{font-size:13px;color:var(--m);margin-top:2px}
+    .uform{display:flex;flex-direction:column;gap:9px}
+    .urow{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+    .uinput{background:#1c1c1c;border:1px solid rgba(255,255,255,0.1);border-radius:10px;padding:11px 14px;color:var(--w);font-size:13px;font-family:inherit;outline:none;transition:border-color .2s}
+    .uinput:focus{border-color:var(--o)}
+    .uinput::placeholder{color:rgba(255,255,255,0.3)}
+    .ubtn{background:var(--o);color:var(--w);border:none;border-radius:50px;padding:13px 24px;font-size:14px;font-weight:600;font-family:inherit;cursor:pointer;transition:background .2s;display:flex;align-items:center;justify-content:center;gap:8px}
+    .ubtn:hover{background:var(--od)}
+    .unote{font-size:11px;color:rgba(255,255,255,0.2);text-align:center}
+    .upload-how{margin-top:1rem;padding:1rem;background:rgba(255,255,255,0.03);border-radius:10px;border:1px solid rgba(255,255,255,0.06)}
+    .upload-how p{font-size:12px;color:rgba(255,255,255,0.4);line-height:1.6}
+    .upload-how strong{color:rgba(255,255,255,0.7)}
+    @media(max-width:480px){.urow{grid-template-columns:1fr}}
 
     /* COUNTER */
-    .counter-strip { background:var(--orange); padding:1.25rem; display:flex; justify-content:space-around; flex-wrap:wrap; gap:1rem; }
-    .counter-item { text-align:center; }
-    .counter-num { font-family:'Bebas Neue',sans-serif; font-size:38px; color:white; line-height:1; }
-    .counter-label { font-size:10px; color:rgba(255,255,255,0.75); letter-spacing:0.1em; text-transform:uppercase; }
+    .counter{background:var(--o);padding:1.25rem;display:flex;justify-content:space-around;flex-wrap:wrap;gap:.75rem}
+    .cnt-num{font-family:'Bebas Neue',sans-serif;font-size:36px;color:#fff;line-height:1;text-align:center}
+    .cnt-lbl{font-size:10px;color:rgba(255,255,255,0.75);letter-spacing:.1em;text-transform:uppercase;text-align:center}
 
     /* SECTIONS */
-    .section { padding:5rem 1.5rem; }
-    .section-dark { background:#111; }
-    .section-mid { background:#161616; }
-    .section-label { font-size:10px; letter-spacing:0.18em; text-transform:uppercase; color:var(--orange); margin-bottom:0.75rem; }
-    .section-title { font-family:'Bebas Neue',sans-serif; font-size:42px; line-height:1; margin-bottom:1rem; }
-    .section-body { font-size:15px; color:var(--muted); line-height:1.7; margin-bottom:2.5rem; }
-
-    /* HOW IT WORKS */
-    .steps { display:flex; flex-direction:column; }
-    .step { display:flex; gap:1.25rem; padding:1.5rem 0; border-bottom:1px solid var(--border); }
-    .step:last-child { border-bottom:none; }
-    .step-num { font-family:'Bebas Neue',sans-serif; font-size:36px; color:var(--orange); opacity:0.5; min-width:36px; line-height:1; }
-    .step-content h3 { font-size:15px; font-weight:500; margin-bottom:4px; }
-    .step-content p { font-size:13px; color:var(--muted); line-height:1.6; }
+    .sec{padding:4.5rem 1.5rem}
+    .sec-dark{background:#111}
+    .sec-mid{background:#161616}
+    .sec-lbl{font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--o);margin-bottom:.6rem}
+    .sec-title{font-family:'Bebas Neue',sans-serif;font-size:38px;line-height:1;margin-bottom:.9rem}
+    .sec-body{font-size:14px;color:var(--m);line-height:1.7;margin-bottom:2rem}
 
     /* MAP */
-    #sighting-map { height:420px; width:100%; border-radius:var(--r); border:1px solid var(--border); margin-bottom:1.5rem; }
-    .map-legend { display:flex; gap:1.5rem; flex-wrap:wrap; margin-bottom:1.25rem; }
-    .map-legend-item { display:flex; align-items:center; gap:8px; font-size:13px; color:var(--muted); }
-    .legend-dot { width:12px; height:12px; border-radius:50%; flex-shrink:0; }
-    .legend-dot.home { background:var(--orange); }
-    .legend-dot.sighting { background:var(--blue); }
+    #map{height:380px;width:100%;border-radius:var(--r);border:1px solid var(--br);margin-bottom:1.25rem}
+    .map-leg{display:flex;gap:1.5rem;flex-wrap:wrap;margin-bottom:1rem}
+    .map-leg-item{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--m)}
+    .dot{width:11px;height:11px;border-radius:50%}
+    .dot-home{background:var(--o)}
+    .dot-spot{background:var(--b)}
+    .sightings{display:flex;flex-direction:column;gap:9px;margin-top:1.25rem}
+    .sight{background:#1a1a1a;border:1px solid var(--br);border-radius:var(--r);padding:.9rem 1.1rem;display:flex;align-items:center;gap:1rem}
+    .sight-flag{font-size:24px;flex-shrink:0}
+    .sight-info h4{font-size:13px;font-weight:500;margin-bottom:2px}
+    .sight-info p{font-size:11px;color:var(--m)}
+    .sight-badge{margin-left:auto;font-size:10px;padding:3px 8px;border-radius:20px;background:rgba(232,119,34,0.12);color:var(--o);flex-shrink:0}
 
-    /* SIGHTINGS */
-    .sightings { display:flex; flex-direction:column; gap:10px; margin-top:1.5rem; }
-    .sighting { background:#1A1A1A; border:1px solid var(--border); border-radius:var(--r); padding:1rem 1.25rem; display:flex; align-items:center; gap:1rem; }
-    .sighting-flag { font-size:26px; flex-shrink:0; }
-    .sighting-info h4 { font-size:14px; font-weight:500; margin-bottom:2px; }
-    .sighting-info p { font-size:12px; color:var(--muted); }
-    .sighting-badge { margin-left:auto; font-size:10px; padding:3px 8px; border-radius:20px; background:rgba(232,119,34,0.12); color:var(--orange); flex-shrink:0; }
+    /* STICKER PRINT */
+    .print-grid{display:grid;grid-template-columns:1fr 1fr;gap:2rem;align-items:center;margin-bottom:2rem}
+    .print-img img{width:100%;border-radius:14px;box-shadow:0 20px 50px rgba(0,0,0,0.5)}
+    .print-steps{display:flex;flex-direction:column;gap:1.1rem}
+    .print-step{display:flex;gap:1rem;align-items:flex-start}
+    .print-step-num{font-family:'Bebas Neue',sans-serif;font-size:28px;color:var(--o);min-width:28px;line-height:1;opacity:.6}
+    .print-step h4{font-size:14px;font-weight:600;margin-bottom:3px}
+    .print-step p{font-size:12px;color:var(--m);line-height:1.55}
+    .print-step a{color:var(--o);text-decoration:none}
+    .print-tips{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:1.5rem}
+    .print-tip{background:#1a1a1a;border:1px solid var(--br);border-radius:10px;padding:1rem}
+    .print-tip-icon{font-size:20px;margin-bottom:6px}
+    .print-tip h5{font-size:12px;font-weight:600;margin-bottom:3px}
+    .print-tip p{font-size:11px;color:var(--m);line-height:1.5}
+    @media(max-width:640px){.print-grid{grid-template-columns:1fr}.print-img{display:none}.print-tips{grid-template-columns:1fr}}
 
-    /* STICKER SECTION */
-    .sticker-showcase { display:grid; grid-template-columns:1fr 1fr; gap:2rem; align-items:start; margin-bottom:2rem; }
-    .sticker-img-wrap { position:relative; }
-    .sticker-img-wrap img { width:100%; border-radius:16px; box-shadow:0 20px 60px rgba(0,0,0,0.5); }
-    .sticker-info { display:flex; flex-direction:column; gap:1rem; }
-    .sticker-info h3 { font-family:'Bebas Neue',sans-serif; font-size:32px; }
-    .sticker-info p { font-size:14px; color:var(--muted); line-height:1.6; }
-    .sticker-actions { display:flex; flex-direction:column; gap:8px; }
-    .sticker-tag { display:inline-flex; align-items:center; gap:6px; font-size:12px; color:var(--muted); }
-    .sticker-tag span { color:var(--orange); }
-    @media (max-width: 640px) { .sticker-showcase { grid-template-columns:1fr; } }
-
-    .shop-info { background:#1A1A1A; border:1px solid var(--border); border-radius:var(--r); padding:1.5rem; display:flex; flex-direction:column; gap:0.75rem; }
-    .shop-info-row { display:flex; align-items:flex-start; gap:0.75rem; font-size:13px; }
-    .shop-info-icon { font-size:16px; flex-shrink:0; margin-top:1px; }
-    .shop-info-text { color:var(--muted); line-height:1.5; }
-    .shop-info-text strong { color:var(--white); }
-    .shop-info-text a { color:var(--orange); text-decoration:none; }
-
-    /* CLUB */
-    .club-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:1.5rem; }
-    .club-card { background:#1A1A1A; border:1px solid var(--border); border-radius:var(--r); padding:1.25rem; }
-    .club-card-icon { font-size:22px; margin-bottom:0.5rem; }
-    .club-card h4 { font-size:13px; font-weight:600; margin-bottom:4px; }
-    .club-card p { font-size:12px; color:var(--muted); line-height:1.5; }
-    .club-highlight { background:linear-gradient(135deg,rgba(232,119,34,0.08),rgba(27,79,145,0.08)); border:1px solid rgba(232,119,34,0.2); border-radius:var(--r); padding:1.25rem 1.5rem; display:flex; align-items:center; gap:1rem; }
-    .club-highlight-text { font-size:14px; color:rgba(255,255,255,0.8); line-height:1.6; }
-    .club-highlight-text strong { color:var(--orange); }
-
-    /* INSTAGRAM */
-    .ig-cta { background:linear-gradient(135deg,#1B4F91 0%,#0D2E5A 100%); border-radius:var(--r); padding:2.5rem 1.5rem; text-align:center; }
-    .ig-handle { font-family:'Bebas Neue',sans-serif; font-size:38px; margin-bottom:0.5rem; }
-    .ig-sub { font-size:14px; color:rgba(255,255,255,0.6); margin-bottom:1.5rem; line-height:1.5; }
-    .hashtags { display:flex; flex-wrap:wrap; gap:6px; justify-content:center; margin-bottom:1.5rem; }
-    .hashtag { font-size:12px; padding:4px 10px; border-radius:20px; border:1px solid rgba(255,255,255,0.2); color:rgba(255,255,255,0.7); }
+    /* IG CTA */
+    .ig-cta{background:linear-gradient(135deg,#1B4F91 0%,#0D2E5A 100%);border-radius:var(--r);padding:2.5rem 1.5rem;text-align:center}
+    .ig-handle{font-family:'Bebas Neue',sans-serif;font-size:36px;margin-bottom:.4rem}
+    .ig-sub{font-size:14px;color:rgba(255,255,255,0.6);margin-bottom:1.25rem;line-height:1.5}
+    .tags{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin-bottom:1.25rem}
+    .tag{font-size:11px;padding:4px 10px;border-radius:20px;border:1px solid rgba(255,255,255,0.2);color:rgba(255,255,255,0.65)}
 
     /* FOOTER */
-    footer { background:#0A0A0A; padding:3rem 1.5rem 2rem; border-top:1px solid var(--border); }
-    .footer-grid { display:grid; grid-template-columns:1fr 1fr; gap:2rem; margin-bottom:2rem; }
-    .footer-logo { font-family:'Bebas Neue',sans-serif; font-size:28px; margin-bottom:0.5rem; }
-    .footer-logo span { color:var(--orange); }
-    footer p, footer a { font-size:12px; color:rgba(255,255,255,0.3); line-height:1.8; text-decoration:none; }
-    footer a:hover { color:var(--orange); }
-    .footer-col h5 { font-size:11px; letter-spacing:0.1em; text-transform:uppercase; color:rgba(255,255,255,0.4); margin-bottom:0.75rem; }
-    .footer-col ul { list-style:none; display:flex; flex-direction:column; gap:4px; }
-    hr.fd { border:none; border-top:1px solid var(--border); margin:1.5rem 0; }
+    footer{background:#0a0a0a;padding:2.5rem 1.5rem 2rem;border-top:1px solid var(--br)}
+    .footer-grid{display:grid;grid-template-columns:1fr 1fr;gap:2rem;margin-bottom:1.5rem}
+    .footer-logo{font-family:'Bebas Neue',sans-serif;font-size:26px;margin-bottom:.4rem}
+    .footer-logo span{color:var(--o)}
+    footer p,footer a{font-size:12px;color:rgba(255,255,255,0.3);line-height:1.8;text-decoration:none}
+    footer a:hover{color:var(--o)}
+    .footer-col h5{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,0.35);margin-bottom:.6rem}
+    .footer-col ul{list-style:none;display:flex;flex-direction:column;gap:3px}
+    hr.fd{border:none;border-top:1px solid var(--br);margin:1.25rem 0}
 
     /* LEGAL */
-    .legal-section { padding:4rem 1.5rem; background:#0A0A0A; }
-    .legal-section h2 { font-family:'Bebas Neue',sans-serif; font-size:28px; margin-bottom:1rem; }
-    .legal-section h3 { font-size:14px; font-weight:600; color:rgba(255,255,255,0.6); margin:1.25rem 0 0.4rem; }
-    .legal-section p { font-size:12px; color:rgba(255,255,255,0.3); line-height:1.8; }
-    .legal-section a { color:var(--orange); text-decoration:none; }
-    hr.ld { border:none; border-top:1px solid var(--border); margin:2.5rem 0; }
+    .legal{padding:3.5rem 1.5rem;background:#0a0a0a}
+    .legal h2{font-family:'Bebas Neue',sans-serif;font-size:26px;margin-bottom:.9rem}
+    .legal h3{font-size:13px;font-weight:600;color:rgba(255,255,255,0.55);margin:1.1rem 0 .3rem}
+    .legal p{font-size:12px;color:rgba(255,255,255,0.3);line-height:1.8}
+    .legal a{color:var(--o);text-decoration:none}
+    hr.ld{border:none;border-top:1px solid var(--br);margin:2rem 0}
 
-    @media (min-width: 640px) { .section { padding:6rem 2.5rem; } nav { padding:1rem 2.5rem; } }
-    @media (min-width: 1024px) { .hero { padding:8rem 5rem 5rem; } .section { padding:7rem 5rem; } }
+    @media(min-width:640px){.sec{padding:5.5rem 2.5rem}nav{padding:.9rem 2.5rem}}
+    @media(min-width:1024px){.hero{padding:7rem 5rem 4rem}.sec{padding:6rem 5rem}}
   </style>
 </head>
 <body>
@@ -203,191 +160,175 @@
 <nav>
   <a href="#" class="nav-logo">Port FC <span>on Tour</span></a>
   <ul class="nav-links">
-    <li><a href="#club">The Club</a></li>
-    <li><a href="#howto">How it works</a></li>
+    <li><a href="#upload">📍 Spot melden</a></li>
     <li><a href="#map">Map</a></li>
-    <li><a href="#sticker">Sticker</a></li>
+    <li><a href="#print">Sticker</a></li>
     <li><a href="#impressum">Impressum</a></li>
   </ul>
   <div class="nav-right">
-    <a href="#upload" class="btn-nav-secondary">📍 Spot melden</a>
+    <a href="#upload" class="btn-nav-ghost">📍 Spot melden</a>
     <a href="https://instagram.com/portfc_tour" class="btn-nav" target="_blank" rel="noopener">
       <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="5"/><circle cx="17.5" cy="6.5" r="1.5" fill="white" stroke="none"/></svg>
-      Follow
+      @portfc_tour
     </a>
-    <div class="nav-hamburger" onclick="toggleMenu()"><span></span><span></span><span></span></div>
+    <div class="hamburger" onclick="toggleMenu()"><span></span><span></span><span></span></div>
   </div>
 </nav>
-<div class="nav-mobile" id="mobileMenu">
-  <a href="#club" onclick="toggleMenu()">The Club</a>
-  <a href="#howto" onclick="toggleMenu()">How it works</a>
-  <a href="#map" onclick="toggleMenu()">Map</a>
-  <a href="#sticker" onclick="toggleMenu()">Sticker</a>
+<div class="mob-nav" id="mobNav">
   <a href="#upload" onclick="toggleMenu()">📍 Spot melden</a>
+  <a href="#map" onclick="toggleMenu()">Karte</a>
+  <a href="#print" onclick="toggleMenu()">Sticker drucken</a>
+  <a href="#impressum" onclick="toggleMenu()">Impressum</a>
   <a href="https://instagram.com/portfc_tour" target="_blank">@portfc_tour ↗</a>
 </div>
 
 <!-- HERO -->
 <section class="hero">
   <div class="hero-left">
-    <div class="hero-disclaimer">⚠️ Unofficial Fan Community — Not affiliated with Port FC or PAT</div>
-    <div class="hero-eyebrow">Bangkok · Thailand · Worldwide</div>
+    <div class="disclaimer">⚠️ Unofficial Fan Community — Not affiliated with Port FC or PAT</div>
+    <div class="eyebrow">Bangkok · Klong Toei · Worldwide</div>
     <h1 class="hero-title">Port FC<br><span class="hl">on Tour</span></h1>
-    <p class="hero-sub">Scan the sticker. Post your location. Join the global Port FC movement from Klong Toei — one city at a time.</p>
+    <p class="hero-sub">Sticker scannen. Spot melden. Community wachsen lassen. Port FC Bangkok reist mit dir — von Klong Toei in die ganze Welt.</p>
     <div class="hero-actions">
-      <a href="#upload" class="btn-primary">📍 Sticker gesehen? Hier melden →</a>
-      <a href="#howto" class="btn-secondary">How it works</a>
+      <a href="#upload" class="btn-p">📍 Sticker gesehen? Jetzt melden →</a>
+      <a href="#print" class="btn-s">Sticker selber drucken</a>
     </div>
     <div class="hero-stats">
-      <div class="hero-stat"><div class="hero-stat-num">8</div><div class="hero-stat-label">Cities</div></div>
-      <div class="hero-stat"><div class="hero-stat-num">50+</div><div class="hero-stat-label">Stickers dropped</div></div>
-      <div class="hero-stat"><div class="hero-stat-num">1967</div><div class="hero-stat-label">Founded</div></div>
+      <div><div class="stat-num">8</div><div class="stat-label">Cities</div></div>
+      <div><div class="stat-num">50+</div><div class="stat-label">Stickers</div></div>
+      <div><div class="stat-num">1967</div><div class="stat-label">Founded</div></div>
     </div>
   </div>
   <div class="hero-right">
-    <div class="hero-sticker-wrap">
-      <img src="assets/sticker-design.jpg" alt="Port FC on Tour — Official Sticker Design" />
-      <div class="hero-sticker-badge">🟠 Scan & Join the Movement</div>
+    <div class="sticker-hero">
+      <img src="assets/sticker-design.jpg" alt="Port FC on Tour Sticker" />
+      <div class="sticker-hero-badge">🟠 Scan · Share · Drop</div>
     </div>
-  </div>
-</section>
-
-<!-- UPLOAD — direkt nach Hero -->
-<section class="upload-strip" id="upload">
-  <div class="upload-strip-inner">
-    <h3>📍 Sticker gesehen?</h3>
-    <p>Sag uns wo du ihn gefunden hast — wir setzen dich auf die Karte und reposten dich auf Instagram.</p>
-    <form id="sighting-form" action="https://formspree.io/f/xwlewgne" method="POST" class="upload-form">
-      <div class="upload-row">
-        <input type="text" name="city" required placeholder="Stadt & Land *" class="upload-input" />
-        <input type="text" name="instagram" placeholder="@dein_instagram" class="upload-input" />
-      </div>
-      <input type="text" name="location_detail" placeholder="Wo genau? (Bar, Laterne, Wand...)" class="upload-input" />
-      <input type="hidden" name="_subject" value="🟠 New Port FC Sighting!" />
-      <button type="submit" class="btn-upload">📍 Jetzt melden → wir reposten dich!</button>
-      <p class="upload-note">Unofficial fan project. Deine Daten werden nur für den Repost verwendet.</p>
-    </form>
   </div>
 </section>
 
 <!-- COUNTER -->
-<div class="counter-strip">
-  <div class="counter-item"><div class="counter-num">8</div><div class="counter-label">Countries</div></div>
-  <div class="counter-item"><div class="counter-num">50+</div><div class="counter-label">Stickers Dropped</div></div>
-  <div class="counter-item"><div class="counter-num">1967</div><div class="counter-label">Est. Klong Toei</div></div>
-  <div class="counter-item"><div class="counter-num">∞</div><div class="counter-label">Away Games</div></div>
+<div class="counter">
+  <div><div class="cnt-num">8</div><div class="cnt-lbl">Countries</div></div>
+  <div><div class="cnt-num">50+</div><div class="cnt-lbl">Stickers dropped</div></div>
+  <div><div class="cnt-num">1967</div><div class="cnt-lbl">Est. Klong Toei</div></div>
+  <div><div class="cnt-num">∞</div><div class="cnt-lbl">Away Games</div></div>
 </div>
 
-<!-- HOW IT WORKS -->
-<section class="section section-dark" id="howto">
-  <div class="section-label">The concept</div>
-  <h2 class="section-title">Wie funktioniert's?</h2>
-  <div class="steps">
-    <div class="step"><div class="step-num">01</div><div class="step-content"><h3>Sticker entdecken</h3><p>QR-Sticker tauchen weltweit auf — in Bars, Hostels, Gyms, auf Laternen. Überall wo Thai-Expats unterwegs sind.</p></div></div>
-    <div class="step"><div class="step-num">02</div><div class="step-content"><h3>QR scannen → hier landen</h3><p>Ein Scan bringt dich direkt hierher — zur Homebase der globalen Port FC Community.</p></div></div>
-    <div class="step"><div class="step-num">03</div><div class="step-content"><h3>Spot melden</h3><p>Füll das Formular oben aus oder tag uns auf Instagram mit <strong>@portfc_tour</strong>. Jeder Post wird gerepostet.</p></div></div>
-    <div class="step"><div class="step-num">04</div><div class="step-content"><h3>Sticker verteilen</h3><p>Hol dir die Sticker-Dateien und drop sie wo du reist. Orange & Blau geht weiter jeden Tag.</p></div></div>
+<!-- UPLOAD -->
+<section class="upload" id="upload">
+  <div class="upload-inner">
+    <div class="upload-top">
+      <div class="upload-icon">📍</div>
+      <div>
+        <h2>Sticker gesehen?</h2>
+        <p>Sag uns wo — wir setzen dich auf die Karte & reposten dich auf Instagram.</p>
+      </div>
+    </div>
+    <form id="sighting-form" action="https://formspree.io/f/xwlewgne" method="POST" class="uform">
+      <div class="urow">
+        <input type="text" name="city" required placeholder="Stadt & Land *" class="uinput" />
+        <input type="text" name="instagram" placeholder="@dein_instagram (optional)" class="uinput" />
+      </div>
+      <input type="text" name="location_detail" placeholder="Wo genau? z.B. Bar, Laterne, Wand..." class="uinput" />
+      <input type="hidden" name="_subject" value="🟠 New Port FC Sighting!" />
+      <button type="submit" class="ubtn">📍 Spot melden → wir reposten dich!</button>
+      <p class="unote">Kein Account nötig. Deine Daten werden nur für den Community-Repost verwendet.</p>
+    </form>
+    <div class="upload-how">
+      <p>💡 <strong>Noch besser:</strong> Mach ein Foto vom Sticker und poste es auf Instagram mit <strong>@portfc_tour + #PortFConTour</strong> — wir reposten innerhalb von 48h!</p>
+    </div>
   </div>
 </section>
 
 <!-- MAP -->
-<section class="section section-mid" id="map">
-  <div class="section-label">Sightings map</div>
-  <h2 class="section-title">Port FC<br>Spotted Here</h2>
-  <p class="section-body">Bangkok ist Home. Der Rest der Welt ist das Auswärtsspiel.</p>
-  <div class="map-legend">
-    <div class="map-legend-item"><div class="legend-dot home"></div> Bangkok HQ</div>
-    <div class="map-legend-item"><div class="legend-dot sighting"></div> Sticker gesichtet</div>
+<section class="sec sec-dark" id="map">
+  <div class="sec-lbl">Sightings Map</div>
+  <h2 class="sec-title">Port FC Worldwide</h2>
+  <p class="sec-body">Bangkok ist Home. Alles andere ist Auswärtsspiel. 🟠</p>
+  <div class="map-leg">
+    <div class="map-leg-item"><div class="dot dot-home"></div> Bangkok HQ</div>
+    <div class="map-leg-item"><div class="dot dot-spot"></div> Sticker gesichtet</div>
   </div>
-  <div id="sighting-map"></div>
+  <div id="map"></div>
   <div class="sightings">
-    <div class="sighting"><div class="sighting-flag">🇹🇭</div><div class="sighting-info"><h4>Bangkok, Thailand</h4><p>Klong Toei · PAT Stadium · Home 🟠</p></div><div class="sighting-badge">HQ</div></div>
-    <div class="sighting"><div class="sighting-flag">🇩🇪</div><div class="sighting-info"><h4>Berlin, Deutschland</h4><p>Tempelhofer Feld · @thai_in_berlin</p></div><div class="sighting-badge">New</div></div>
-    <div class="sighting"><div class="sighting-flag">🇯🇵</div><div class="sighting-info"><h4>Tokyo, Japan</h4><p>Shibuya · @portfc_jp</p></div><div class="sighting-badge">+2</div></div>
-    <div class="sighting"><div class="sighting-flag">🇬🇧</div><div class="sighting-info"><h4>London, UK</h4><p>Thai Restaurant Soho · @london_thais</p></div><div class="sighting-badge">Hot</div></div>
-    <div class="sighting"><div class="sighting-flag">🇦🇺</div><div class="sighting-info"><h4>Sydney, Australien</h4><p>Muay Thai Gym · @muay_sydney</p></div><div class="sighting-badge">+5</div></div>
-    <div class="sighting"><div class="sighting-flag">🇺🇸</div><div class="sighting-info"><h4>Los Angeles, USA</h4><p>Thai Town · Hollywood Blvd</p></div><div class="sighting-badge">3 scans</div></div>
+    <div class="sight"><div class="sight-flag">🇹🇭</div><div class="sight-info"><h4>Bangkok, Thailand</h4><p>Klong Toei · PAT Stadium · Home 🟠</p></div><div class="sight-badge">HQ</div></div>
+    <div class="sight"><div class="sight-flag">🇩🇪</div><div class="sight-info"><h4>Berlin, Deutschland</h4><p>Tempelhofer Feld · @thai_in_berlin</p></div><div class="sight-badge">New</div></div>
+    <div class="sight"><div class="sight-flag">🇯🇵</div><div class="sight-info"><h4>Tokyo, Japan</h4><p>Shibuya · @portfc_jp</p></div><div class="sight-badge">+2</div></div>
+    <div class="sight"><div class="sight-flag">🇬🇧</div><div class="sight-info"><h4>London, UK</h4><p>Soho Thai Restaurant · @london_thais</p></div><div class="sight-badge">Hot</div></div>
+    <div class="sight"><div class="sight-flag">🇦🇺</div><div class="sight-info"><h4>Sydney, Australien</h4><p>Muay Thai Gym · @muay_sydney</p></div><div class="sight-badge">+5</div></div>
+    <div class="sight"><div class="sight-flag">🇺🇸</div><div class="sight-info"><h4>Los Angeles, USA</h4><p>Thai Town · Hollywood Blvd</p></div><div class="sight-badge">3 scans</div></div>
   </div>
 </section>
 
-<!-- THE CLUB -->
-<section class="section section-dark" id="club">
-  <div class="section-label">About the club</div>
-  <h2 class="section-title">Port FC Bangkok.<br>Born in the harbour.</h2>
-  <p class="section-body">Port FC ist einer der ältesten Clubs Thailands — gegründet 1967 im Hafenviertel Klong Toei, Bangkoks Arbeiterherz. Gespielt wird im legendären PAT Stadium, wo die Fans direkt am Spielfeld stehen — kein Tartanring, englisches Groundfeeling mitten in Südostasien.</p>
-  <div class="club-grid">
-    <div class="club-card"><div class="club-card-icon">⚓</div><h4>Klong Toei Harbour</h4><p>Bangkoks Hafenviertel — Thailands größter Port und Heimat des Clubs seit Tag eins.</p></div>
-    <div class="club-card"><div class="club-card-icon">🔥</div><h4>Khlong Toei Army</h4><p>Die offizielle Fangruppe — Drums, Bengalos, Banner. Nonstop Support.</p></div>
-    <div class="club-card"><div class="club-card-icon">🏟️</div><h4>PAT Stadium</h4><p>Fans direkt am Pitch. Kein Tartanring. Eines der intensivsten Stadien Südostasiens.</p></div>
-    <div class="club-card"><div class="club-card-icon">🏆</div><h4>Thai League 1</h4><p>Top der thailändischen Liga. Orange und Blau durch jede Saison.</p></div>
-  </div>
-  <div class="club-highlight">
-    <span style="font-size:32px;">🟠</span>
-    <div class="club-highlight-text"><strong>กองทัพคลองเตย</strong> — Khlong Toei Army. Die Fans die diese Kultur aufgebaut haben. Wer einen Sticker scannt, ist jetzt einer von uns.</div>
-  </div>
-</section>
+<!-- STICKER DRUCKEN -->
+<section class="sec sec-mid" id="print">
+  <div class="sec-lbl">Get the sticker</div>
+  <h2 class="sec-title">Sticker drucken<br>& droppen.</h2>
+  <p class="sec-body">Kein Shop. Kein Minimum. Einfach SVG downloaden, beim lokalen Druckshop ausdrucken und losklebt.</p>
 
-<!-- STICKER -->
-<section class="section section-mid" id="sticker">
-  <div class="section-label">The sticker</div>
-  <h2 class="section-title">Das Design.</h2>
-  <p class="section-body">Ein Sticker. Löwe trifft Hafenkran. Klong Toei trifft die Welt. Scan ihn. Drop ihn. Verteile die Farben.</p>
-  <div class="sticker-showcase">
-    <div class="sticker-img-wrap">
-      <img src="assets/sticker-design.jpg" alt="Port FC on Tour Sticker — Official Fan Design" />
+  <div class="print-grid">
+    <div class="print-img">
+      <img src="assets/sticker-design.jpg" alt="Port FC on Tour Sticker Design" />
     </div>
-    <div class="sticker-info">
-      <h3>Port FC on Tour<br>— Khlong Toei Edition</h3>
-      <p>Original Fan-Design. Kein offizielles Vereinslogo. Eigenes Artwork inspiriert von Ultra-Kultur, Hafen und Bangkok-Street-Feeling.</p>
-      <div class="sticker-actions">
-        <a href="https://github.com/lukaszoll9/portfc-on-tour/tree/main/sticker-designs" target="_blank" class="btn-primary">SVG-Datei kostenlos downloaden →</a>
-        <a href="mailto:lukasfra437@gmail.com" class="btn-secondary">Bulk-Bestellung anfragen</a>
+    <div class="print-steps">
+      <div class="print-step">
+        <div class="print-step-num">01</div>
+        <div><h4>SVG-Datei downloaden</h4><p>Kostenlos auf <a href="https://github.com/lukaszoll9/portfc-on-tour/tree/main/sticker-designs" target="_blank">GitHub</a>. Mehrere Formate verfügbar.</p></div>
       </div>
-      <div style="display:flex; flex-direction:column; gap:6px; margin-top:0.5rem;">
-        <div class="sticker-tag">📐 Format: <span>versch. Größen verfügbar</span></div>
-        <div class="sticker-tag">🎨 Farben: <span>Orange #E87722 · Blau #1B4F91</span></div>
-        <div class="sticker-tag">📱 QR: <span>portfc-on-tour.com</span></div>
-        <div class="sticker-tag">⚠️ <span>Original Fan-Artwork — keine offiziellen Vereinslogos</span></div>
+      <div class="print-step">
+        <div class="print-step-num">02</div>
+        <div><h4>Beim Druckshop ausdrucken</h4><p>DM Drogerie, Flyeralarm, Stickermule oder lokaler Copyshop. 8–10cm Größe empfohlen.</p></div>
       </div>
+      <div class="print-step">
+        <div class="print-step-num">03</div>
+        <div><h4>Sticker irgendwo droppen</h4><p>Bar, Laterne, Hostel, Gym, Flughafen — überall wo Thai-Expats auftauchen.</p></div>
+      </div>
+      <div class="print-step">
+        <div class="print-step-num">04</div>
+        <div><h4>Foto machen & posten</h4><p>@portfc_tour taggen + #PortFConTour. Jeder Post wird gerepostet!</p></div>
+      </div>
+      <a href="https://github.com/lukaszoll9/portfc-on-tour/tree/main/sticker-designs" target="_blank" class="btn-p" style="margin-top:.5rem">SVG kostenlos downloaden →</a>
     </div>
   </div>
-  <div class="shop-info">
-    <div class="shop-info-row"><div class="shop-info-icon">📥</div><div class="shop-info-text"><strong>Kostenloser Download</strong> — alle Dateien auf <a href="https://github.com/lukaszoll9/portfc-on-tour" target="_blank">GitHub</a>. Einfach beim lokalen Druckshop ausdrucken.</div></div>
-    <div class="shop-info-row"><div class="shop-info-icon">📦</div><div class="shop-info-text"><strong>Sammelbestellungen</strong> für Fangruppen — <a href="mailto:lukasfra437@gmail.com">lukasfra437@gmail.com</a></div></div>
-    <div class="shop-info-row"><div class="shop-info-icon">⚠️</div><div class="shop-info-text" style="color:rgba(255,255,255,0.25);">Alle Designs sind eigene Fan-Kreationen. Keine offiziellen Port FC Logos. Nicht-kommerzielles Fan-Projekt. § 19 UStG.</div></div>
+
+  <div class="print-tips">
+    <div class="print-tip"><div class="print-tip-icon">📐</div><h5>Empfohlene Größe</h5><p>8×8cm rund oder 10×6cm rechteckig. Wetterfest laminiert hält am längsten.</p></div>
+    <div class="print-tip"><div class="print-tip-icon">🖨️</div><h5>Wo drucken?</h5><p>Flyeralarm.de, Stickermule.com oder einfach DM Drogerie (Fotoabzüge).</p></div>
+    <div class="print-tip"><div class="print-tip-icon">📍</div><h5>Beste Spots</h5><p>Thai Restaurants, Muay Thai Gyms, Expat-Bars, Hostels, Flughäfen.</p></div>
+    <div class="print-tip"><div class="print-tip-icon">📸</div><h5>Foto posten</h5><p>Immer Foto machen! @portfc_tour taggen → wir reposten dich.</p></div>
   </div>
 </section>
 
-<!-- INSTAGRAM -->
-<section class="section section-dark" id="join">
+<!-- INSTAGRAM CTA -->
+<section class="sec sec-dark" id="instagram">
   <div class="ig-cta">
     <div class="ig-handle">@portfc_tour</div>
-    <p class="ig-sub">Folge für Live-Sightings, Reposts und Community-Drops. Jeder Fan-Post wird gerepostet.</p>
-    <div class="hashtags">
-      <span class="hashtag">#PortFConTour</span>
-      <span class="hashtag">#PortFCBangkok</span>
-      <span class="hashtag">#ThaiFootball</span>
-      <span class="hashtag">#ท่าเรือ</span>
-      <span class="hashtag">#KhlongToeiArmy</span>
-      <span class="hashtag">#กองทัพคลองเตย</span>
+    <p class="ig-sub">Folge für Live-Sightings, Reposts und Community-Drops.<br>Jeder Fan-Post wird gerepostet — garantiert.</p>
+    <div class="tags">
+      <span class="tag">#PortFConTour</span>
+      <span class="tag">#PortFCBangkok</span>
+      <span class="tag">#ThaiFootball</span>
+      <span class="tag">#ท่าเรือ</span>
+      <span class="tag">#KhlongToeiArmy</span>
     </div>
-    <a href="https://instagram.com/portfc_tour" class="btn-primary" target="_blank">Auf Instagram folgen →</a>
+    <a href="https://instagram.com/portfc_tour" class="btn-p" target="_blank">Auf Instagram folgen →</a>
   </div>
 </section>
 
 <!-- FOUNDED BY -->
-<section style="background:#0D0D0D; padding:2.5rem 1.5rem; border-top:1px solid var(--border);">
-  <div style="max-width:480px;">
-    <div style="font-size:10px; letter-spacing:0.18em; text-transform:uppercase; color:rgba(255,255,255,0.3); margin-bottom:1rem;">Founded by</div>
+<section style="background:#0D0D0D;padding:2rem 1.5rem;border-top:1px solid var(--br)">
+  <div style="max-width:440px">
+    <div style="font-size:10px;letter-spacing:.15em;text-transform:uppercase;color:rgba(255,255,255,0.25);margin-bottom:.75rem">Founded by</div>
     <a href="https://instagram.com/lukas.zolly" target="_blank" rel="noopener"
-       style="display:inline-flex; align-items:center; gap:1rem; text-decoration:none; background:#1A1A1A; border:1px solid rgba(255,255,255,0.08); border-radius:14px; padding:1rem 1.25rem; transition:border-color 0.2s;"
+       style="display:inline-flex;align-items:center;gap:1rem;text-decoration:none;background:#1a1a1a;border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:.9rem 1.1rem;transition:border-color .2s"
        onmouseover="this.style.borderColor='#E87722'" onmouseout="this.style.borderColor='rgba(255,255,255,0.08)'">
-      <div style="width:44px; height:44px; background:linear-gradient(135deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888); border-radius:10px; display:flex; align-items:center; justify-content:center; flex-shrink:0;">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="5"/><circle cx="17.5" cy="6.5" r="1.5" fill="white" stroke="none"/></svg>
+      <div style="width:40px;height:40px;background:linear-gradient(135deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888);border-radius:9px;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="5"/><circle cx="17.5" cy="6.5" r="1.5" fill="white" stroke="none"/></svg>
       </div>
       <div>
-        <div style="font-size:15px; font-weight:600; color:white;">@lukas.zolly</div>
-        <div style="font-size:12px; color:rgba(255,255,255,0.4); margin-top:2px;">Follow on Instagram →</div>
+        <div style="font-size:14px;font-weight:600;color:white">@lukas.zolly</div>
+        <div style="font-size:11px;color:rgba(255,255,255,0.4);margin-top:1px">Follow on Instagram →</div>
       </div>
     </a>
   </div>
@@ -398,14 +339,14 @@
   <div class="footer-grid">
     <div>
       <div class="footer-logo">Port FC <span>on Tour</span></div>
-      <p>Ein Fan-Projekt. Nicht verbunden mit Port FC Bangkok oder der PAT.</p>
+      <p>Unofficial fan project. Not affiliated with Port FC Bangkok or the Port Authority of Thailand (PAT).</p>
     </div>
     <div class="footer-col">
       <h5>Links</h5>
       <ul>
         <li><a href="https://instagram.com/portfc_tour" target="_blank">@portfc_tour</a></li>
         <li><a href="https://instagram.com/lukas.zolly" target="_blank">@lukas.zolly</a></li>
-        <li><a href="https://github.com/lukaszoll9/portfc-on-tour" target="_blank">GitHub Repo</a></li>
+        <li><a href="https://github.com/lukaszoll9/portfc-on-tour" target="_blank">GitHub (Sticker-Download)</a></li>
         <li><a href="mailto:lukasfra437@gmail.com">Kontakt</a></li>
         <li><a href="#impressum">Impressum</a></li>
         <li><a href="#datenschutz">Datenschutz</a></li>
@@ -413,74 +354,76 @@
     </div>
   </div>
   <hr class="fd"/>
-  <p>Founded by <a href="https://instagram.com/lukas.zolly" target="_blank">@lukas.zolly</a> · Built with 🟠 by the community · Port FC Bangkok · Khlong Toei · 1967 · © 2025</p>
+  <p>Founded by <a href="https://instagram.com/lukas.zolly" target="_blank">@lukas.zolly</a> · Port FC Bangkok · Khlong Toei · Est. 1967 · © 2025 Fan Project</p>
 </footer>
 
 <!-- IMPRESSUM -->
-<section class="legal-section" id="impressum">
+<section class="legal" id="impressum">
   <h2>Impressum</h2>
   <h3>Angaben gemäß § 5 TMG</h3>
   <p>Lukas Nico Schäfer<br>Kielberger Straße 15<br>50969 Köln-Zollstock<br>Deutschland</p>
   <h3>Kontakt</h3>
   <p>E-Mail: <a href="mailto:lukasfra437@gmail.com">lukasfra437@gmail.com</a></p>
-  <h3>Hinweis zur Vereinsunabhängigkeit</h3>
-  <p>Dies ist ein privates Fan-Projekt ohne Verbindung zum offiziellen Port FC Bangkok, der Port Authority of Thailand oder deren Sponsoren. Alle Designs sind eigene Fan-Kreationen.</p>
-  <h3>Umsatzsteuer (§ 19 UStG)</h3>
+  <h3>Hinweis</h3>
+  <p>Privates Fan-Projekt ohne Verbindung zum offiziellen Port FC Bangkok, der Port Authority of Thailand oder deren Sponsoren. Alle Designs sind eigene Fan-Kreationen. Keine offiziellen Vereinslogos verwendet.</p>
+  <h3>Umsatzsteuer (§ 19 UStG — Kleinunternehmerregelung)</h3>
   <p>Gemäß § 19 UStG wird keine Umsatzsteuer berechnet.</p>
   <hr class="ld" id="datenschutz"/>
   <h2>Datenschutzerklärung</h2>
   <h3>1. Verantwortlicher</h3>
   <p>Lukas Nico Schäfer, Kielberger Straße 15, 50969 Köln, lukasfra437@gmail.com</p>
   <h3>2. Hosting</h3>
-  <p>GitHub Pages (GitHub Inc.). Näheres: <a href="https://docs.github.com/en/site-policy/privacy-policies/github-privacy-statement" target="_blank">GitHub Datenschutzerklärung</a>.</p>
-  <h3>3. Formular (Formspree)</h3>
-  <p>Das Sighting-Formular wird über Formspree verarbeitet. Näheres: <a href="https://formspree.io/legal/privacy-policy" target="_blank">Formspree Privacy Policy</a>.</p>
+  <p>GitHub Pages (GitHub Inc., USA). Näheres: <a href="https://docs.github.com/en/site-policy/privacy-policies/github-privacy-statement" target="_blank">GitHub Datenschutz</a>.</p>
+  <h3>3. Kontaktformular (Formspree)</h3>
+  <p>Das Sighting-Formular wird über Formspree verarbeitet. Näheres: <a href="https://formspree.io/legal/privacy-policy" target="_blank">Formspree Privacy</a>.</p>
   <h3>4. Keine Cookies / kein Tracking</h3>
-  <p>Diese Website setzt keine eigenen Cookies und verwendet kein Tracking. Die Leaflet-Karte lädt Kartenkacheln von OpenStreetMap.</p>
+  <p>Keine eigenen Cookies, kein Analytics. Die Leaflet-Karte lädt Tiles von OpenStreetMap (openstreetmap.org).</p>
   <h3>5. Ihre Rechte</h3>
-  <p>Auskunft, Berichtigung, Löschung — Beschwerde bei der Landesbeauftragten für Datenschutz NRW.</p>
+  <p>Auskunft, Berichtigung, Löschung nach DSGVO. Beschwerde: Landesbeauftragte für Datenschutz NRW.</p>
 </section>
 
 <script>
-function toggleMenu() { document.getElementById('mobileMenu').classList.toggle('open'); }
-document.addEventListener('click', function(e) {
-  const menu = document.getElementById('mobileMenu');
-  const burger = document.querySelector('.nav-hamburger');
-  if (!menu.contains(e.target) && !burger.contains(e.target)) menu.classList.remove('open');
+// Hamburger
+function toggleMenu(){document.getElementById('mobNav').classList.toggle('open')}
+document.addEventListener('click',function(e){
+  const m=document.getElementById('mobNav'),b=document.querySelector('.hamburger');
+  if(!m.contains(e.target)&&!b.contains(e.target))m.classList.remove('open');
 });
 
-// Sighting form AJAX
-document.getElementById('sighting-form').addEventListener('submit', function(e) {
+// Form
+document.getElementById('sighting-form').addEventListener('submit',function(e){
   e.preventDefault();
-  const btn = this.querySelector('.btn-upload');
-  btn.textContent = 'Wird gesendet...';
-  btn.disabled = true;
-  fetch(this.action, { method:'POST', body:new FormData(this), headers:{'Accept':'application/json'} })
-    .then(r => {
-      if(r.ok) {
-        this.innerHTML = '<div style="background:rgba(232,119,34,0.1);border:1px solid rgba(232,119,34,0.3);border-radius:14px;padding:1.5rem;text-align:center;"><div style="font-size:28px;margin-bottom:0.5rem;">🟠</div><h3 style="font-family:Bebas Neue,sans-serif;font-size:24px;color:white;margin-bottom:0.5rem;">Spot received!</h3><p style="font-size:13px;color:rgba(255,255,255,0.6);">Wir setzen dich auf die Karte und reposten dich auf @portfc_tour.</p></div>';
-      } else { btn.textContent = '📍 Jetzt melden →'; btn.disabled = false; }
+  const btn=this.querySelector('.ubtn');
+  btn.textContent='Wird gesendet...';btn.disabled=true;
+  fetch(this.action,{method:'POST',body:new FormData(this),headers:{'Accept':'application/json'}})
+    .then(r=>{
+      if(r.ok){
+        this.innerHTML='<div style="background:rgba(232,119,34,0.1);border:1px solid rgba(232,119,34,0.3);border-radius:12px;padding:1.5rem;text-align:center"><div style="font-size:26px;margin-bottom:.4rem">🟠</div><h3 style="font-family:Bebas Neue,sans-serif;font-size:22px;color:white;margin-bottom:.3rem">Spot received!</h3><p style="font-size:13px;color:rgba(255,255,255,0.6)">Wir setzen dich auf die Karte und reposten dich auf @portfc_tour.</p></div>';
+      } else {btn.textContent='📍 Spot melden →';btn.disabled=false;}
     });
 });
 
 // Map
-const map = L.map('sighting-map', { center:[20,20], zoom:2, scrollWheelZoom:false });
-L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
-  attribution:'© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> © <a href="https://carto.com/">CARTO</a>',
-  subdomains:'abcd', maxZoom:19
-}).addTo(map);
-const homeIcon = L.divIcon({ className:'', html:`<div style="width:18px;height:18px;background:#E87722;border-radius:50%;border:3px solid white;box-shadow:0 0 14px rgba(232,119,34,0.9);"></div>`, iconSize:[18,18], iconAnchor:[9,9] });
-const sIcon = L.divIcon({ className:'', html:`<div style="width:13px;height:13px;background:#1B4F91;border-radius:50%;border:2px solid rgba(255,255,255,0.6);box-shadow:0 0 8px rgba(27,79,145,0.8);"></div>`, iconSize:[13,13], iconAnchor:[6,6] });
-[
-  {lat:13.7563,lng:100.5018,name:"Bangkok, Thailand 🟠",note:"Home — PAT Stadium, Klong Toei",icon:homeIcon},
-  {lat:52.5200,lng:13.4050,name:"Berlin, Deutschland",note:"Tempelhofer Feld",icon:sIcon},
-  {lat:35.6762,lng:139.6503,name:"Tokyo, Japan",note:"Shibuya",icon:sIcon},
-  {lat:51.5074,lng:-0.1278,name:"London, UK",note:"Soho",icon:sIcon},
-  {lat:-33.8688,lng:151.2093,name:"Sydney, Australien",note:"Muay Thai Gym",icon:sIcon},
-  {lat:34.0522,lng:-118.2437,name:"Los Angeles, USA",note:"Thai Town",icon:sIcon},
-  {lat:48.8566,lng:2.3522,name:"Paris, Frankreich",note:"Community drop",icon:sIcon},
-  {lat:1.3521,lng:103.8198,name:"Singapore",note:"Expat community",icon:sIcon},
-].forEach(s => L.marker([s.lat,s.lng],{icon:s.icon}).addTo(map).bindPopup(`<strong style="color:#E87722;">${s.name}</strong><br><span style="font-size:12px;">${s.note}</span>`));
+const mapEl=document.getElementById('map');
+if(mapEl){
+  const m=L.map('map',{center:[20,20],zoom:2,scrollWheelZoom:false});
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',{
+    attribution:'© <a href="https://www.openstreetmap.org/copyright">OSM</a> © <a href="https://carto.com/">CARTO</a>',
+    subdomains:'abcd',maxZoom:19
+  }).addTo(m);
+  const hi=L.divIcon({className:'',html:`<div style="width:16px;height:16px;background:#E87722;border-radius:50%;border:3px solid white;box-shadow:0 0 12px rgba(232,119,34,0.9)"></div>`,iconSize:[16,16],iconAnchor:[8,8]});
+  const si=L.divIcon({className:'',html:`<div style="width:12px;height:12px;background:#1B4F91;border-radius:50%;border:2px solid rgba(255,255,255,0.6);box-shadow:0 0 7px rgba(27,79,145,0.8)"></div>`,iconSize:[12,12],iconAnchor:[6,6]});
+  [
+    {lat:13.7563,lng:100.5018,n:"Bangkok 🟠",t:"Home — PAT Stadium, Klong Toei",i:hi},
+    {lat:52.52,lng:13.405,n:"Berlin",t:"Tempelhofer Feld",i:si},
+    {lat:35.676,lng:139.65,n:"Tokyo",t:"Shibuya",i:si},
+    {lat:51.507,lng:-0.128,n:"London",t:"Soho",i:si},
+    {lat:-33.869,lng:151.209,n:"Sydney",t:"Muay Thai Gym",i:si},
+    {lat:34.052,lng:-118.244,n:"Los Angeles",t:"Thai Town",i:si},
+    {lat:48.857,lng:2.352,n:"Paris",t:"Community drop",i:si},
+    {lat:1.352,lng:103.82,n:"Singapore",t:"Expat community",i:si},
+  ].forEach(s=>L.marker([s.lat,s.lng],{icon:s.i}).addTo(m).bindPopup(`<strong style="color:#E87722">${s.n}</strong><br><span style="font-size:11px">${s.t}</span>`));
+}
 </script>
 </body>
 </html>
