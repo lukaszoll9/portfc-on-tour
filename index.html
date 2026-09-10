@@ -190,6 +190,20 @@
     @media(min-width:640px){.sec,.upload,.founded{padding-left:2.5rem;padding-right:2.5rem}}
     @media(min-width:1024px){.sec,.upload,.founded{padding-left:5rem;padding-right:5rem}}
   </style>
+  <link rel="manifest" href="/manifest.json"/>
+  <link rel="apple-touch-icon" sizes="180x180" href="/icon-192.png"/>
+  <!-- OneSignal Web Push -->
+  <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
+  <script>
+    window.OneSignalDeferred = window.OneSignalDeferred || [];
+    OneSignalDeferred.push(async function(OneSignal) {
+      await OneSignal.init({
+        appId: "a5845680-aaad-4c1a-b7a2-38cf15054c9a",
+        notifyButton: { enable: false },
+        allowLocalhostAsSecureOrigin: true,
+      });
+    });
+  </script>
 </head>
 <body>
 
@@ -203,6 +217,7 @@
     <li><a href="#impressum">Impressum</a></li>
   </ul>
   <a href="https://instagram.com/portfc_tour" class="nav-btn" target="_blank" rel="noopener">@portfc_tour</a>
+  <button id="notifyBtn" class="btn-s" onclick="requestNotifyPermission()" style="font-size:13px;padding:6px 12px;cursor:pointer;border:1px solid var(--o);background:transparent;color:var(--o);border-radius:6px;margin-left:8px">🔔 Benachrichtigungen</button>
 </nav>
 
 <!-- HERO -->
