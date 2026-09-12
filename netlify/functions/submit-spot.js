@@ -22,10 +22,10 @@ exports.handler = async (event) => {
           Name: body.name || '',
           City: body.city || '',
           Instagram: body.ig || '',
-          PhotoURL: body.photoUrl || '',
-          Lat: body.lat ? parseFloat(body.lat) : null,
-          Lng: body.lng ? parseFloat(body.lng) : null,
-          Time: body.time || new Date().toISOString()
+          'Photo URL': body.photoUrl || '',
+          Latitude: body.lat ? parseFloat(body.lat) : null,
+          Longitude: body.lng ? parseFloat(body.lng) : null,
+          'Submitted At': body.time || new Date().toISOString()
         },
         typecast: true
       })
