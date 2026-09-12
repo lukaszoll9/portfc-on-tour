@@ -7,7 +7,7 @@ exports.handler = async (event) => {
 
   try {
     const res = await fetch(
-      `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/Sightings?sort[0][field]=Time&sort[0][direction]=desc&maxRecords=100`,
+      `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/Sightings?sort%5B0%5D%5Bfield%5D=Submitted+At&sort%5B0%5D%5Bdirection%5D=desc&maxRecords=100`,
       {
         headers: { 'Authorization': `Bearer ${AIRTABLE_TOKEN}` }
       }
@@ -19,10 +19,10 @@ exports.handler = async (event) => {
       name: r.fields.Name,
       city: r.fields.City,
       ig: r.fields.Instagram,
-      photoUrl: r.fields.PhotoURL,
-      lat: r.fields.Lat,
-      lng: r.fields.Lng,
-      time: r.fields.Time
+      photoUrl: r.fields['Photo URL'],
+      lat: r.fields.Latitude,
+      lng: r.fields.Longitude,
+      time: r.fields['Submitted At']
     }));
 
     return {
