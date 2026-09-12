@@ -16,7 +16,6 @@
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"/>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
-  <!-- OneSignal Web Push -->
   <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
   <script>
     window.OneSignalDeferred = window.OneSignalDeferred || [];
@@ -50,6 +49,14 @@
     .lang-btn:hover,.lang-btn.active{border-color:var(--o);opacity:1}
     .bell-btn{background:transparent;border:1px solid rgba(232,119,34,0.4);color:var(--o);border-radius:20px;padding:6px 12px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;transition:background .2s;white-space:nowrap}
     .bell-btn:hover{background:rgba(232,119,34,0.1)}
+
+    /* PWA INSTALL BANNER */
+    #pwa-banner{display:none;position:fixed;bottom:0;left:0;right:0;z-index:200;background:linear-gradient(135deg,#1B4F91,#0D2E5A);border-top:1px solid rgba(255,255,255,0.1);padding:1rem 1.25rem;align-items:center;gap:1rem}
+    #pwa-banner.show{display:flex}
+    .pwa-text{flex:1;font-size:13px;line-height:1.4}
+    .pwa-text strong{display:block;font-size:14px;margin-bottom:2px}
+    .pwa-btn{background:var(--o);color:var(--w);border:none;border-radius:20px;padding:8px 16px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;white-space:nowrap}
+    .pwa-close{background:transparent;border:none;color:rgba(255,255,255,0.4);font-size:20px;cursor:pointer;padding:0 4px;line-height:1}
 
     /* HERO */
     .hero{min-height:100svh;padding:5rem 1.25rem 2.5rem;display:flex;flex-direction:column;justify-content:center;position:relative;overflow:hidden}
@@ -117,7 +124,13 @@
     .success-box{background:rgba(232,119,34,0.08);border:1px solid rgba(232,119,34,0.25);border-radius:14px;padding:2rem;text-align:center;display:none}
     .success-box.show{display:block}
     .success-box h3{font-family:'Bebas Neue',sans-serif;font-size:28px;margin:.5rem 0 .3rem}
-    .success-box p{font-size:13px;color:var(--m);line-height:1.6}
+    .success-box p{font-size:13px;color:var(--m);line-height:1.6;margin-bottom:1rem}
+    .share-btns{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:.75rem}
+    .share-btn{padding:9px 16px;border-radius:20px;font-size:13px;font-weight:600;border:none;cursor:pointer;font-family:inherit;transition:opacity .2s}
+    .share-btn:hover{opacity:.85}
+    .share-native{background:var(--o);color:#fff}
+    .share-copy{background:rgba(255,255,255,0.1);color:var(--w);border:1px solid rgba(255,255,255,0.15)}
+    .share-ig{background:linear-gradient(135deg,#f09433,#dc2743,#bc1888);color:#fff}
 
     /* MAP */
     .sec{padding:4rem 1.25rem}
@@ -148,12 +161,26 @@
     .rank-label{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,0.35);margin-bottom:.9rem}
     .rank-empty{color:rgba(255,255,255,0.25);font-size:12px;text-align:center;padding:1rem 0}
 
-    /* IG */
+    /* ACHIEVEMENTS */
+    .achieve-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px;margin-top:1rem}
+    .badge{background:#1a1a1a;border:1px solid rgba(255,255,255,0.07);border-radius:14px;padding:1rem;text-align:center;transition:border-color .3s,transform .2s}
+    .badge.unlocked{border-color:rgba(232,119,34,0.5);background:rgba(232,119,34,0.06)}
+    .badge.unlocked:hover{transform:translateY(-2px)}
+    .badge-icon{font-size:30px;margin-bottom:.4rem}
+    .badge-name{font-size:12px;font-weight:600;margin-bottom:2px}
+    .badge-desc{font-size:10px;color:var(--m);line-height:1.4}
+    .badge.locked{opacity:.35}
+    .badge-lock{font-size:18px;margin-bottom:.4rem;filter:grayscale(1)}
+
+    /* IG SECTION */
     .ig-box{background:linear-gradient(135deg,#1B4F91,#0D2E5A);border-radius:14px;padding:2.5rem 1.25rem;text-align:center}
     .ig-handle{font-family:'Bebas Neue',sans-serif;font-size:36px;margin-bottom:.4rem}
     .ig-sub{font-size:14px;color:rgba(255,255,255,0.6);margin-bottom:1.25rem;line-height:1.5}
     .tags{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin-bottom:1.25rem}
     .tag{font-size:11px;padding:4px 10px;border-radius:20px;border:1px solid rgba(255,255,255,0.2);color:rgba(255,255,255,0.65)}
+    .ig-posts{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;margin:.25rem 0 1.25rem;border-radius:10px;overflow:hidden}
+    .ig-post{aspect-ratio:1;background:rgba(255,255,255,0.06);display:flex;align-items:center;justify-content:center;font-size:22px;cursor:pointer;transition:background .2s}
+    .ig-post:hover{background:rgba(255,255,255,0.1)}
 
     /* FOUNDED */
     .founded{padding:2rem 1.25rem;border-top:1px solid var(--br)}
@@ -163,6 +190,17 @@
     .ig-icon{width:40px;height:40px;background:linear-gradient(135deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888);border-radius:9px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
     .founder-name{font-size:14px;font-weight:600;color:var(--w)}
     .founder-sub{font-size:11px;color:var(--m);margin-top:1px}
+
+    /* ADMIN */
+    #admin-overlay{display:none;position:fixed;inset:0;z-index:300;background:rgba(0,0,0,0.95);overflow-y:auto;padding:2rem 1.25rem}
+    #admin-overlay.show{display:block}
+    .admin-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem}
+    .admin-close{background:transparent;border:1px solid rgba(255,255,255,0.2);color:var(--w);border-radius:20px;padding:6px 16px;cursor:pointer;font-family:inherit;font-size:13px}
+    .admin-table{width:100%;border-collapse:collapse;font-size:12px}
+    .admin-table th{text-align:left;padding:.5rem .75rem;color:var(--o);border-bottom:1px solid var(--br);font-size:10px;letter-spacing:.1em;text-transform:uppercase}
+    .admin-table td{padding:.6rem .75rem;border-bottom:1px solid rgba(255,255,255,0.04);vertical-align:middle}
+    .admin-table tr:hover td{background:rgba(255,255,255,0.02)}
+    .admin-photo{width:44px;height:44px;object-fit:cover;border-radius:6px;background:#222}
 
     /* FOOTER */
     footer{background:#080808;padding:2.5rem 1.25rem 2rem;border-top:1px solid var(--br)}
@@ -187,6 +225,28 @@
 </head>
 <body>
 
+<!-- PWA INSTALL BANNER -->
+<div id="pwa-banner">
+  <div class="pwa-text">
+    <strong>📲 Add to Home Screen</strong>
+    <span data-i18n="pwa_hint">Get the Port FC app for faster spot reporting</span>
+  </div>
+  <button class="pwa-btn" id="pwaInstallBtn" data-i18n="pwa_install">Install</button>
+  <button class="pwa-close" onclick="dismissPWA()">✕</button>
+</div>
+
+<!-- ADMIN OVERLAY -->
+<div id="admin-overlay">
+  <div class="admin-header">
+    <div>
+      <div style="font-family:'Bebas Neue',sans-serif;font-size:28px">🔒 Admin Dashboard</div>
+      <div style="font-size:11px;color:var(--m);margin-top:2px">All submitted spots — private</div>
+    </div>
+    <button class="admin-close" onclick="closeAdmin()">Close ✕</button>
+  </div>
+  <div id="admin-content"></div>
+</div>
+
 <!-- NAV -->
 <nav>
   <a href="#" class="logo">Port FC <span>on Tour</span></a>
@@ -195,6 +255,7 @@
     <li><a href="#map" data-i18n="nav_map">Map</a></li>
     <li><a href="#print" data-i18n="nav_sticker">Sticker</a></li>
     <li><a href="#impressum" data-i18n="nav_legal">Legal</a></li>
+    <li><a href="javascript:openAdmin()" style="color:rgba(255,255,255,0.2);font-size:11px">⚙️</a></li>
   </ul>
   <a href="https://instagram.com/portfc_tour" class="nav-btn" target="_blank" rel="noopener">@portfc_tour</a>
   <div class="lang-btns">
@@ -238,7 +299,7 @@
   <div class="cnt"><div class="cnt-n">∞</div><div class="cnt-l" data-i18n="cnt_away">Away Games</div></div>
 </div>
 
-<!-- HOW IT WORKS -->
+<!-- UPLOAD -->
 <section class="sec" id="upload">
   <div class="upload-inner">
     <div class="sec-label">Community</div>
@@ -250,9 +311,8 @@
       <div class="step-dot" id="dot2"></div>
     </div>
 
-    <!-- STEP 1: Photo + Details -->
+    <!-- STEP 1 -->
     <div class="step-block show" id="s1">
-      <!-- Photo tap area -->
       <div class="photo-area" id="photoArea" onclick="document.getElementById('photoInput').click()">
         <img id="photoPreview" src="" alt="" style="display:none"/>
         <div class="photo-placeholder" id="photoPlaceholder">
@@ -262,22 +322,17 @@
         </div>
       </div>
       <input type="file" id="photoInput" accept="image/*" capture="environment" style="display:none"/>
-
-      <!-- GPS auto-status -->
       <div class="gps-status" id="gpsStatus">
         <span id="gpsIcon">📡</span>
         <span id="gpsText" data-i18n="gps_detecting">Detecting your location…</span>
       </div>
-
-      <!-- Name + Instagram -->
       <input type="text" class="inp" id="inpName" data-i18n-ph="ph_name" placeholder="Your name / nickname *" required/>
       <input type="text" class="inp" id="inpIg" placeholder="@instagram (optional)"/>
       <input type="text" class="inp" id="inpCity" data-i18n-ph="ph_city" placeholder="City (auto-detected or type manually)" style="display:none"/>
-
       <button class="btn-p" id="btn1" onclick="goStep(2)" style="width:100%;justify-content:center" disabled data-i18n="btn_next">Next → Review</button>
     </div>
 
-    <!-- STEP 2: Summary -->
+    <!-- STEP 2 -->
     <div class="step-block" id="s2">
       <div class="summary-box">
         <img id="summaryImg" src="" alt=""/>
@@ -299,6 +354,11 @@
       <div style="font-size:36px">🟠</div>
       <h3 data-i18n="success_title">Spot received!</h3>
       <p data-i18n="success_sub">Your spot is on the map.<br>We'll repost you on @portfc_tour!</p>
+      <div class="share-btns">
+        <button class="share-btn share-native" onclick="shareSpot()" data-i18n="share_native">📤 Share Spot</button>
+        <button class="share-btn share-ig" onclick="window.open('https://instagram.com/portfc_tour','_blank')" data-i18n="share_ig">📷 @portfc_tour</button>
+        <button class="share-btn share-copy" onclick="copySpotLink()" id="copyBtn" data-i18n="share_copy">🔗 Copy Link</button>
+      </div>
     </div>
   </div>
 </section>
@@ -314,7 +374,6 @@
   </div>
   <div id="portfc-map"></div>
   <div class="slist" id="sightingsList">
-    <!-- Bangkok HQ always shown -->
     <div class="sight">
       <div class="sight-flag">🇹🇭</div>
       <div>
@@ -367,11 +426,24 @@
   </div>
 </section>
 
+<!-- ACHIEVEMENTS -->
+<section class="sec sec-mid" id="achievements">
+  <div class="sec-label">Your Badges</div>
+  <h2>Achievements 🏅</h2>
+  <p class="body" data-i18n="achieve_sub">Unlock badges by dropping spots around the world.</p>
+  <div class="achieve-grid" id="achieveGrid"></div>
+</section>
+
 <!-- INSTAGRAM CTA -->
 <section class="sec sec-dark">
   <div class="ig-box">
     <div class="ig-handle">@portfc_tour</div>
     <p class="ig-sub" data-i18n="ig_sub">Follow for live sightings, reposts and community drops.<br>Every fan post gets reposted — guaranteed.</p>
+    <div class="ig-posts">
+      <div class="ig-post" onclick="window.open('https://instagram.com/portfc_tour','_blank')" title="View on Instagram">📸</div>
+      <div class="ig-post" onclick="window.open('https://instagram.com/portfc_tour','_blank')" title="View on Instagram">🟠</div>
+      <div class="ig-post" onclick="window.open('https://instagram.com/portfc_tour','_blank')" title="View on Instagram">🌍</div>
+    </div>
     <div class="tags">
       <span class="tag">#PortFConTour</span>
       <span class="tag">#PortFCBangkok</span>
@@ -420,7 +492,7 @@
   <p>Founded by <a href="https://instagram.com/lukas.zolly" target="_blank">@lukas.zolly</a> · Port FC Bangkok · Khlong Toei · Est. 1967 · © 2025</p>
 </footer>
 
-<!-- IMPRESSUM -->
+<!-- LEGAL -->
 <section class="legal" id="impressum">
   <h2>Impressum</h2>
   <h3>§ 5 TMG</h3>
@@ -444,7 +516,7 @@
 
 <script>
 // ─────────────────────────────────────────────
-// i18n — Translations
+// TRANSLATIONS
 // ─────────────────────────────────────────────
 const TRANSLATIONS = {
   en: {
@@ -462,6 +534,7 @@ const TRANSLATIONS = {
     btn_next:'Next → Review', btn_back:'← Back',
     btn_submit:'🟠 Add to Map!', submit_note:"We'll repost your spot on @portfc_tour within 48h.",
     success_title:'Spot received!', success_sub:"Your spot is on the map.<br>We'll repost you on @portfc_tour!",
+    share_native:'📤 Share Spot', share_ig:'📷 @portfc_tour', share_copy:'🔗 Copy Link',
     map_sub:'Bangkok is Home. Everything else is an away game. 🟠',
     leg_hq:'Bangkok HQ', leg_spot:'Sticker spotted',
     print_title:'Print &amp; Drop.', print_sub:'Download the PNG, print at your local copy shop and stick it anywhere you travel.',
@@ -469,13 +542,15 @@ const TRANSLATIONS = {
     tip1:'8–10 cm recommended', tip2:'Laminate for weatherproofing', tip3:'Any local print shop', tip4:'Post your drop: @portfc_tour',
     rank_sub:'The most active sticker droppers worldwide.',
     rank_empty_spotter:'No spots yet — be the first!', rank_empty_country:'No countries yet', rank_empty_city:'No cities yet',
+    achieve_sub:'Unlock badges by dropping spots around the world.',
     ig_sub:'Follow for live sightings, reposts and community drops.<br>Every fan post gets reposted — guaranteed.',
     ig_btn:'Follow on Instagram →', founder_sub:'Follow on Instagram →',
-    footer_note:'Unofficial fan project. Not affiliated with Port FC Bangkok or PAT.', footer_contact:'Contact'
+    footer_note:'Unofficial fan project. Not affiliated with Port FC Bangkok or PAT.', footer_contact:'Contact',
+    pwa_hint:'Get the Port FC app for faster spot reporting', pwa_install:'Install'
   },
   de: {
     nav_spot:'📍 Spot melden', nav_map:'Karte', nav_sticker:'Sticker', nav_legal:'Impressum',
-    bell_btn:'🔔 Push',
+    bell_btn:'🔔 Push', disclaimer:'Inoffizielles Fan-Projekt · Nicht verbunden mit Port FC oder PAT',
     hero_sub:'Sticker scannen. Foto hochladen. Spot auf die Karte. Port FC Bangkok reist mit dir — von Klong Toei in die Welt.',
     hero_cta1:'📍 Spot jetzt melden →', hero_cta2:'Sticker drucken',
     stat_spots:'Spots', stat_stickers:'Sticker', stat_founded:'Gegründet',
@@ -488,6 +563,7 @@ const TRANSLATIONS = {
     btn_next:'Weiter → Prüfen', btn_back:'← Zurück',
     btn_submit:'🟠 Auf die Karte!', submit_note:'Wir reposten deinen Spot auf @portfc_tour innerhalb 48h.',
     success_title:'Spot erhalten!', success_sub:'Dein Spot kommt auf die Karte.<br>Wir reposten dich auf @portfc_tour!',
+    share_native:'📤 Spot teilen', share_ig:'📷 @portfc_tour', share_copy:'🔗 Link kopieren',
     map_sub:'Bangkok ist Home. Alles andere ist Auswärtsspiel. 🟠',
     leg_hq:'Bangkok HQ', leg_spot:'Sticker gesichtet',
     print_title:'Sticker drucken &amp; droppen.', print_sub:'Einfach PNG downloaden, beim Druckshop ausdrucken und loskleben.',
@@ -495,13 +571,15 @@ const TRANSLATIONS = {
     tip1:'8–10 cm empfohlen', tip2:'Wetterfest laminieren', tip3:'Lokaler Copyshop', tip4:'Foto melden: @portfc_tour',
     rank_sub:'Die aktivsten Sticker-Dropper weltweit.',
     rank_empty_spotter:'Noch keine Spots — sei der Erste!', rank_empty_country:'Noch keine Länder', rank_empty_city:'Noch keine Städte',
+    achieve_sub:'Schalte Badges frei, indem du Spots weltweit droppst.',
     ig_sub:'Folge für Live-Sightings, Reposts und Community-Drops.<br>Jeder Fan-Post wird gerepostet — garantiert.',
     ig_btn:'Auf Instagram folgen →', founder_sub:'Auf Instagram folgen →',
-    footer_note:'Privates Fan-Projekt. Keine Verbindung zu Port FC Bangkok oder PAT.', footer_contact:'Kontakt'
+    footer_note:'Privates Fan-Projekt. Keine Verbindung zu Port FC Bangkok oder PAT.', footer_contact:'Kontakt',
+    pwa_hint:'Port FC App installieren für schnelleres Spot-Melden', pwa_install:'Installieren'
   },
   th: {
     nav_spot:'📍 แจ้ง Spot', nav_map:'แผนที่', nav_sticker:'สติ๊กเกอร์', nav_legal:'กฎหมาย',
-    bell_btn:'🔔 แจ้งเตือน',
+    bell_btn:'🔔 แจ้งเตือน', disclaimer:'ชุมชนแฟนอิสระ ไม่เกี่ยวข้องกับพอร์ต เอฟซี หรือ PAT',
     hero_sub:'สแกนสติ๊กเกอร์ · อัปโหลดรูป · ขึ้นแผนที่ พอร์ต เอฟซี แบงค็อกเดินทางไปพร้อมคุณ — จากคลองเตยสู่โลก',
     hero_cta1:'📍 แจ้ง Spot ของคุณ →', hero_cta2:'พิมพ์สติ๊กเกอร์',
     stat_spots:'Spots', stat_stickers:'สติ๊กเกอร์', stat_founded:'ก่อตั้ง',
@@ -514,6 +592,7 @@ const TRANSLATIONS = {
     btn_next:'ต่อไป → ตรวจสอบ', btn_back:'← กลับ',
     btn_submit:'🟠 เพิ่มลงแผนที่!', submit_note:'เราจะรีโพสต์ spot ของคุณบน @portfc_tour ภายใน 48 ชั่วโมง',
     success_title:'ได้รับ Spot แล้ว!', success_sub:'Spot ของคุณอยู่บนแผนที่แล้ว<br>เราจะรีโพสต์คุณบน @portfc_tour!',
+    share_native:'📤 แชร์ Spot', share_ig:'📷 @portfc_tour', share_copy:'🔗 คัดลอกลิงก์',
     map_sub:'แบงค็อกคือบ้าน ที่อื่นคือเกมเยือน 🟠',
     leg_hq:'สำนักงานใหญ่แบงค็อก', leg_spot:'พบสติ๊กเกอร์',
     print_title:'พิมพ์ &amp; ปล่อย', print_sub:'ดาวน์โหลด PNG พิมพ์ที่ร้านก็อปปี้ แล้วแปะได้ทุกที่ที่คุณไป',
@@ -521,9 +600,11 @@ const TRANSLATIONS = {
     tip1:'ขนาดแนะนำ 8–10 ซม.', tip2:'เคลือบกันน้ำ', tip3:'ร้านก็อปปี้ใกล้บ้าน', tip4:'โพสต์ที่ปล่อย: @portfc_tour',
     rank_sub:'นักปล่อยสติ๊กเกอร์ที่แอคทีฟที่สุดทั่วโลก',
     rank_empty_spotter:'ยังไม่มี Spots — เป็นคนแรก!', rank_empty_country:'ยังไม่มีประเทศ', rank_empty_city:'ยังไม่มีเมือง',
+    achieve_sub:'ปลดล็อคแบดจ์โดยการปล่อย Spots ทั่วโลก',
     ig_sub:'ติดตามสำหรับการพบสติ๊กเกอร์สด รีโพสต์ และ community drops<br>ทุก Fan Post จะได้รับการรีโพสต์ — รับประกัน',
     ig_btn:'ติดตามบน Instagram →', founder_sub:'ติดตามบน Instagram →',
-    footer_note:'โปรเจกต์แฟนส่วนตัว ไม่เกี่ยวข้องกับพอร์ต เอฟซี แบงค็อก หรือ PAT', footer_contact:'ติดต่อ'
+    footer_note:'โปรเจกต์แฟนส่วนตัว ไม่เกี่ยวข้องกับพอร์ต เอฟซี แบงค็อก หรือ PAT', footer_contact:'ติดต่อ',
+    pwa_hint:'ติดตั้งแอป Port FC สำหรับการรายงาน Spot ที่เร็วขึ้น', pwa_install:'ติดตั้ง'
   }
 };
 
@@ -533,37 +614,64 @@ function setLang(lang) {
   if (!TRANSLATIONS[lang]) return;
   currentLang = lang;
   const t = TRANSLATIONS[lang];
-
-  // Text content
   document.querySelectorAll('[data-i18n]').forEach(el => {
     const k = el.getAttribute('data-i18n');
     if (t[k] !== undefined) el.innerHTML = t[k];
   });
-
-  // Placeholders
   document.querySelectorAll('[data-i18n-ph]').forEach(el => {
     const k = el.getAttribute('data-i18n-ph');
     if (t[k] !== undefined) el.placeholder = t[k];
   });
-
-  // Active button highlight
   ['en','de','th'].forEach(l => {
     const b = document.getElementById('btn-'+l);
     if (b) b.classList.toggle('active', l === lang);
   });
-
-  // html lang
   document.documentElement.lang = lang;
-
   try { localStorage.setItem('portfc_lang', lang); } catch(e){}
+  updateRankingDisplay();
+  renderAchievements();
 }
 
-// Init language
 (function(){
   let lang = 'en';
   try { lang = localStorage.getItem('portfc_lang') || 'en'; } catch(e){}
   setLang(lang);
 })();
+
+// ─────────────────────────────────────────────
+// PWA INSTALL BANNER
+// ─────────────────────────────────────────────
+let deferredPWAPrompt = null;
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  deferredPWAPrompt = e;
+  try {
+    const dismissed = localStorage.getItem('portfc_pwa_dismissed');
+    if (!dismissed) {
+      setTimeout(() => document.getElementById('pwa-banner').classList.add('show'), 3000);
+    }
+  } catch(err){}
+});
+
+document.getElementById('pwaInstallBtn').addEventListener('click', async () => {
+  if (!deferredPWAPrompt) return;
+  deferredPWAPrompt.prompt();
+  const { outcome } = await deferredPWAPrompt.userChoice;
+  deferredPWAPrompt = null;
+  document.getElementById('pwa-banner').classList.remove('show');
+  if (outcome === 'accepted') {
+    try { localStorage.setItem('portfc_pwa_dismissed', '1'); } catch(e){}
+  }
+});
+
+function dismissPWA() {
+  document.getElementById('pwa-banner').classList.remove('show');
+  try { localStorage.setItem('portfc_pwa_dismissed', '1'); } catch(e){}
+}
+
+window.addEventListener('appinstalled', () => {
+  document.getElementById('pwa-banner').classList.remove('show');
+});
 
 // ─────────────────────────────────────────────
 // UPLOAD FLOW
@@ -573,8 +681,9 @@ let detectedLat = null;
 let detectedLng = null;
 let detectedCity = '';
 let gpsReady = false;
+let lastSubmittedCity = '';
+let lastSubmittedName = '';
 
-// Auto-start GPS when page loads
 function startGPS() {
   const statusEl = document.getElementById('gpsStatus');
   const iconEl = document.getElementById('gpsIcon');
@@ -583,7 +692,6 @@ function startGPS() {
   if (!navigator.geolocation) {
     statusEl.className = 'gps-status err';
     iconEl.textContent = '📍';
-    textEl.setAttribute('data-i18n','gps_no');
     textEl.textContent = 'GPS not available — enter city manually';
     document.getElementById('inpCity').style.display = '';
     return;
@@ -593,7 +701,6 @@ function startGPS() {
     async (pos) => {
       detectedLat = pos.coords.latitude;
       detectedLng = pos.coords.longitude;
-
       try {
         const res = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${detectedLat}&lon=${detectedLng}&format=json&accept-language=en`);
         const data = await res.json();
@@ -605,7 +712,6 @@ function startGPS() {
       } catch(e) {
         detectedCity = `${detectedLat.toFixed(2)}, ${detectedLng.toFixed(2)}`;
       }
-
       statusEl.className = 'gps-status ok';
       iconEl.textContent = '✅';
       textEl.textContent = '📍 ' + (detectedCity || `${detectedLat.toFixed(3)}, ${detectedLng.toFixed(3)}`);
@@ -620,11 +726,8 @@ function startGPS() {
     { timeout: 12000, maximumAge: 60000, enableHighAccuracy: false }
   );
 }
-
-// Start GPS immediately
 startGPS();
 
-// Photo input
 document.getElementById('photoInput').addEventListener('change', function() {
   if (!this.files || !this.files[0]) return;
   photoFile = this.files[0];
@@ -648,14 +751,11 @@ function goStep(n) {
   if (n === 2) {
     const name = document.getElementById('inpName').value.trim();
     const city = document.getElementById('inpCity').value.trim() || detectedCity;
-
     if (!name) {
       document.getElementById('inpName').style.borderColor = '#E87722';
       document.getElementById('inpName').focus();
       return;
     }
-
-    // Populate summary
     document.getElementById('summaryImg').src = document.getElementById('photoPreview').src;
     const displayCity = city || (detectedLat ? `${detectedLat.toFixed(2)}, ${detectedLng.toFixed(2)}` : '—');
     document.getElementById('summaryCity').textContent = '📍 ' + displayCity;
@@ -663,7 +763,6 @@ function goStep(n) {
     const ig = document.getElementById('inpIg').value;
     document.getElementById('summaryIg').textContent = ig || '';
   }
-
   ['s1','s2'].forEach(id => document.getElementById(id).classList.remove('show'));
   ['dot1','dot2'].forEach(id => document.getElementById(id).classList.remove('active'));
   document.getElementById('s' + n).classList.add('show');
@@ -676,7 +775,6 @@ async function submitSighting() {
   btn.disabled = true;
 
   try {
-    // 1. Upload photo to Cloudinary
     let photoUrl = '';
     if (photoFile) {
       const fd = new FormData();
@@ -691,7 +789,10 @@ async function submitSighting() {
     const city = document.getElementById('inpCity').value.trim() || detectedCity;
     const ig = document.getElementById('inpIg').value.trim();
 
-    // 2. Submit to Formspree (email notification to Lukas)
+    lastSubmittedCity = city;
+    lastSubmittedName = name;
+
+    // Formspree email notification
     const fd2 = new FormData();
     fd2.append('name', name);
     fd2.append('city', city);
@@ -700,48 +801,85 @@ async function submitSighting() {
     fd2.append('lat', detectedLat || '');
     fd2.append('lng', detectedLng || '');
     fd2.append('_subject', '🟠 New Port FC Spot by ' + name + ' — ' + city);
-
     await fetch('https://formspree.io/f/xwlewgne', {
       method:'POST', body:fd2, headers:{'Accept':'application/json'}
     });
 
-    // 3. Save to local ranking + refresh display
+    // Airtable via Netlify Function (if available)
+    try {
+      await fetch('/.netlify/functions/submit-spot', {
+        method: 'POST',
+        headers: {'Content-Type':'application/json'},
+        body: JSON.stringify({ name, city, ig, photoUrl, lat: detectedLat, lng: detectedLng, time: new Date().toISOString() })
+      });
+    } catch(e) { /* Airtable optional — Formspree is the backup */ }
+
+    // Local ranking
     saveToRanking(name, city, ig, photoUrl);
 
-    // 4. Add to map dynamically
+    // Map marker
     if (detectedLat && detectedLng) {
       addSpotToMap(detectedLat, detectedLng, name, city);
     }
 
-    // 5. Show success
+    // Show success
     ['s1','s2'].forEach(id => document.getElementById(id).classList.remove('show'));
     document.getElementById('successBox').classList.add('show');
     updateRankingDisplay();
+    renderAchievements();
 
-    // Add to sightings list
     const sl = document.getElementById('dynamicSightings');
     const el = document.createElement('div');
     el.className = 'sight';
     el.innerHTML = `<div class="sight-flag">🌍</div><div><div class="sight-city">${city}</div><div class="sight-loc">by ${name}${ig ? ' · '+ig : ''}</div></div><div class="sight-badge">New</div>`;
     sl.prepend(el);
-
-    // Update spot counter
     updateSpotCount(1);
 
   } catch(err) {
     const t = TRANSLATIONS[currentLang];
     btn.textContent = t.btn_submit || '🟠 Add to Map!';
     btn.disabled = false;
-    alert('Upload error. Please try again.');
+    alert('Upload error. Please check your connection and try again.');
   }
 }
 
 // ─────────────────────────────────────────────
-// RANKING (localStorage with known seed spots)
+// SHARE FUNCTIONS
+// ─────────────────────────────────────────────
+async function shareSpot() {
+  const city = lastSubmittedCity || 'a new location';
+  const name = lastSubmittedName || 'A fan';
+  const text = `🟠 ${name} spotted a Port FC sticker in ${city}! Follow the tour → portfc-on-tour.com #PortFConTour`;
+  const url = 'https://portfc-on-tour.com';
+
+  if (navigator.share) {
+    try {
+      await navigator.share({ title: 'Port FC on Tour', text, url });
+    } catch(e) {}
+  } else {
+    copySpotLink();
+  }
+}
+
+async function copySpotLink() {
+  const btn = document.getElementById('copyBtn');
+  try {
+    await navigator.clipboard.writeText('https://portfc-on-tour.com #PortFConTour');
+    btn.textContent = '✅ Copied!';
+    setTimeout(() => {
+      const t = TRANSLATIONS[currentLang];
+      btn.textContent = t.share_copy || '🔗 Copy Link';
+    }, 2000);
+  } catch(e) {
+    btn.textContent = '⚠️ Failed';
+  }
+}
+
+// ─────────────────────────────────────────────
+// RANKING
 // ─────────────────────────────────────────────
 const RANK_KEY = 'portfc_ranking_v2';
 
-// Known real spots — shown as seed data
 const SEED_SPOTS = [
   { name:'Lukas', city:'Köln, Germany', ig:'@lukas.zolly', time:'2025-01-01T00:00:00Z' },
   { name:'Lukas', city:'Fuerteventura, Spain', ig:'@lukas.zolly', time:'2025-02-01T00:00:00Z' },
@@ -758,26 +896,21 @@ function saveToRanking(name, city, ig, photoUrl) {
 function updateRankingDisplay() {
   let data = [];
   try { data = JSON.parse(localStorage.getItem(RANK_KEY) || '[]'); } catch(e){}
-
-  // Merge with seed spots
   const merged = [...SEED_SPOTS, ...data];
   const t = TRANSLATIONS[currentLang];
-
   const medals = ['🥇','🥈','🥉','4️⃣','5️⃣'];
 
-  // Top Spotter
   const spotterCount = {};
   merged.forEach(d => { spotterCount[d.name] = (spotterCount[d.name] || 0) + 1; });
   const topSpotters = Object.entries(spotterCount).sort((a,b)=>b[1]-a[1]).slice(0,5);
   document.getElementById('rankingSpotter').innerHTML = topSpotters.length
     ? topSpotters.map((s,i) =>
         `<div style="display:flex;align-items:center;justify-content:space-between;padding:.4rem 0;${i<topSpotters.length-1?'border-bottom:1px solid rgba(255,255,255,0.05)':''}">
-          <span style="font-size:13px">${medals[i]} ${s[0]}</span>
-          <span style="font-family:'Bebas Neue',sans-serif;font-size:18px;color:#E87722">${s[1]}</span>
+          <span style="font-size:13px">${medals[i]||'·'} ${s[0]}</span>
+          <span style="font-family:Bebas Neue,sans-serif;font-size:18px;color:#E87722">${s[1]}</span>
         </div>`).join('')
     : `<div class="rank-empty">${t.rank_empty_spotter}</div>`;
 
-  // Top Countries
   const countryCount = {};
   merged.forEach(d => {
     if (!d.city) return;
@@ -789,12 +922,11 @@ function updateRankingDisplay() {
   document.getElementById('rankingCountries').innerHTML = topCountries.length
     ? topCountries.map((c,i) =>
         `<div style="display:flex;align-items:center;justify-content:space-between;padding:.4rem 0;${i<topCountries.length-1?'border-bottom:1px solid rgba(255,255,255,0.05)':''}">
-          <span style="font-size:13px">${medals[i]} ${c[0]}</span>
-          <span style="font-family:'Bebas Neue',sans-serif;font-size:18px;color:#E87722">${c[1]}</span>
+          <span style="font-size:13px">${medals[i]||'·'} ${c[0]}</span>
+          <span style="font-family:Bebas Neue,sans-serif;font-size:18px;color:#E87722">${c[1]}</span>
         </div>`).join('')
     : `<div class="rank-empty">${t.rank_empty_country}</div>`;
 
-  // Top Cities
   const cityCount = {};
   merged.forEach(d => {
     if (!d.city) return;
@@ -814,6 +946,140 @@ function updateRankingDisplay() {
 updateRankingDisplay();
 
 // ─────────────────────────────────────────────
+// ACHIEVEMENTS
+// ─────────────────────────────────────────────
+const ACHIEVEMENT_DEFS = [
+  {
+    id: 'first_drop',
+    icon: '🟠',
+    name: { en:'First Drop', de:'Erster Drop', th:'แรกเลย' },
+    desc: { en:'Submitted your first spot', de:'Ersten Spot gemeldet', th:'ส่ง Spot แรกของคุณ' },
+    check: (spots) => spots.length >= 1
+  },
+  {
+    id: 'globetrotter',
+    icon: '🌍',
+    name: { en:'Globetrotter', de:'Weltenbummler', th:'นักท่องโลก' },
+    desc: { en:'Spots on 2+ continents', de:'Spots auf 2+ Kontinenten', th:'Spots ใน 2+ ทวีป' },
+    check: (spots) => {
+      const countries = new Set(spots.map(s => s.city?.split(',').pop()?.trim()).filter(Boolean));
+      return countries.size >= 2;
+    }
+  },
+  {
+    id: 'street_artist',
+    icon: '🎨',
+    name: { en:'Street Artist', de:'Straßenkünstler', th:'ศิลปินถนน' },
+    desc: { en:'Dropped spots in 3+ cities', de:'Spots in 3+ Städten', th:'ปล่อย Spots ใน 3+ เมือง' },
+    check: (spots) => {
+      const cities = new Set(spots.map(s => s.city?.split(',')[0]?.trim()).filter(Boolean));
+      return cities.size >= 3;
+    }
+  },
+  {
+    id: 'bangkok_fan',
+    icon: '🇹🇭',
+    name: { en:'Bangkok Fan', de:'Bangkok Fan', th:'แฟนแบงค็อก' },
+    desc: { en:'Part of the Port FC community', de:'Teil der Port FC Community', th:'ส่วนหนึ่งของชุมชน Port FC' },
+    check: () => true  // Everyone who has the site qualifies
+  },
+  {
+    id: 'europe_tour',
+    icon: '🏰',
+    name: { en:'Europe Tour', de:'Europa Tour', th:'ทัวร์ยุโรป' },
+    desc: { en:'Spotted in Europe', de:'In Europa gesichtet', th:'พบเห็นในยุโรป' },
+    check: (spots) => spots.some(s => {
+      const c = (s.city||'').toLowerCase();
+      return c.includes('germany') || c.includes('spain') || c.includes('france') || c.includes('italy') || c.includes('england') || c.includes('uk') || c.includes('nederland') || c.includes('austria') || c.includes('schweiz') || c.includes('portugal');
+    })
+  },
+  {
+    id: 'legend',
+    icon: '👑',
+    name: { en:'Legend', de:'Legende', th:'ตำนาน' },
+    desc: { en:'5+ spots submitted', de:'5+ Spots gemeldet', th:'ส่ง Spot 5+ ครั้ง' },
+    check: (spots) => spots.length >= 5
+  }
+];
+
+function renderAchievements() {
+  let userSpots = [];
+  try { userSpots = JSON.parse(localStorage.getItem(RANK_KEY) || '[]'); } catch(e){}
+  const allSpots = [...SEED_SPOTS, ...userSpots];
+  const lang = currentLang;
+
+  const grid = document.getElementById('achieveGrid');
+  if (!grid) return;
+
+  grid.innerHTML = ACHIEVEMENT_DEFS.map(a => {
+    const unlocked = a.check(allSpots);
+    const name = a.name[lang] || a.name.en;
+    const desc = a.desc[lang] || a.desc.en;
+    if (unlocked) {
+      return `<div class="badge unlocked">
+        <div class="badge-icon">${a.icon}</div>
+        <div class="badge-name">${name}</div>
+        <div class="badge-desc">${desc}</div>
+      </div>`;
+    } else {
+      return `<div class="badge locked">
+        <div class="badge-lock">🔒</div>
+        <div class="badge-name">${name}</div>
+        <div class="badge-desc">${desc}</div>
+      </div>`;
+    }
+  }).join('');
+}
+
+renderAchievements();
+
+// ─────────────────────────────────────────────
+// ADMIN DASHBOARD
+// ─────────────────────────────────────────────
+const ADMIN_PASS = 'portfc2025';
+
+function openAdmin() {
+  const pw = prompt('🔒 Admin Password:');
+  if (pw !== ADMIN_PASS) {
+    if (pw !== null) alert('Wrong password');
+    return;
+  }
+
+  let userSpots = [];
+  try { userSpots = JSON.parse(localStorage.getItem(RANK_KEY) || '[]'); } catch(e){}
+  const all = [...SEED_SPOTS, ...userSpots];
+
+  const rows = all.map((s, i) => `
+    <tr>
+      <td>${i+1}</td>
+      <td>${s.photoUrl ? `<img src="${s.photoUrl}" class="admin-photo" alt=""/>` : '—'}</td>
+      <td><strong>${s.name || '—'}</strong></td>
+      <td>${s.city || '—'}</td>
+      <td style="color:#E87722">${s.ig || '—'}</td>
+      <td style="color:rgba(255,255,255,0.4)">${s.time ? new Date(s.time).toLocaleDateString() : '—'}</td>
+    </tr>
+  `).join('');
+
+  document.getElementById('admin-content').innerHTML = `
+    <div style="background:#1a1a1a;border-radius:12px;overflow:auto;margin-bottom:1rem">
+      <table class="admin-table">
+        <thead><tr>
+          <th>#</th><th>Photo</th><th>Name</th><th>City</th><th>Instagram</th><th>Date</th>
+        </tr></thead>
+        <tbody>${rows}</tbody>
+      </table>
+    </div>
+    <div style="font-size:12px;color:rgba(255,255,255,0.3);text-align:center">${all.length} total submissions · From localStorage + seed data</div>
+  `;
+
+  document.getElementById('admin-overlay').classList.add('show');
+}
+
+function closeAdmin() {
+  document.getElementById('admin-overlay').classList.remove('show');
+}
+
+// ─────────────────────────────────────────────
 // MAP
 // ─────────────────────────────────────────────
 const portfcMap = L.map('portfc-map', { center:[20, 20], zoom:2, scrollWheelZoom:false });
@@ -825,12 +1091,10 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
 const hiIcon = L.divIcon({ className:'', html:'<div style="width:16px;height:16px;background:#E87722;border-radius:50%;border:3px solid white;box-shadow:0 0 12px rgba(232,119,34,0.9)"></div>', iconSize:[16,16], iconAnchor:[8,8] });
 const siIcon = L.divIcon({ className:'', html:'<div style="width:12px;height:12px;background:#1B4F91;border-radius:50%;border:2px solid rgba(255,255,255,0.6);box-shadow:0 0 7px rgba(27,79,145,0.8)"></div>', iconSize:[12,12], iconAnchor:[6,6] });
 
-// Bangkok HQ
 L.marker([13.7563, 100.5018], { icon:hiIcon })
   .addTo(portfcMap)
   .bindPopup('<strong style="color:#E87722">Bangkok 🟠</strong><br><span style="font-size:11px">Home — PAT Stadium, Klong Toei</span>');
 
-// Known real spots
 const REAL_SPOTS = [
   { lat:50.938, lng:6.959, name:'Köln', label:'Köln, Germany — @lukas.zolly' },
   { lat:28.358, lng:-14.053, name:'Fuerteventura', label:'Fuerteventura, Spain — @lukas.zolly' },
@@ -842,7 +1106,6 @@ REAL_SPOTS.forEach(s => {
     .bindPopup(`<strong style="color:#E87722">${s.name}</strong><br><span style="font-size:11px">${s.label}</span>`);
 });
 
-// Add real spots to sightings list
 const dynList = document.getElementById('dynamicSightings');
 REAL_SPOTS.forEach(s => {
   const el = document.createElement('div');
@@ -857,7 +1120,6 @@ function addSpotToMap(lat, lng, name, city) {
     .bindPopup(`<strong style="color:#E87722">${city}</strong><br><span style="font-size:11px">by ${name}</span>`);
 }
 
-// Spot counter (Bangkok + real spots + localStorage)
 function updateSpotCount(add) {
   try {
     let data = JSON.parse(localStorage.getItem(RANK_KEY) || '[]');
@@ -887,13 +1149,11 @@ function downloadStickerPNG() {
 }
 
 // ─────────────────────────────────────────────
-// PUSH NOTIFICATIONS (OneSignal)
+// PUSH NOTIFICATIONS
 // ─────────────────────────────────────────────
 function requestNotifyPermission() {
   const btn = document.getElementById('notifyBtn');
-  if (!window.OneSignalDeferred) {
-    btn.textContent = '🔕 N/A'; return;
-  }
+  if (!window.OneSignalDeferred) { btn.textContent = '🔕 N/A'; return; }
   OneSignalDeferred.push(async function(OneSignal) {
     const already = await OneSignal.Notifications.permission;
     if (already) {
@@ -901,15 +1161,11 @@ function requestNotifyPermission() {
     }
     await OneSignal.Notifications.requestPermission();
     const granted = await OneSignal.Notifications.permission;
-    if (granted) {
-      btn.textContent = '🔔 Active ✅'; btn.disabled = true; btn.style.opacity = '.6';
-    } else {
-      btn.textContent = '🔕 Declined'; btn.disabled = true; btn.style.opacity = '.4';
-    }
+    btn.textContent = granted ? '🔔 Active ✅' : '🔕 Declined';
+    btn.disabled = true; btn.style.opacity = '.6';
   });
 }
 
-// Check existing notification status
 OneSignalDeferred = window.OneSignalDeferred || [];
 OneSignalDeferred.push(async function(OneSignal) {
   const btn = document.getElementById('notifyBtn');
