@@ -253,7 +253,6 @@
   <ul class="nav-links-d">
     <li><a href="#upload" data-i18n="nav_spot">📍 Report Spot</a></li>
     <li><a href="#map" data-i18n="nav_map">Map</a></li>
-    <li><a href="#print" data-i18n="nav_sticker">Sticker</a></li>
     <li><a href="#impressum" data-i18n="nav_legal">Legal</a></li>
     <li><a href="javascript:openAdmin()" style="color:rgba(255,255,255,0.2);font-size:11px">⚙️</a></li>
   </ul>
@@ -275,7 +274,6 @@
     <p class="hero-sub" data-i18n="hero_sub">Scan the sticker. Upload a photo. Get on the map. Port FC Bangkok travels with you — from Klong Toei to the world.</p>
     <div class="hero-btns">
       <a href="#upload" class="btn-p" data-i18n="hero_cta1">📍 Report Your Spot →</a>
-      <a href="#print" class="btn-s" data-i18n="hero_cta2">Print Sticker</a>
     </div>
     <div class="hero-stats">
       <div><div class="stat-n" id="statSpots">–</div><div class="stat-l" data-i18n="stat_spots">Spots</div></div>
@@ -318,10 +316,10 @@
         <div class="photo-placeholder" id="photoPlaceholder">
           <div class="icon">📸</div>
           <div class="title" data-i18n="photo_title">Photo of the Sticker</div>
-          <div class="hint" data-i18n="photo_hint">Tap to open camera</div>
+          <div class="hint" data-i18n="photo_hint">Tap to take a photo or choose from gallery</div>
         </div>
       </div>
-      <input type="file" id="photoInput" accept="image/*" capture="environment" style="display:none"/>
+      <input type="file" id="photoInput" accept="image/*" style="display:none"/>
       <div class="gps-status" id="gpsStatus">
         <span id="gpsIcon">📡</span>
         <span id="gpsText" data-i18n="gps_detecting">Detecting your location…</span>
@@ -383,25 +381,6 @@
       <div class="sight-badge">HQ</div>
     </div>
     <div id="dynamicSightings"></div>
-  </div>
-</section>
-
-<!-- STICKER PRINT -->
-<section class="sec sec-mid" id="print">
-  <div class="sec-label">Get the Sticker</div>
-  <h2 data-i18n="print_title">Print &amp; Drop.</h2>
-  <p class="body" data-i18n="print_sub">Download the PNG, print at your local copy shop and stick it anywhere you travel.</p>
-  <div style="text-align:center;margin:2rem 0">
-    <img src="assets/sticker-design.jpg" alt="Port FC on Tour Sticker" style="max-width:280px;border-radius:12px;box-shadow:0 4px 24px rgba(0,0,0,0.18)"/>
-  </div>
-  <div style="text-align:center;margin-bottom:1.5rem">
-    <button onclick="downloadStickerPNG()" class="btn-p" style="display:inline-flex;cursor:pointer;border:none" data-i18n="print_dl">Download PNG →</button>
-  </div>
-  <div class="print-tips">
-    <div class="ptip" data-i18n="tip1">8–10 cm recommended size</div>
-    <div class="ptip" data-i18n="tip2">Laminate for weatherproofing</div>
-    <div class="ptip" data-i18n="tip3">Any local print / copy shop</div>
-    <div class="ptip" data-i18n="tip4">Post your drop: @portfc_tour</div>
   </div>
 </section>
 
@@ -528,7 +507,7 @@ const TRANSLATIONS = {
     cnt_spots:'Spots', cnt_stickers:'Stickers Dropped', cnt_away:'Away Games',
     upload_title:'Spotted a Sticker?',
     upload_sub:'Take a photo · Share your location · Get on the map. Takes 30 seconds.',
-    photo_title:'Photo of the Sticker', photo_hint:'Tap to open camera',
+    photo_title:'Photo of the Sticker', photo_hint:'Tap to take a photo or choose from gallery',
     gps_detecting:'Detecting your location…',
     ph_name:'Your name / nickname *', ph_city:'City (auto-detected or type manually)',
     btn_next:'Next → Review', btn_back:'← Back',
@@ -557,7 +536,7 @@ const TRANSLATIONS = {
     cnt_spots:'Spots', cnt_stickers:'Sticker gedropt', cnt_away:'Auswärtsspiele',
     upload_title:'Sticker gesehen?',
     upload_sub:'Foto machen · Standort teilen · auf die Karte kommen. Dauert 30 Sekunden.',
-    photo_title:'Foto vom Sticker', photo_hint:'Tippen um Kamera zu öffnen',
+    photo_title:'Foto vom Sticker', photo_hint:'Tippen für Kamera oder Galerie',
     gps_detecting:'Standort wird ermittelt…',
     ph_name:'Dein Name / Spitzname *', ph_city:'Stadt (automatisch erkannt oder manuell eingeben)',
     btn_next:'Weiter → Prüfen', btn_back:'← Zurück',
@@ -586,7 +565,7 @@ const TRANSLATIONS = {
     cnt_spots:'Spots', cnt_stickers:'สติ๊กเกอร์ที่ปล่อย', cnt_away:'เกมเยือน',
     upload_title:'เห็นสติ๊กเกอร์ไหม?',
     upload_sub:'ถ่ายรูป · แชร์ตำแหน่ง · ขึ้นแผนที่ ใช้เวลาแค่ 30 วินาที',
-    photo_title:'รูปของสติ๊กเกอร์', photo_hint:'แตะเพื่อเปิดกล้อง',
+    photo_title:'รูปของสติ๊กเกอร์', photo_hint:'แตะเพื่อถ่ายภาพหรือเลือกจากคลังภาพ',
     gps_detecting:'กำลังตรวจจับตำแหน่ง…',
     ph_name:'ชื่อ / ชื่อเล่นของคุณ *', ph_city:'เมือง (ตรวจจับอัตโนมัติหรือพิมพ์เอง)',
     btn_next:'ต่อไป → ตรวจสอบ', btn_back:'← กลับ',
@@ -1120,15 +1099,44 @@ function addSpotToMap(lat, lng, name, city) {
     .bindPopup(`<strong style="color:#E87722">${city}</strong><br><span style="font-size:11px">by ${name}</span>`);
 }
 
+let remoteSpotCount = 0;
 function updateSpotCount(add) {
   try {
     let data = JSON.parse(localStorage.getItem(RANK_KEY) || '[]');
-    const total = REAL_SPOTS.length + 1 + data.length + (add || 0);
+    const total = REAL_SPOTS.length + 1 + data.length + remoteSpotCount + (add || 0);
     document.getElementById('statSpots').textContent = total;
     document.getElementById('cntSpots').textContent = total;
   } catch(e){}
 }
 updateSpotCount(0);
+
+// ─────────────────────────────────────────────
+// LOAD COMMUNITY SIGHTINGS FROM AIRTABLE
+// ─────────────────────────────────────────────
+async function loadRemoteSightings() {
+  try {
+    const res = await fetch('/.netlify/functions/get-spots');
+    if (!res.ok) return;
+    const spots = await res.json();
+    if (!Array.isArray(spots)) return;
+
+    spots.forEach(s => {
+      if (typeof s.lat !== 'number' || typeof s.lng !== 'number') return;
+      L.marker([s.lat, s.lng], { icon:siIcon })
+        .addTo(portfcMap)
+        .bindPopup(`<strong style="color:#E87722">${s.city || ''}</strong><br><span style="font-size:11px">by ${s.name || 'Fan'}${s.ig ? ' · '+s.ig : ''}</span>`);
+
+      const el = document.createElement('div');
+      el.className = 'sight';
+      el.innerHTML = `<div class="sight-flag">🌍</div><div><div class="sight-city">${s.city || ''}</div><div class="sight-loc">by ${s.name || 'Fan'}${s.ig ? ' · '+s.ig : ''}</div></div><div class="sight-badge">✓</div>`;
+      dynList.appendChild(el);
+    });
+
+    remoteSpotCount = spots.length;
+    updateSpotCount(0);
+  } catch (e) { /* Airtable optional — map still works without it */ }
+}
+loadRemoteSightings();
 
 // ─────────────────────────────────────────────
 // STICKER DOWNLOAD
