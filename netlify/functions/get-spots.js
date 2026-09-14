@@ -1,8 +1,11 @@
+const ALLOWED_ORIGIN = 'https://portfc-on-tour.com';
+const CORS_HEADERS = { 'Access-Control-Allow-Origin': ALLOWED_ORIGIN };
+
 exports.handler = async (event) => {
   const { AIRTABLE_TOKEN, AIRTABLE_BASE_ID } = process.env;
 
   if (!AIRTABLE_TOKEN || !AIRTABLE_BASE_ID) {
-    return { statusCode: 500, body: JSON.stringify({ error: 'Airtable not configured' }) };
+    return { statusCode: 500, headers: CORS_HEADERS, body: JSON.stringify({ error: 'Airtable not configured' }) };
   }
 
   try {
@@ -27,10 +30,10 @@ exports.handler = async (event) => {
 
     return {
       statusCode: 200,
-      headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' },
+      headers: { 'Content-Type': 'application/json', ...CORS_HEADERS },
       body: JSON.stringify(spots)
     };
   } catch (err) {
-    return { statusCode: 500, body: JSON.stringify({ error: err.message }) };
+    return { statusCode: 500, headers: CORS_HEADERS, body: JSON.stringify({ error: err.message }) };
   }
 };
