@@ -44,6 +44,13 @@
     .nav-links-d a{font-size:13px;color:var(--m);text-decoration:none}
     .nav-links-d a:hover{color:var(--o)}
     @media(max-width:700px){.nav-links-d{display:none}}
+    @media(max-width:480px){
+      nav{padding:.6rem .75rem;gap:6px;flex-wrap:nowrap}
+      .nav-btn{display:none}
+      .lang-btns{gap:2px}
+      .lang-btn{padding:2px 4px;font-size:13px}
+      .bell-btn{padding:5px 9px;font-size:11px;flex-shrink:0}
+    }
     .lang-btns{display:flex;gap:3px}
     .lang-btn{font-size:16px;padding:3px 6px;cursor:pointer;border:1px solid rgba(255,255,255,0.15);background:transparent;border-radius:4px;line-height:1;transition:border-color .2s,opacity .2s;opacity:.5}
     .lang-btn:hover,.lang-btn.active{border-color:var(--o);opacity:1}
@@ -322,7 +329,8 @@
       <input type="file" id="photoInput" accept="image/*" style="display:none"/>
       <div class="gps-status" id="gpsStatus">
         <span id="gpsIcon">📡</span>
-        <span id="gpsText" data-i18n="gps_detecting">Detecting your location…</span>
+        <span id="gpsText" data-i18n="gps_detecting">Detecting your location… (optional)</span>
+        <button type="button" id="gpsManualBtn" onclick="showManualCity()" data-i18n="gps_manual_btn" style="background:none;border:none;color:var(--o);font-size:11px;text-decoration:underline;cursor:pointer;padding:0;margin-left:auto;white-space:nowrap">Enter manually</button>
       </div>
       <input type="text" class="inp" id="inpName" data-i18n-ph="ph_name" placeholder="Your name / nickname *" required/>
       <input type="text" class="inp" id="inpIg" placeholder="@instagram (optional)"/>
@@ -573,7 +581,7 @@ const TRANSLATIONS = {
     upload_title:'Spotted a Sticker?',
     upload_sub:'Take a photo · Share your location · Get on the map. Takes 30 seconds.',
     photo_title:'Photo of the Sticker', photo_hint:'Tap to take a photo or choose from gallery',
-    gps_detecting:'Detecting your location…',
+    gps_detecting:'Detecting your location… (optional)', gps_manual_btn:'Enter manually',
     ph_name:'Your name / nickname *', ph_city:'City (auto-detected or type manually)',
     btn_next:'Next → Review', btn_back:'← Back',
     btn_submit:'🟠 Add to Map!', submit_note:"We'll repost your spot on @portfc_tour within 48h.",
@@ -602,7 +610,7 @@ const TRANSLATIONS = {
     upload_title:'Sticker gesehen?',
     upload_sub:'Foto machen · Standort teilen · auf die Karte kommen. Dauert 30 Sekunden.',
     photo_title:'Foto vom Sticker', photo_hint:'Tippen für Kamera oder Galerie',
-    gps_detecting:'Standort wird ermittelt…',
+    gps_detecting:'Standort wird ermittelt… (optional)', gps_manual_btn:'Manuell eingeben',
     ph_name:'Dein Name / Spitzname *', ph_city:'Stadt (automatisch erkannt oder manuell eingeben)',
     btn_next:'Weiter → Prüfen', btn_back:'← Zurück',
     btn_submit:'🟠 Auf die Karte!', submit_note:'Wir reposten deinen Spot auf @portfc_tour innerhalb 48h.',
@@ -631,7 +639,7 @@ const TRANSLATIONS = {
     upload_title:'เห็นสติ๊กเกอร์ไหม?',
     upload_sub:'ถ่ายรูป · แชร์ตำแหน่ง · ขึ้นแผนที่ ใช้เวลาแค่ 30 วินาที',
     photo_title:'รูปของสติ๊กเกอร์', photo_hint:'แตะเพื่อถ่ายภาพหรือเลือกจากคลังภาพ',
-    gps_detecting:'กำลังตรวจจับตำแหน่ง…',
+    gps_detecting:'กำลังตรวจจับตำแหน่ง… (ไม่บังคับ)', gps_manual_btn:'พิมพ์เอง',
     ph_name:'ชื่อ / ชื่อเล่นของคุณ *', ph_city:'เมือง (ตรวจจับอัตโนมัติหรือพิมพ์เอง)',
     btn_next:'ต่อไป → ตรวจสอบ', btn_back:'← กลับ',
     btn_submit:'🟠 เพิ่มลงแผนที่!', submit_note:'เราจะรีโพสต์ spot ของคุณบน @portfc_tour ภายใน 48 ชั่วโมง',
@@ -728,21 +736,57 @@ let gpsReady = false;
 let lastSubmittedCity = '';
 let lastSubmittedName = '';
 
+let gpsSettled = false;
+
+function showManualCity() {
+  document.getElementById('inpCity').style.display = '';
+  document.getElementById('inpCity').focus();
+  const statusEl = document.getElementById('gpsStatus');
+  const iconEl = document.getElementById('gpsIcon');
+  const textEl = document.getElementById('gpsText');
+  if (!gpsReady) {
+    statusEl.className = 'gps-status err';
+    iconEl.textContent = '📍';
+    textEl.textContent = 'Please type your city below — location is optional';
+    document.getElementById('gpsManualBtn').style.display = 'none';
+  }
+}
+
 function startGPS() {
   const statusEl = document.getElementById('gpsStatus');
   const iconEl = document.getElementById('gpsIcon');
   const textEl = document.getElementById('gpsText');
 
-  if (!navigator.geolocation) {
+  // Hard fallback: no matter what the browser's geolocation API does (some
+  // browsers/devices never fire either callback, e.g. when Location
+  // Services is off at the OS level), switch to manual entry after 8s so
+  // the form is never stuck. Uploading a photo never requires GPS.
+  const fallbackTimer = setTimeout(() => {
+    if (gpsSettled) return;
+    gpsSettled = true;
     statusEl.className = 'gps-status err';
     iconEl.textContent = '📍';
-    textEl.textContent = 'GPS not available — enter city manually';
+    textEl.textContent = 'Location not detected — please type your city (optional)';
     document.getElementById('inpCity').style.display = '';
+    document.getElementById('gpsManualBtn').style.display = 'none';
+  }, 8000);
+
+  if (!navigator.geolocation) {
+    clearTimeout(fallbackTimer);
+    gpsSettled = true;
+    statusEl.className = 'gps-status err';
+    iconEl.textContent = '📍';
+    textEl.textContent = 'GPS not available — enter city manually (optional)';
+    document.getElementById('inpCity').style.display = '';
+    document.getElementById('gpsManualBtn').style.display = 'none';
     return;
   }
 
   navigator.geolocation.getCurrentPosition(
     async (pos) => {
+      if (gpsSettled) return;
+      gpsSettled = true;
+      clearTimeout(fallbackTimer);
       detectedLat = pos.coords.latitude;
       detectedLng = pos.coords.longitude;
       try {
@@ -759,15 +803,20 @@ function startGPS() {
       statusEl.className = 'gps-status ok';
       iconEl.textContent = '✅';
       textEl.textContent = '📍 ' + (detectedCity || `${detectedLat.toFixed(3)}, ${detectedLng.toFixed(3)}`);
+      document.getElementById('gpsManualBtn').style.display = 'none';
       gpsReady = true;
     },
     () => {
+      if (gpsSettled) return;
+      gpsSettled = true;
+      clearTimeout(fallbackTimer);
       statusEl.className = 'gps-status err';
       iconEl.textContent = '📍';
-      textEl.textContent = 'Location not detected — please enter city manually';
+      textEl.textContent = 'Location not detected — please enter city manually (optional)';
       document.getElementById('inpCity').style.display = '';
+      document.getElementById('gpsManualBtn').style.display = 'none';
     },
-    { timeout: 12000, maximumAge: 60000, enableHighAccuracy: false }
+    { timeout: 7500, maximumAge: 60000, enableHighAccuracy: false }
   );
 }
 startGPS();
@@ -875,7 +924,7 @@ async function submitSighting() {
     const sl = document.getElementById('dynamicSightings');
     const el = document.createElement('div');
     el.className = 'sight';
-    el.innerHTML = `<div class="sight-flag">🌍</div><div><div class="sight-city">${city}</div><div class="sight-loc">by ${name}${ig ? ' · '+ig : ''}</div></div><div class="sight-badge">New</div>`;
+    el.innerHTML = `<div class="sight-flag">🌍</div><div><div class="sight-city">${escapeHtml(city)}</div><div class="sight-loc">by ${escapeHtml(name)}${ig ? ' · '+escapeHtml(ig) : ''}</div></div><div class="sight-badge">New</div>`;
     sl.prepend(el);
     updateSpotCount(1);
 
@@ -1100,7 +1149,7 @@ REAL_SPOTS.forEach(s => {
 function addSpotToMap(lat, lng, name, city) {
   L.marker([lat, lng], { icon:siIcon })
     .addTo(portfcMap)
-    .bindPopup(`<strong style="color:#E87722">${city}</strong><br><span style="font-size:11px">by ${name}</span>`);
+    .bindPopup(`<strong style="color:#E87722">${escapeHtml(city)}</strong><br><span style="font-size:11px">by ${escapeHtml(name)}</span>`);
 }
 
 let remoteSpotCount = 0;
@@ -1117,6 +1166,10 @@ updateSpotCount(0);
 // ─────────────────────────────────────────────
 // LOAD COMMUNITY SIGHTINGS FROM AIRTABLE
 // ─────────────────────────────────────────────
+function escapeHtml(str) {
+  return String(str || '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
 async function loadRemoteSightings() {
   try {
     const res = await fetch('/.netlify/functions/get-spots');
@@ -1124,15 +1177,32 @@ async function loadRemoteSightings() {
     const spots = await res.json();
     if (!Array.isArray(spots)) return;
 
+    // One map marker per real spot — the map should show every location.
     spots.forEach(s => {
       if (typeof s.lat !== 'number' || typeof s.lng !== 'number') return;
       L.marker([s.lat, s.lng], { icon:siIcon })
         .addTo(portfcMap)
-        .bindPopup(`<strong style="color:#E87722">${s.city || ''}</strong><br><span style="font-size:11px">by ${s.name || 'Fan'}${s.ig ? ' · '+s.ig : ''}</span>`);
+        .bindPopup(`<strong style="color:#E87722">${escapeHtml(s.city || '')}</strong><br><span style="font-size:11px">by ${escapeHtml(s.name || 'Fan')}${s.ig ? ' · '+escapeHtml(s.ig) : ''}</span>`);
+    });
 
+    // The list, however, is grouped by person — otherwise one fan who
+    // reports many spots turns the whole page into a 100-row scroll.
+    const groups = {};
+    const order = [];
+    spots.forEach(s => {
+      const key = (s.name || 'Fan').trim() || 'Fan';
+      if (!groups[key]) { groups[key] = { count: 0, cities: [], ig: s.ig || '' }; order.push(key); }
+      groups[key].count++;
+      if (s.city && !groups[key].cities.includes(s.city)) groups[key].cities.push(s.city);
+    });
+    order.forEach(name => {
+      const g = groups[name];
       const el = document.createElement('div');
       el.className = 'sight';
-      el.innerHTML = `<div class="sight-flag">🌍</div><div><div class="sight-city">${s.city || ''}</div><div class="sight-loc">by ${s.name || 'Fan'}${s.ig ? ' · '+s.ig : ''}</div></div><div class="sight-badge">✓</div>`;
+      const shown = g.cities.slice(0, 3).join(', ');
+      const cityLabel = shown + (g.cities.length > 3 ? ` +${g.cities.length - 3}` : '');
+      const badge = g.count > 1 ? `${g.count}×` : '✓';
+      el.innerHTML = `<div class="sight-flag">🌍</div><div><div class="sight-city">${escapeHtml(name)}</div><div class="sight-loc">${escapeHtml(cityLabel)}${g.ig ? ' · '+escapeHtml(g.ig) : ''}</div></div><div class="sight-badge">${badge}</div>`;
       dynList.appendChild(el);
     });
 
