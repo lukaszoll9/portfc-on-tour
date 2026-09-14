@@ -505,6 +505,60 @@ const SEED_SPOTS = [
   { name:'Lukas', city:'Fuerteventura, Spain', ig:'@lukas.zolly', time:'2025-02-01T00:00:00Z' },
 ];
 
+const ACHIEVEMENT_DEFS = [
+  {
+    id: 'first_drop',
+    icon: '🟠',
+    name: { en:'First Drop', de:'Erster Drop', th:'แรกเลย' },
+    desc: { en:'Submitted your first spot', de:'Ersten Spot gemeldet', th:'ส่ง Spot แรกของคุณ' },
+    check: (spots) => spots.length >= 1
+  },
+  {
+    id: 'globetrotter',
+    icon: '🌍',
+    name: { en:'Globetrotter', de:'Weltenbummler', th:'นักท่องโลก' },
+    desc: { en:'Spots on 2+ continents', de:'Spots auf 2+ Kontinenten', th:'Spots ใน 2+ ทวีป' },
+    check: (spots) => {
+      const countries = new Set(spots.map(s => s.city?.split(',').pop()?.trim()).filter(Boolean));
+      return countries.size >= 2;
+    }
+  },
+  {
+    id: 'street_artist',
+    icon: '🎨',
+    name: { en:'Street Artist', de:'Straßenkünstler', th:'ศิลปินถนน' },
+    desc: { en:'Dropped spots in 3+ cities', de:'Spots in 3+ Städten', th:'ปล่อย Spots ใน 3+ เมือง' },
+    check: (spots) => {
+      const cities = new Set(spots.map(s => s.city?.split(',')[0]?.trim()).filter(Boolean));
+      return cities.size >= 3;
+    }
+  },
+  {
+    id: 'bangkok_fan',
+    icon: '🇹🇭',
+    name: { en:'Bangkok Fan', de:'Bangkok Fan', th:'แฟนแบงค็อก' },
+    desc: { en:'Part of the Port FC community', de:'Teil der Port FC Community', th:'ส่วนหนึ่งของชุมชน Port FC' },
+    check: () => true  // Everyone who has the site qualifies
+  },
+  {
+    id: 'europe_tour',
+    icon: '🏰',
+    name: { en:'Europe Tour', de:'Europa Tour', th:'ทัวร์ยุโรป' },
+    desc: { en:'Spotted in Europe', de:'In Europa gesichtet', th:'พบเห็นในยุโรป' },
+    check: (spots) => spots.some(s => {
+      const c = (s.city||'').toLowerCase();
+      return c.includes('germany') || c.includes('spain') || c.includes('france') || c.includes('italy') || c.includes('england') || c.includes('uk') || c.includes('nederland') || c.includes('austria') || c.includes('schweiz') || c.includes('portugal');
+    })
+  },
+  {
+    id: 'legend',
+    icon: '👑',
+    name: { en:'Legend', de:'Legende', th:'ตำนาน' },
+    desc: { en:'5+ spots submitted', de:'5+ Spots gemeldet', th:'ส่ง Spot 5+ ครั้ง' },
+    check: (spots) => spots.length >= 5
+  }
+];
+
 // ─────────────────────────────────────────────
 // TRANSLATIONS
 // ─────────────────────────────────────────────
@@ -931,60 +985,6 @@ updateRankingDisplay();
 // ─────────────────────────────────────────────
 // ACHIEVEMENTS
 // ─────────────────────────────────────────────
-const ACHIEVEMENT_DEFS = [
-  {
-    id: 'first_drop',
-    icon: '🟠',
-    name: { en:'First Drop', de:'Erster Drop', th:'แรกเลย' },
-    desc: { en:'Submitted your first spot', de:'Ersten Spot gemeldet', th:'ส่ง Spot แรกของคุณ' },
-    check: (spots) => spots.length >= 1
-  },
-  {
-    id: 'globetrotter',
-    icon: '🌍',
-    name: { en:'Globetrotter', de:'Weltenbummler', th:'นักท่องโลก' },
-    desc: { en:'Spots on 2+ continents', de:'Spots auf 2+ Kontinenten', th:'Spots ใน 2+ ทวีป' },
-    check: (spots) => {
-      const countries = new Set(spots.map(s => s.city?.split(',').pop()?.trim()).filter(Boolean));
-      return countries.size >= 2;
-    }
-  },
-  {
-    id: 'street_artist',
-    icon: '🎨',
-    name: { en:'Street Artist', de:'Straßenkünstler', th:'ศิลปินถนน' },
-    desc: { en:'Dropped spots in 3+ cities', de:'Spots in 3+ Städten', th:'ปล่อย Spots ใน 3+ เมือง' },
-    check: (spots) => {
-      const cities = new Set(spots.map(s => s.city?.split(',')[0]?.trim()).filter(Boolean));
-      return cities.size >= 3;
-    }
-  },
-  {
-    id: 'bangkok_fan',
-    icon: '🇹🇭',
-    name: { en:'Bangkok Fan', de:'Bangkok Fan', th:'แฟนแบงค็อก' },
-    desc: { en:'Part of the Port FC community', de:'Teil der Port FC Community', th:'ส่วนหนึ่งของชุมชน Port FC' },
-    check: () => true  // Everyone who has the site qualifies
-  },
-  {
-    id: 'europe_tour',
-    icon: '🏰',
-    name: { en:'Europe Tour', de:'Europa Tour', th:'ทัวร์ยุโรป' },
-    desc: { en:'Spotted in Europe', de:'In Europa gesichtet', th:'พบเห็นในยุโรป' },
-    check: (spots) => spots.some(s => {
-      const c = (s.city||'').toLowerCase();
-      return c.includes('germany') || c.includes('spain') || c.includes('france') || c.includes('italy') || c.includes('england') || c.includes('uk') || c.includes('nederland') || c.includes('austria') || c.includes('schweiz') || c.includes('portugal');
-    })
-  },
-  {
-    id: 'legend',
-    icon: '👑',
-    name: { en:'Legend', de:'Legende', th:'ตำนาน' },
-    desc: { en:'5+ spots submitted', de:'5+ Spots gemeldet', th:'ส่ง Spot 5+ ครั้ง' },
-    check: (spots) => spots.length >= 5
-  }
-];
-
 function renderAchievements() {
   let userSpots = [];
   try { userSpots = JSON.parse(localStorage.getItem(RANK_KEY) || '[]'); } catch(e){}
