@@ -327,6 +327,8 @@
         </div>
       </div>
       <input type="file" id="photoInput" accept="image/*" style="display:none"/>
+      <!-- Honeypot: hidden from real visitors via CSS + tabindex/autocomplete off; a bot filling every field will fill this too -->
+      <input type="text" id="inpWebsite" name="website" autocomplete="off" tabindex="-1" style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0" aria-hidden="true"/>
       <div class="gps-status" id="gpsStatus">
         <span id="gpsIcon">📡</span>
         <span id="gpsText" data-i18n="gps_detecting">Detecting your location… (optional)</span>
@@ -490,12 +492,15 @@
   <p>Privates Fan-Projekt. Keine Verbindung zu Port FC Bangkok, der PAT oder deren Sponsoren.</p>
   <hr class="ld" id="datenschutz"/>
   <h2>Datenschutz</h2>
-  <h3>Hosting</h3>
-  <p>Netlify (Netlify Inc., USA). Fotos: Cloudinary. Spots: Airtable.</p>
+  <h3>Hosting &amp; Verarbeitung</h3>
+  <p>Diese Seite wird bei Netlify (Netlify Inc., USA) gehostet. Wenn du einen Spot meldest, verarbeiten wir dabei: deinen angegebenen Namen/Spitznamen, optional deinen Instagram-Namen, den von dir angegebenen oder per Browser-Standort ermittelten Ort (Stadt sowie GPS-Koordinaten, sofern du dem Standortzugriff zustimmst), sowie das hochgeladene Foto. Standortzugriff ist immer optional — ohne Zustimmung kannst du trotzdem einen Spot mit manuell eingegebener Stadt melden.</p>
+  <p>Fotos werden bei Cloudinary (Cloudinary Ltd.) gespeichert. Die Sichtungsdaten (Name, Ort, Koordinaten, Instagram, Foto-Link) werden in Airtable (Airtable Inc., USA) gespeichert und über eine eigene Serverfunktion (Netlify Functions) abgerufen bzw. veröffentlicht — sie erscheinen dadurch öffentlich sichtbar auf der Karte und in der Sichtungsliste dieser Seite. Zusätzlich wird eine Kopie deiner Angaben per Formspree (Formspree Inc., USA) als E-Mail-Benachrichtigung an den Betreiber gesendet.</p>
+  <h3>Push-Benachrichtigungen</h3>
+  <p>Wenn du „🔔 Notify" aktivierst, nutzen wir OneSignal (OneSignal Inc., USA) zur Zustellung von Push-Benachrichtigungen. Dabei wird eine Geräte-ID/Push-Token gespeichert. Dies geschieht nur, wenn du aktiv zustimmst.</p>
   <h3>Karte</h3>
-  <p>Leaflet + OpenStreetMap. Keine eigenen Cookies, kein Tracking.</p>
+  <p>Leaflet + OpenStreetMap zur Kartendarstellung. Keine eigenen Cookies, kein Tracking-Skript durch uns.</p>
   <h3>Ihre Rechte</h3>
-  <p>Auskunft, Berichtigung, Löschung nach DSGVO. Beschwerde: Landesbeauftragte für Datenschutz NRW.</p>
+  <p>Du hast das Recht auf Auskunft, Berichtigung und Löschung deiner Daten nach DSGVO. Da gemeldete Spots (Name, Ort, Foto) öffentlich auf der Karte erscheinen, kannst du jederzeit die Löschung eines von dir gemeldeten Spots per E-Mail an <a href="mailto:lukasfra437@gmail.com">lukasfra437@gmail.com</a> verlangen. Beschwerde: Landesbeauftragte für Datenschutz NRW.</p>
   <hr class="ld" id="sticker-nutzung"/>
   <h2>Sticker Usage Notice</h2>
   <p>Stickers from Port FC on Tour may only be placed with the explicit permission of the property owner or relevant authority. Placing stickers without permission may constitute a legal offence. The operator assumes no liability for actions of third parties in connection with the distribution or placement of stickers.</p>
@@ -903,7 +908,7 @@ async function submitSighting() {
       await fetch('/.netlify/functions/submit-spot', {
         method: 'POST',
         headers: {'Content-Type':'application/json'},
-        body: JSON.stringify({ name, city, ig, photoUrl, lat: detectedLat, lng: detectedLng, time: new Date().toISOString() })
+        body: JSON.stringify({ name, city, ig, photoUrl, lat: detectedLat, lng: detectedLng, website: document.getElementById('inpWebsite').value })
       });
     } catch(e) { /* Airtable optional — Formspree is the backup */ }
 
