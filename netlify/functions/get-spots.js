@@ -17,16 +17,24 @@ exports.handler = async (event) => {
     );
 
     const data = await res.json();
-    const spots = (data.records || []).map(r => ({
-      id: r.id,
-      name: r.fields.Name,
-      city: r.fields.City,
-      ig: r.fields.Instagram,
-      photoUrl: r.fields['Photo URL'],
-      lat: r.fields.Latitude,
-      lng: r.fields.Longitude,
-      time: r.fields['Submitted At']
-    }));
+    // Opt-out moderation: check a "Hidden" checkbox on a row in Airtable
+    // (create that column once in the Airtable UI — no code change needed)
+    // to remove it from the public site. Filtered here in code, not via
+    // an Airtable formula, so nothing breaks while that field doesn't
+    // exist yet or isn't checked — every spot stays visible exactly like
+    // today until Lukas actively hides one.
+    const spots = (data.records || [])
+      .filter(r => !r.fields.Hidden)
+      .map(r => ({
+        id: r.id,
+        name: r.fields.Name,
+        city: r.fields.City,
+        ig: r.fields.Instagram,
+        photoUrl: r.fields['Photo URL'],
+        lat: r.fields.Latitude,
+        lng: r.fields.Longitude,
+        time: r.fields['Submitted At']
+      }));
 
     return {
       statusCode: 200,
