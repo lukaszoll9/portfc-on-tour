@@ -428,7 +428,7 @@
   <div class="ig-box">
     <div class="ig-handle">@portfc_tour</div>
     <p class="ig-sub" data-i18n="ig_sub">Follow for live sightings, reposts and community drops.<br>Every fan post gets reposted — guaranteed.</p>
-    <div class="ig-posts">
+    <div class="ig-posts" id="igPosts">
       <div class="ig-post" onclick="window.open('https://instagram.com/portfc_tour','_blank')" title="View on Instagram">📸</div>
       <div class="ig-post" onclick="window.open('https://instagram.com/portfc_tour','_blank')" title="View on Instagram">🟠</div>
       <div class="ig-post" onclick="window.open('https://instagram.com/portfc_tour','_blank')" title="View on Instagram">🌍</div>
@@ -1216,6 +1216,39 @@ async function loadRemoteSightings() {
   } catch (e) { /* Airtable optional — map still works without it */ }
 }
 loadRemoteSightings();
+
+// ─────────────────────────────────────────────
+// INSTAGRAM EMBED
+// ─────────────────────────────────────────────
+// Uses Instagram's official public embed (the "Embed" option under any
+// post's ••• menu) — no API key, no Meta App, no login required. Just
+// paste real post permalinks below once @portfc_tour has a few posts up;
+// as long as this list is empty, the page quietly keeps the placeholder
+// icons that were already there, so nothing looks broken in the meantime.
+const IG_POST_URLS = [
+  // 'https://www.instagram.com/p/XXXXXXXXXXX/',
+  // 'https://www.instagram.com/p/YYYYYYYYYYY/',
+  // 'https://www.instagram.com/p/ZZZZZZZZZZZ/',
+];
+
+function loadInstagramEmbeds() {
+  if (!IG_POST_URLS.length) return;
+  const grid = document.getElementById('igPosts');
+  if (!grid) return;
+
+  grid.style.display = 'grid';
+  grid.style.gridTemplateColumns = 'repeat(auto-fit, minmax(250px, 1fr))';
+  grid.innerHTML = IG_POST_URLS.map(url => `
+    <blockquote class="instagram-media" data-instgrm-permalink="${url}" data-instgrm-version="14" style="margin:0;width:100%"></blockquote>
+  `).join('');
+
+  const s = document.createElement('script');
+  s.async = true;
+  s.src = 'https://www.instagram.com/embed.js';
+  s.onload = () => { if (window.instgrm) window.instgrm.Embeds.process(); };
+  document.body.appendChild(s);
+}
+loadInstagramEmbeds();
 
 // ─────────────────────────────────────────────
 // STICKER DOWNLOAD
