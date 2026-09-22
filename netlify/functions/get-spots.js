@@ -25,6 +25,10 @@ exports.handler = async (event) => {
     // today until Lukas actively hides one.
     const spots = (data.records || [])
       .filter(r => !r.fields.Hidden)
+      // Drop rows with no usable data at all (e.g. an upload that failed
+      // partway through and left an empty Airtable row) — they'd otherwise
+      // show up as blank, name-less entries in the sightings list.
+      .filter(r => r.fields.Name || r.fields.City)
       .map(r => ({
         id: r.id,
         name: r.fields.Name,
