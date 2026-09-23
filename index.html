@@ -144,6 +144,8 @@
     .sight-city{font-size:13px;font-weight:500}
     .sight-loc{font-size:11px;color:var(--m);margin-top:2px}
     .sight-badge{margin-left:auto;font-size:10px;padding:3px 8px;border-radius:12px;background:rgba(232,119,34,0.12);color:var(--o);flex-shrink:0}
+    .sight-more-btn{width:100%;background:transparent;border:1px dashed var(--br);border-radius:12px;padding:.75rem;color:var(--o);font-size:12px;font-weight:600;font-family:inherit;cursor:pointer;transition:border-color .2s,background .2s}
+    .sight-more-btn:hover{border-color:var(--o);background:rgba(232,119,34,0.06)}
 
     /* PRINT */
     .print-tips{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:1rem}
@@ -165,9 +167,17 @@
     .ig-sub{font-size:14px;color:rgba(255,255,255,0.6);margin-bottom:1.25rem;line-height:1.5}
     .tags{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin-bottom:1.25rem}
     .tag{font-size:11px;padding:4px 10px;border-radius:20px;border:1px solid rgba(255,255,255,0.2);color:rgba(255,255,255,0.65)}
-    .ig-posts{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;margin:.25rem 0 1.25rem;border-radius:10px;overflow:hidden}
+    .ig-posts{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:.25rem 0 1.25rem;border-radius:10px}
+    .ig-posts .instagram-media{width:100% !important;min-width:0 !important;margin:0 !important}
     .ig-post{aspect-ratio:1;background:rgba(255,255,255,0.06);display:flex;align-items:center;justify-content:center;font-size:22px;cursor:pointer;transition:background .2s}
     .ig-post:hover{background:rgba(255,255,255,0.1)}
+    /* On phones, three full Instagram embeds stacked vertically turn into a
+       very long, messy scroll. Swipeable horizontal cards read much cleaner. */
+    @media(max-width:640px){
+      .ig-posts{display:flex;grid-template-columns:none;overflow-x:auto;scroll-snap-type:x mandatory;gap:12px;padding-bottom:4px;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+      .ig-posts::-webkit-scrollbar{display:none}
+      .ig-posts>*{scroll-snap-align:center;flex:0 0 85%;max-width:340px}
+    }
 
     /* FOUNDED */
     .founded{padding:2rem 1.25rem;border-top:1px solid var(--br)}
@@ -1033,16 +1043,40 @@ async function loadRemoteSightings() {
     // Most active fans first, then most recently seen — makes the list read
     // like a ranked feed instead of a random dump in API-return order.
     order.sort((a, b) => groups[b].count - groups[a].count);
-    order.forEach(name => {
+
+    function renderRow(name) {
       const g = groups[name];
       const el = document.createElement('div');
       el.className = 'sight';
-      const shown = g.cities.slice(0, 3).join(', ');
-      const cityLabel = shown + (g.cities.length > 3 ? ` +${g.cities.length - 3}` : '');
+      // Show just the first city, plus a "+N more" count — listing every
+      // single city a person has dropped a sticker in made the row wrap
+      // into a wall of text once someone had more than 2-3 spots.
+      const cityLabel = g.cities.length > 1
+        ? `${g.cities[0]} +${g.cities.length - 1} weitere`
+        : (g.cities[0] || '');
       const badge = g.count > 1 ? `${g.count}×` : '✓';
       el.innerHTML = `<div class="sight-flag">🌍</div><div><div class="sight-city">${escapeHtml(name)}</div><div class="sight-loc">${escapeHtml(cityLabel)}${g.ig ? ' · '+escapeHtml(g.ig) : ''}</div></div><div class="sight-badge">${badge}</div>`;
-      dynList.appendChild(el);
-    });
+      return el;
+    }
+
+    // Only the top 3 spotters show by default — with 20-30+ contributors
+    // this list would otherwise turn into an endless, unstructured scroll.
+    // Everyone else is one tap away behind "Show more".
+    const TOP_N = 3;
+    order.slice(0, TOP_N).forEach(name => dynList.appendChild(renderRow(name)));
+
+    if (order.length > TOP_N) {
+      const rest = order.slice(TOP_N);
+      const moreBtn = document.createElement('button');
+      moreBtn.type = 'button';
+      moreBtn.className = 'sight-more-btn';
+      moreBtn.textContent = `+ ${rest.length} weitere Spotter anzeigen`;
+      moreBtn.onclick = () => {
+        rest.forEach(name => dynList.insertBefore(renderRow(name), moreBtn));
+        moreBtn.remove();
+      };
+      dynList.appendChild(moreBtn);
+    }
 
     remoteSpotCount = spots.length;
     updateSpotCount(0);
@@ -1069,8 +1103,9 @@ function loadInstagramEmbeds() {
   const grid = document.getElementById('igPosts');
   if (!grid) return;
 
-  grid.style.display = 'grid';
-  grid.style.gridTemplateColumns = 'repeat(auto-fit, minmax(250px, 1fr))';
+  // Layout (3-across on desktop, swipeable row on mobile) is handled by
+  // CSS (.ig-posts) so it responds correctly to screen size — no inline
+  // style here to fight with it.
   grid.innerHTML = IG_POST_URLS.map(url => `
     <blockquote class="instagram-media" data-instgrm-permalink="${url}" data-instgrm-version="14" style="margin:0;width:100%"></blockquote>
   `).join('');
