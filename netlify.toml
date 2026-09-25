@@ -13,11 +13,6 @@
     Permissions-Policy = "geolocation=(self), camera=(self)"
 
 [[headers]]
-  for = "/assets/*"
-  [headers.values]
-    Cache-Control = "public, max-age=604800"
-
-[[headers]]
   for = "/assets/fonts/*"
   [headers.values]
     Cache-Control = "public, max-age=31536000, immutable"
@@ -27,3 +22,9 @@
   [headers.values]
     X-Robots-Tag = "noindex, nofollow"
     Cache-Control = "no-store"
+
+# Short link for the next sticker print run: opens the report flow directly
+[[redirects]]
+  from = "/found"
+  to = "/?report=1"
+  status = 302

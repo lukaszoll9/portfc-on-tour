@@ -18,7 +18,7 @@
   <link rel="icon" type="image/png" sizes="48x48" href="/favicon-48.png">
   <link rel="apple-touch-icon" href="/apple-touch-icon.png">
   <link rel="manifest" href="/manifest.json">
-  <link rel="preload" href="/assets/fonts/big-shoulders-stencil-latin-900-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="/assets/fonts/barlow-condensed-latin-800-normal.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="/assets/fonts/ibm-plex-sans-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preconnect" href="https://tiles.openfreemap.org" crossorigin>
   <link rel="preconnect" href="https://res.cloudinary.com">
@@ -98,7 +98,8 @@
       <div class="section-head">
         <div>
           <div class="eyebrow" data-i18n="latest_eyebrow">Latest arrivals</div>
-          <h2 class="h-section" id="latest-title" data-i18n="latest_title">Fresh from the tour</h2>
+          <h2 class="h-section" id="latest-title" data-i18n="latest_title">From Khlong Toei to the world</h2>
+          <div class="th-sub" lang="th">คลองเตย → ทั่วโลก</div>
         </div>
         <button type="button" class="link-btn" data-action="map" data-i18n="see_all">See all on the map</button>
       </div>
@@ -118,6 +119,11 @@
         <li class="leg"><div class="leg-n">2</div><div><h3 data-i18n="how2_t">Snap it and pin it</h3><p data-i18n="how2_d"></p></div></li>
         <li class="leg"><div class="leg-n">3</div><div><h3 data-i18n="how3_t">Get reposted</h3><p data-i18n="how3_d"></p></div></li>
       </ol>
+      <a class="ig-strip" href="https://instagram.com/portfc_tour" target="_blank" rel="noopener">
+        <span class="ig-avatar"><img src="/assets/lion.webp" alt="" width="47" height="47"></span>
+        <span style="min-width:0"><span class="ig-handle" style="display:block">@portfc_tour</span><span class="ig-sub" data-i18n="ig_sub" style="display:block">Every find gets reposted on Instagram.</span></span>
+        <span class="btn btn-primary" data-i18n="follow">Follow</span>
+      </a>
     </div>
   </section>
 
@@ -125,7 +131,8 @@
   <section class="section" id="ranks" aria-labelledby="ranks-title">
     <div class="wrap">
       <div class="eyebrow" data-i18n="ranks_eyebrow">The manifest</div>
-      <h2 class="h-section" id="ranks-title" data-i18n="ranks_title">Where the lions landed</h2>
+      <h2 class="h-section" id="ranks-title" data-i18n="ranks_title">Khlong Toei Army worldwide</h2>
+      <div class="th-sub" lang="th">กองทัพคลองเตย</div>
       <div class="ranks-grid">
         <div class="manifest">
           <div class="tabs" role="tablist">
@@ -139,46 +146,6 @@
     </div>
   </section>
 
-  <!-- INSTAGRAM -->
-  <section class="section" id="instagram" aria-labelledby="ig-title">
-    <div class="wrap">
-      <div class="eyebrow" data-i18n="ig_eyebrow">Repost office</div>
-      <h2 class="h-section" id="ig-title" data-i18n="ig_title">Every find gets reposted</h2>
-      <div class="ig">
-        <div class="ig-top">
-          <div class="ig-avatar"><img src="/assets/lion.webp" alt="" width="52" height="52"></div>
-          <div><div class="ig-handle">@portfc_tour</div><div class="ig-sub" data-i18n="ig_sub">Tag us. We repost within 48 hours.</div></div>
-          <a class="btn btn-primary" href="https://instagram.com/portfc_tour" target="_blank" rel="noopener"><span data-i18n="follow">Follow</span></a>
-        </div>
-        <div class="ig-steps">
-          <div><b>01</b><span data-i18n="ig_step1">Post your find</span></div>
-          <div><b>02</b><span data-i18n="ig_step2">Tag @portfc_tour</span></div>
-          <div><b>03</b><span data-i18n="ig_step3">Get reposted</span></div>
-        </div>
-        <div class="ig-gate" id="igGate">
-          <div class="ph"></div><div class="ph"></div><div class="ph"></div>
-          <div class="ig-gate-cta">
-            <button type="button" class="btn btn-quiet" id="igLoad" style="min-height:44px"><svg><use href="#i-ig"/></svg><span data-i18n="ig_gate_btn">Show Instagram posts</span></button>
-            <p data-i18n="ig_gate_note">Loads content from Instagram (Meta).</p>
-          </div>
-        </div>
-        <div class="ig-posts" id="igPosts" hidden></div>
-        <div class="tags-row">
-          <span class="hash">#PortFConTour</span><span class="hash">#PortFC</span><span class="hash">#KhlongToeiArmy</span><span class="hash">#การท่าเรือ</span>
-          <button type="button" class="link-btn copy-tags" id="copyTags" data-i18n="copy_tags">Copy hashtags</button>
-        </div>
-      </div>
-
-      <div class="spread">
-        <img src="/assets/sticker-design.jpg" alt="The Port FC on Tour sticker" width="96" height="143" loading="lazy">
-        <div>
-          <h3 data-i18n="spread_title">Take the lions further</h3>
-          <p data-i18n="spread_text"></p>
-        </div>
-        <a class="btn btn-ghost" href="https://ig.me/m/portfc_tour" target="_blank" rel="noopener"><span data-i18n="spread_btn">Ask for stickers</span><svg><use href="#i-arrow"/></svg></a>
-      </div>
-    </div>
-  </section>
 </main>
 
 <footer class="site-foot">
@@ -220,7 +187,7 @@
             <h4>Karte &amp; Bibliotheken</h4>
             <p>Kartendaten: OpenStreetMap, Kacheln von OpenFreeMap. Programmbibliotheken (MapLibre, Ländergrenzen) werden über jsDelivr geladen. Dabei wird deine IP-Adresse an diese Anbieter übertragen. Schriften sind lokal eingebunden. Wir setzen keine Tracking- oder Werbe-Cookies.</p>
             <h4>Instagram</h4>
-            <p>Instagram-Beiträge werden erst geladen, wenn du auf „Instagram-Posts anzeigen“ tippst. Dann werden Daten an Meta Platforms Ireland Ltd. übertragen. Deine Wahl wird lokal in deinem Browser gespeichert.</p>
+            <p>Diese Seite bindet keine Instagram-Inhalte ein, sondern verlinkt nur auf @portfc_tour. Erst beim Anklicken gelangst du zu Instagram (Meta Platforms Ireland Ltd.).</p>
             <h4>Deine Rechte</h4>
             <p>Du hast das Recht auf Auskunft, Berichtigung, Löschung und Widerruf. Eine Mail an <a href="mailto:lukasfra437@gmail.com">lukasfra437@gmail.com</a> genügt, um einen gemeldeten Spot entfernen zu lassen. Beschwerden: Landesbeauftragte für Datenschutz und Informationsfreiheit NRW.</p>
           </div>

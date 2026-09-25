@@ -19,7 +19,7 @@ assets/js/i18n.js          all texts in EN / DE / TH
 assets/js/geo.js           distances, routes, countries, geocoding, map style (shared)
 assets/js/app.js           main page: globe, feed, ranks, report flow, story image
 assets/js/admin.js         admin logic
-assets/fonts/              self-hosted fonts (Big Shoulders Stencil, IBM Plex Sans/Mono/Thai)
+assets/fonts/              self-hosted fonts (Barlow Condensed, IBM Plex Sans/Mono/Thai)
 netlify/functions/
   get-spots.js             public list (Airtable → JSON, CDN-cached 60 s)
   submit-spot.js           saves a new spot
