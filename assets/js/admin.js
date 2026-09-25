@@ -5,6 +5,7 @@
   const API = "/api/admin/spots";
   let key = "";
   try { key = sessionStorage.getItem("pfc_admin") || ""; } catch (e) {}
+  let moderated = false;
   let all = [], filter = "all", cur = null, pick = null, detected = null, moved = false;
 
   function toast(m) { const t = $("#toast"); t.textContent = m; t.classList.add("show"); clearTimeout(toast.t); toast.t = setTimeout(() => t.classList.remove("show"), 2200); }
@@ -12,6 +13,7 @@
     const r = await fetch(API, { method, headers: { "x-admin-key": key, ...(body ? { "Content-Type": "application/json" } : {}) }, body: body ? JSON.stringify(body) : undefined });
     const j = await r.json().catch(() => ({}));
     if (!r.ok) throw Object.assign(new Error(j.error || "Fehler " + r.status), { status: r.status });
+    if (method === "GET") moderated = r.headers.get("X-Moderation") === "on";
     return j;
   }
   async function load() {
@@ -19,6 +21,7 @@
       await P.loadWorld();
       all = await api("GET");
       $("#loginForm").hidden = true; $("#panel").hidden = false; $("#logout").hidden = false;
+      $("#fOpen").hidden = !moderated; $("#eApprovedRow").hidden = !moderated;
       render();
     } catch (e) {
       if (e.status === 401) { key = ""; try { sessionStorage.removeItem("pfc_admin"); } catch (x) {} }
@@ -32,10 +35,10 @@
 
   const hasPos = s => typeof s.lat === "number" && typeof s.lng === "number";
   function render() {
-    const list = all.filter(s => filter === "all" || (filter === "nopin" && !hasPos(s)) || (filter === "hidden" && s.hidden));
+    const list = all.filter(s => filter === "all" || (filter === "nopin" && !hasPos(s)) || (filter === "hidden" && s.hidden) || (filter === "open" && !s.approved));
     $("#list").innerHTML = list.map(s => {
       const km = hasPos(s) ? P.fmtKm(Math.round(P.km(P.HOME, s)), "de") + " km" : "";
-      const badges = [!hasPos(s) ? '<span class="badge warn">OHNE PIN</span>' : "", s.hidden ? '<span class="badge off">AUSGEBLENDET</span>' : ""].join(" ");
+      const badges = [!hasPos(s) ? '<span class="badge warn">OHNE PIN</span>' : "", s.hidden ? '<span class="badge off">AUSGEBLENDET</span>' : "", moderated && !s.approved ? '<span class="badge warn">OFFEN</span>' : ""].join(" ");
       return `<button type="button" class="item${s.hidden ? " is-hidden" : ""}" data-id="${esc(s.id)}">
         ${s.photoUrl ? `<img src="${esc(P.photo(s.photoUrl, 64, 64))}" alt="" loading="lazy">` : '<span class="ph"></span>'}
         <span style="min-width:0"><span class="c" style="display:block">${esc(s.city || "— kein Ort —")}</span><span class="s" style="display:block">${esc(s.name)} · ${esc(P.fmtDate(s.time, "de"))}${km ? " · " + km : ""}</span></span>
@@ -49,7 +52,7 @@
   function openEdit(s) {
     cur = s; detected = null; moved = false;
     $("#ePhoto").src = s.photoUrl ? P.photo(s.photoUrl, 560, 280) : ""; $("#ePhoto").hidden = !s.photoUrl;
-    $("#eCity").value = s.city; $("#eName").value = s.name; $("#eIg").value = s.ig; $("#eHidden").checked = s.hidden;
+    $("#eCity").value = s.city; $("#eName").value = s.name; $("#eIg").value = s.ig; $("#eHidden").checked = s.hidden; $("#eApproved").checked = !!s.approved;
     $("#eErr").hidden = true; $("#eSearch").value = ""; $("#ePinLabel").hidden = true;
     $("#scrim").hidden = false; requestAnimationFrame(() => $("#scrim").classList.add("show"));
     const sh = $("#editSheet"); sh.hidden = false; requestAnimationFrame(() => requestAnimationFrame(() => sh.classList.add("show")));
@@ -105,13 +108,13 @@
   });
   $("#eSave").addEventListener("click", async () => {
     const c = pick.getCenter();
-    const body = { id: cur.id, city: $("#eCity").value.trim(), name: $("#eName").value.trim(), ig: $("#eIg").value.trim(), hidden: $("#eHidden").checked };
+    const body = { id: cur.id, city: $("#eCity").value.trim(), name: $("#eName").value.trim(), ig: $("#eIg").value.trim(), hidden: $("#eHidden").checked, ...(moderated ? { approved: $("#eApproved").checked } : {}) };
     if (moved || hasPos(cur)) { body.lat = c.lat; body.lng = ((c.lng + 540) % 360) - 180; }
     $("#eSave").disabled = true;
     try {
       await api("PATCH", body);
       if (body.lat !== undefined) Object.assign(cur, { lat: +body.lat.toFixed(5), lng: +body.lng.toFixed(5) });
-      Object.assign(cur, { city: body.city, name: body.name, ig: body.ig, hidden: body.hidden });
+      Object.assign(cur, { city: body.city, name: body.name, ig: body.ig, hidden: body.hidden }, body.approved !== undefined ? { approved: body.approved } : {});
       render(); closeEdit(); toast("Gespeichert – live in ca. 1 Minute");
     } catch (e) {
       const n = $("#eErr"); n.innerHTML = `<svg><use href="#i-info"/></svg><span>${esc(e.message)}</span>`; n.hidden = false;

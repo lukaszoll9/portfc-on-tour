@@ -67,8 +67,16 @@
   /* ======================= layers + history (back button closes sheets/map) ======================= */
   const layers = [];
   function pushLayer(name, close) { layers.push({ name, close }); history.pushState({ pfc: name }, ""); syncChrome(); }
-  function closeTop() { if (layers.length) history.back(); }
-  window.addEventListener("popstate", () => { const l = layers.pop(); if (l) l.close(); syncChrome(); });
+  let afterPop = null;
+  function closeTop(then) {
+    if (!layers.length) { if (typeof then === "function") then(); return; }
+    afterPop = typeof then === "function" ? then : null;
+    history.back();
+  }
+  window.addEventListener("popstate", () => {
+    const l = layers.pop(); if (l) l.close(); syncChrome();
+    if (afterPop) { const f = afterPop; afterPop = null; setTimeout(f, 40); }
+  });
   function syncChrome() {
     const anySheet = layers.some(l => l.name !== "map");
     const scrim = $("#scrim");
@@ -77,12 +85,12 @@
     document.body.style.overflow = layers.length ? "hidden" : "";
     updateDock();
   }
-  $("#scrim").addEventListener("click", closeTop);
+  $("#scrim").addEventListener("click", () => closeTop());
   document.addEventListener("keydown", e => { if (e.key === "Escape") closeTop(); });
 
   function showSheet(el) { el.hidden = false; requestAnimationFrame(() => requestAnimationFrame(() => el.classList.add("show"))); }
   function hideSheet(el) { el.classList.remove("show"); setTimeout(() => { if (!el.classList.contains("show")) el.hidden = true; }, 380); }
-  $$(".sheet [data-close]").forEach(b => b.addEventListener("click", closeTop));
+  $$(".sheet [data-close]").forEach(b => b.addEventListener("click", () => closeTop()));
   // swipe down on a sheet's head to close
   $$(".sheet").forEach(sh => {
     let y0 = null, dy = 0;
@@ -95,11 +103,12 @@
   });
 
   /* ======================= data ======================= */
-  let rawSpots = null, spots = [], localAdds = [];
+  let rawSpots = null, spots = [], localAdds = [], moderated = false;
   async function fetchSpots() {
     try {
       const r = await fetch(CONFIG.spotsUrl, { headers: { accept: "application/json" } });
       if (!r.ok) throw new Error(r.status);
+      moderated = r.headers.get("X-Moderation") === "on";
       const j = await r.json();
       if (!Array.isArray(j)) throw new Error("bad");
       return j;
@@ -234,8 +243,8 @@
       map.addSource("arcs", { type: "geojson", data: fc([]) });
       map.addSource("ships", { type: "geojson", data: fc([]) });
       map.addSource("spots", { type: "geojson", data: fc([]), cluster: true, clusterRadius: 38, clusterMaxZoom: 11 });
-      map.addLayer({ id: "arcs-glow", type: "line", source: "arcs", layout: { "line-cap": "round" }, paint: { "line-color": "#EE7D2B", "line-width": 6, "line-blur": 5, "line-opacity": ["interpolate", ["linear"], ["zoom"], 2, .35, 7, .08] } });
-      map.addLayer({ id: "arcs", type: "line", source: "arcs", layout: { "line-cap": "round" }, paint: { "line-color": "#EE7D2B", "line-width": ["interpolate", ["linear"], ["zoom"], 1, 1.3, 6, 2], "line-opacity": ["interpolate", ["linear"], ["zoom"], 2, .9, 8, .25] } });
+      map.addLayer({ id: "arcs-glow", type: "line", source: "arcs", layout: { "line-cap": "round" }, paint: { "line-color": "#EE7D2B", "line-width": ["interpolate", ["linear"], ["zoom"], 1, ["*", 4, ["get", "w"]], 6, ["*", 6, ["get", "w"]]], "line-blur": 4, "line-opacity": ["interpolate", ["linear"], ["zoom"], 2, .22, 7, .06] } });
+      map.addLayer({ id: "arcs", type: "line", source: "arcs", layout: { "line-cap": "round" }, paint: { "line-color": "#EE7D2B", "line-width": ["interpolate", ["linear"], ["zoom"], 1, ["*", 1.2, ["get", "w"]], 6, ["*", 2, ["get", "w"]]], "line-opacity": ["interpolate", ["linear"], ["zoom"], 2, .9, 8, .25] } });
       map.addLayer({ id: "ships", type: "circle", source: "ships", paint: { "circle-radius": 3, "circle-color": "#FFD7B0", "circle-blur": .3, "circle-opacity": ["interpolate", ["linear"], ["zoom"], 3, 1, 6, 0] } });
       map.addLayer({ id: "cluster", type: "circle", source: "spots", filter: ["has", "point_count"], paint: { "circle-color": "#EE7D2B", "circle-stroke-color": "#0B1A2E", "circle-stroke-width": 2.5, "circle-radius": ["step", ["get", "point_count"], 12, 5, 15, 15, 19] } });
       map.addLayer({ id: "cluster-n", type: "symbol", source: "spots", filter: ["has", "point_count"], layout: { "text-field": ["get", "point_count_abbreviated"], "text-font": ["Noto Sans Bold"], "text-size": 12, "text-allow-overlap": true }, paint: { "text-color": "#1A0D02" } });
@@ -276,10 +285,7 @@
     if (!mapReady) return;
     const pos = spots.filter(s => s.hasPos);
     map.getSource("spots").setData(fc(pos.map(s => ({ type: "Feature", properties: { id: s.id }, geometry: { type: "Point", coordinates: [s.lng, s.lat] } }))));
-    // one arc per distinct place (~5 km grid)
-    const seen = new Map();
-    pos.forEach(s => { const k = s.lat.toFixed(1) + "," + s.lng.toFixed(1); if (!seen.has(k) && s.km >= 30) seen.set(k, s); });
-    arcs = [...seen.values()].map((s, i) => ({ coords: P.greatCircle(P.HOME, s, 80), km: s.km, phase: (i * 0.37) % 1 }));
+    arcs = bundleRoutes(pos);
     arcStart = performance.now();
     // centre the hero globe between home and the finds
     if (pos.length) {
@@ -291,10 +297,27 @@
     drawArcs(REDUCED ? 1 : 0);
     loop();
   }
+  // Routes are bundled: every find inside a ~300 km grid cell shares ONE route to the cell's
+  // centre, and the line gets thicker with more finds. Keeps the globe readable with hundreds of spots.
+  const ROUTE_CELL = 6, MAX_ROUTES = 40;
+  function bundleRoutes(pos) {
+    const cells = new Map();
+    pos.forEach(s => {
+      if (s.km < 30) return;
+      let lng = s.lng; while (lng - P.HOME.lng > 180) lng -= 360; while (lng - P.HOME.lng < -180) lng += 360;
+      const k = Math.round(s.lat / ROUTE_CELL) + ":" + Math.round(lng / ROUTE_CELL);
+      const c = cells.get(k) || { n: 0, lat: 0, lng: 0 };
+      c.n++; c.lat += s.lat; c.lng += lng; cells.set(k, c);
+    });
+    return [...cells.values()].sort((a, b) => b.n - a.n).slice(0, MAX_ROUTES).map((c, i) => {
+      const to = { lat: c.lat / c.n, lng: c.lng / c.n };
+      return { coords: P.greatCircle(P.HOME, to, 80), km: P.km(P.HOME, to), n: c.n, w: 1 + Math.log2(c.n) * 0.3, phase: (i * 0.37) % 1 };
+    });
+  }
   function drawArcs(progress) {
     const feats = arcs.map(a => {
       const n = Math.max(2, Math.round(a.coords.length * Math.min(1, progress)));
-      return { type: "Feature", properties: {}, geometry: { type: "LineString", coordinates: a.coords.slice(0, n) } };
+      return { type: "Feature", properties: { w: a.w }, geometry: { type: "LineString", coordinates: a.coords.slice(0, n) } };
     });
     map.getSource("arcs").setData(fc(feats));
   }
@@ -332,7 +355,9 @@
     if (!full) {
       full = true;
       $("#map").classList.add("full"); $("#mapui").hidden = false; document.body.classList.add("map-open");
+      map.setPadding({ top: 0, bottom: 0, left: 0, right: 0 });
       map.resize(); setInteractive(true); map.getCanvas().style.cursor = "";
+      requestAnimationFrame(() => map.resize());
       pushLayer("map", closeMap);
       renderMini();
       loop();
@@ -348,14 +373,16 @@
   function closeMap() {
     full = false; userMoved = false; setActive(null);
     $("#map").classList.remove("full"); $("#mapui").hidden = true; document.body.classList.remove("map-open");
-    setInteractive(false); map.resize();
+    map.stop(); setInteractive(false);
+    map.setPadding({ top: 0, bottom: 0, left: 0, right: 0 });
+    map.resize(); requestAnimationFrame(() => map.resize());
     map.jumpTo({ center: [rotBase, 24], zoom: heroZoom(), bearing: 0, pitch: 0 });
     loop();
   }
-  $("#mapClose").addEventListener("click", closeTop);
+  $("#mapClose").addEventListener("click", () => closeTop());
   function flyToSpot(s) {
     setActive(s.id);
-    map.flyTo({ center: [s.lng, s.lat], zoom: Math.max(map.getZoom(), 11.5), speed: 1.6, padding: { bottom: 170 }, essential: true, duration: REDUCED ? 0 : undefined });
+    map.flyTo({ center: [s.lng, s.lat], zoom: Math.max(map.getZoom(), 11.5), speed: 1.6, offset: [0, -80], essential: true, duration: REDUCED ? 0 : undefined });
   }
   function setActive(id, scrollRail) {
     activeId = id;
@@ -412,8 +439,7 @@
   $("#spotStory").addEventListener("click", () => openSpot && makeStory(openSpot));
   $("#spotMap").addEventListener("click", () => {
     const s = openSpot; if (!s) return;
-    closeTop();
-    setTimeout(() => { openMap(s); setActive(s.id, true); }, 60);
+    closeTop(() => { openMap(s); setActive(s.id, true); });
   });
 
   /* ======================= STORY IMAGE (1080×1920) ======================= */
@@ -507,7 +533,7 @@
     $("#rSteps").style.visibility = n === 4 ? "hidden" : "";
     $("#rBack").style.visibility = n === 2 || n === 3 ? "visible" : "hidden";
     $(".sheet-body", rs).scrollTop = 0;
-    if (n === 2) initPicker();
+    if (n === 2) { initPicker(); if (R_.pickMap) requestAnimationFrame(() => R_.pickMap.resize()); }
     if (n === 3) {
       const saved = store.get("portfc_me"); if (saved && !$("#inpName").value) { try { const m = JSON.parse(saved); $("#inpName").value = m.name || ""; $("#inpIg").value = m.ig || ""; } catch (e) {} }
       renderSummary(); checkSubmit();
@@ -683,7 +709,7 @@
 
       // email heads-up for the admin; never blocks the user
       const fd2 = new FormData();
-      Object.entries({ name, city: cityStr, instagram: ig, photo_url: upj.secure_url, lat: body.lat, lng: body.lng, map: `https://www.openstreetmap.org/?mlat=${body.lat}&mlon=${body.lng}#map=16/${body.lat}/${body.lng}`, _subject: `🦁 New Port FC spot: ${cityStr || "unknown"} by ${name}` }).forEach(([k, v]) => fd2.append(k, v));
+      Object.entries({ name, city: cityStr, instagram: ig, photo_url: upj.secure_url, lat: body.lat, lng: body.lng, map: `https://www.openstreetmap.org/?mlat=${body.lat}&mlon=${body.lng}#map=16/${body.lat}/${body.lng}`, admin: "https://portfc-on-tour.com/admin", _subject: `🦁 New Port FC spot: ${cityStr || "unknown"} by ${name}` }).forEach(([k, v]) => fd2.append(k, v));
       fetch(CONFIG.formspree, { method: "POST", body: fd2, headers: { Accept: "application/json" } }).catch(() => {});
 
       const fresh = Object.assign(draftSpot(), { id: rj.id || "local-" + Date.now(), name, ig, photoUrl: upj.secure_url, cityRaw: cityStr });
@@ -693,6 +719,8 @@
       R_.submitted = fresh;
       renderAll(false);
       $("#doneTag").innerHTML = tagHTML(fresh);
+      $("#reportSheet .done h3").innerHTML = t(moderated ? "r_done_title_mod" : "r_done_title");
+      $("#reportSheet .done p").innerHTML = t(moderated ? "r_done_text_mod" : "r_done_text");
       goStep(4);
     } catch (err) {
       $("#submitErr").innerHTML = `<svg><use href="#i-info"/></svg><span>${esc(t("r_error"))}</span>`; $("#submitErr").hidden = false;
@@ -702,7 +730,7 @@
   });
   $("#doneStory").addEventListener("click", () => R_.submitted && makeStory(R_.submitted));
   $("#doneShare").addEventListener("click", () => R_.submitted && shareSpot(R_.submitted));
-  $("#doneView").addEventListener("click", () => { const s = R_.submitted; closeTop(); setTimeout(() => openMap(s), 80); });
+  $("#doneView").addEventListener("click", () => { const s = R_.submitted; closeTop(() => openMap(s)); });
   $("#doneAgain").addEventListener("click", () => { resetReport(); goStep(1); });
 
   /* ======================= dock + reveal ======================= */
