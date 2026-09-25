@@ -8,7 +8,7 @@
   <title>Admin · Port FC on Tour</title>
   <link rel="icon" type="image/png" href="/favicon-48.png">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/maplibre-gl@5.24.0/dist/maplibre-gl.css">
-  <link rel="stylesheet" href="/assets/css/site.css?v=20260925b">
+  <link rel="stylesheet" href="/assets/css/site.css?v=20260925c">
   <style>
     .adm-head{display:flex;align-items:center;justify-content:space-between;gap:12px;height:58px}
     .adm-title{font-family:var(--f-display);font-weight:900;text-transform:uppercase;font-size:24px;line-height:1}
@@ -59,6 +59,7 @@
       <button type="button" data-f="all" aria-pressed="true">Alle</button>
       <button type="button" data-f="nopin" aria-pressed="false">Ohne Pin</button>
       <button type="button" data-f="hidden" aria-pressed="false">Ausgeblendet</button>
+      <button type="button" data-f="open" aria-pressed="false" id="fOpen" hidden>Nicht freigegeben</button>
     </div>
     <div class="list" id="list"></div>
   </section>
@@ -91,6 +92,7 @@
       </div>
       <div class="field"><label for="eName">Name</label><input class="inp" id="eName"></div>
       <div class="field"><label for="eIg">Instagram</label><input class="inp" id="eIg" autocapitalize="off"></div>
+      <label class="toggle" id="eApprovedRow" hidden><span><b>Freigegeben</b><br><span class="fine">Nur freigegebene Funde erscheinen (Freigabe-Modus ist an).</span></span><input type="checkbox" id="eApproved"></label>
       <label class="toggle"><span><b>Ausblenden</b><br><span class="fine">Spot verschwindet von der Seite, bleibt in Airtable.</span></span><input type="checkbox" id="eHidden"></label>
       <div class="note err" id="eErr" hidden></div>
       <div class="actions">
@@ -104,7 +106,7 @@
 
 <script src="https://cdn.jsdelivr.net/npm/maplibre-gl@5.24.0/dist/maplibre-gl.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/topojson-client@3.1.0/dist/topojson-client.min.js"></script>
-<script src="/assets/js/geo.js?v=20260925b"></script>
-<script src="/assets/js/admin.js?v=20260925b"></script>
+<script src="/assets/js/geo.js?v=20260925c"></script>
+<script src="/assets/js/admin.js?v=20260925c"></script>
 </body>
 </html>
