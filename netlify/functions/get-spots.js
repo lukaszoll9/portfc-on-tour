@@ -5,6 +5,9 @@
 
 exports.handler = async () => {
   const { AIRTABLE_TOKEN, AIRTABLE_BASE_ID } = process.env;
+  // Approval mode: set REQUIRE_APPROVAL=true in Netlify and only spots with the
+  // "Approved" checkbox ticked (via /admin or Airtable) are shown publicly.
+  const moderated = String(process.env.REQUIRE_APPROVAL || '').toLowerCase() === 'true';
   if (!AIRTABLE_TOKEN || !AIRTABLE_BASE_ID) {
     return json(500, { error: 'Airtable not configured' });
   }
@@ -31,6 +34,7 @@ exports.handler = async () => {
     const spots = records
       // Opt-out moderation: tick the "Hidden" checkbox in Airtable (or use /admin) to remove a spot.
       .filter(r => !r.fields.Hidden)
+      .filter(r => !moderated || r.fields.Approved)
       .filter(r => r.fields.Name || r.fields.City)
       .map(r => ({
         id: r.id,
@@ -44,6 +48,7 @@ exports.handler = async () => {
       }));
 
     return json(200, spots, {
+      'X-Moderation': moderated ? 'on' : 'off',
       'Cache-Control': 'public, max-age=30',
       'Netlify-CDN-Cache-Control': 'public, durable, s-maxage=60, stale-while-revalidate=600'
     });

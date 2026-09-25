@@ -4,15 +4,16 @@
 import { timingSafeEqual, createHash } from "node:crypto";
 
 const sha = s => createHash("sha256").update(String(s)).digest();
-const json = (status, body) => new Response(JSON.stringify(body), {
+const json = (status, body, extra = {}) => new Response(JSON.stringify(body), {
   status,
-  headers: { "Content-Type": "application/json", "Cache-Control": "no-store", "X-Robots-Tag": "noindex" }
+  headers: { "Content-Type": "application/json", "Cache-Control": "no-store", "X-Robots-Tag": "noindex", ...extra }
 });
 
 export default async (req) => {
   const token = Netlify.env.get("AIRTABLE_TOKEN");
   const base = Netlify.env.get("AIRTABLE_BASE_ID");
   const pass = Netlify.env.get("ADMIN_PASSWORD");
+  const moderated = String(Netlify.env.get("REQUIRE_APPROVAL") || "").toLowerCase() === "true";
   if (!pass) return json(503, { error: "ADMIN_PASSWORD is not set in Netlify yet." });
   if (!token || !base) return json(500, { error: "Airtable not configured" });
 
@@ -50,8 +51,9 @@ export default async (req) => {
       lat: r.fields.Latitude ?? null,
       lng: r.fields.Longitude ?? null,
       time: r.fields["Submitted At"] || r.createdTime,
-      hidden: !!r.fields.Hidden
-    })));
+      hidden: !!r.fields.Hidden,
+      approved: !!r.fields.Approved
+    })), { "X-Moderation": moderated ? "on" : "off" });
   }
 
   if (req.method === "PATCH") {
@@ -69,6 +71,7 @@ export default async (req) => {
       fields.Longitude = Math.round(lng * 1e5) / 1e5;
     }
     if (b.hidden !== undefined) fields.Hidden = !!b.hidden;
+    if (b.approved !== undefined) fields.Approved = !!b.approved;
     const r = await fetch(`${api}/${b.id}`, {
       method: "PATCH",
       headers: { ...auth, "Content-Type": "application/json" },
