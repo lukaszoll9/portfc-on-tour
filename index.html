@@ -1,1141 +1,340 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-  <title>Port FC on Tour — Bangkok Worldwide</title>
-  <meta name="description" content="Port FC Bangkok Fan Community. Spot a sticker. Drop your pin on the map."/>
-  <link rel="icon" type="image/png" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABUAAAAgCAIAAABywqTfAAAEf0lEQVR42o1VyW5cVRA9dYc39GS77dhxyIiSKAgEEQHBgnERZQUrFsAHIiGxZRcFFAFCIEWKFGKIMjl0bHc8d7/53VvFotvtjgkRtbt6de67dU6dKupcuIaXBgEgiEARRADAC4hAAAAzyVMEACIQgAAvY7gTCBAqZI6MEhF0LNeMWoim8bknAJqgIZVQ23oCFHA8riMlK4Pog2NJzcTAidA9SMOVQRRoMQAE0CRX5nIv2CrN651iu9ILoZuzflCrV1vV3WFcMl2eyR+k4elG+e2T7sDpUIkIzKhCAl2ezbyga913T7tXlwa5w1Lkv1+ftypZGcSFVyKyWdo56y62y/XCbhTWKFEjvBOKFd/eb2xWdjbwqSMvlHk6FZeR9jG5QPlebu7sBdf77RlbKzqgp3PhmgCBks9P7H6z2j0Tl5c6+d1ho2VlqwqsQuJIdOhYQNoY7VWYF6WqhlaRjPCjJxjyFDQqWCajldRFHoaxbrSlzoW9jVs+T8iENopdslsMd0D6UD8WqXUUBq2IYKMGtMnrHleJCiwAFsB7pZSwc0XGIoDCUf0B0oq9L/NEKS2kaxaUBbsysGGyvU421L4UEZAC0XN4IvKuqtOBiLArGcrY4GTTD6uEtdnNysWIGjp7kphAQYQxbj/ocP785ArxTtgzKArMewvl6Q7FRt5v9Z2OT0XZO/PFtov2KlJ02N2H+PEroC7O4s1O6kV8XVkuNNHl5vZMKL2qbazup3zQ++OqRUSm/bIQFDMBO+iP5559cXJrTS+XrFaGza3SCosmmk5XwPR1YEjuVQ1j4axVSw2/ZNL7/ji1FjuBDGp1aL0RfwI5MB4BQkSpI6vxzMWP9k1NwVm9s29n+r46ZbZv7C1HqOjA1hjLKABo5AIIecaQWvOxWi0aA2n9Wp05I70sGdzK5jrGiYzyD/iL5s9PxCSABYGmri5zr1OvU283imBQylJY7Tn7d6oVYZKPSRuNQgCruF+YpJZL4TMvvJk51NmqPrlLrbXMeJ6u/V/6YVwC77pwxvJbzd2FhtnguWU9uDcwa6my6jmpXoBnAREVDo+LRmyVZylhHg3QS5Slqb6b8H9kWgZKAMwE3ol/nMZewPBbuQrIC8gQWKbpm/Q/UAsdC9zV44OKERA7xrHQ/bzTaSj31SvpZqEDTQzqlY0f+u1AMYPY+2n/SebVT1sto7hmNWvcZuUKh5LMnUFjIzcMlaT5TlkNsyGIidBsxmbCvCIUTKtpMD42QUSjCdfLwntJWHr69MOPPlnudIyvoHdzXL/xizmyKkb1A1jLbS+34+lKJOwX29HXX372dqv3Bt3f0Cf+CN/9697Do/zJkc0z9aWCvVD/eZL31xLv93+7cs5rYw3+dwgIdUb7T1EiiFuqToXZvBQwdhUIXsjAPQxe63aXLma3q8Zi2GobrV6G1yRWQQCGBJZ0nf948/f+6dmbuVJBJoafrvXphfuXgIrpXLM626q2KsMsRhEJa5+H8BnCpq6J/a2k+5//t0rWCrteWJZDvxE1iYQAEQLBk/wDx3tyqCKQt4UAAAAASUVORK5CYII="/>
-  <meta property="og:image" content="https://portfc-on-tour.com/assets/sticker-design.jpg"/>
-  <meta property="og:title" content="Port FC on Tour"/>
-  <meta property="og:description" content="We're everywhere. Port FC on Tour — the sticker that connects the world."/>
-  <link rel="manifest" href="/manifest.json"/>
-  <link rel="apple-touch-icon" sizes="180x180" href="/icon-192.png"/>
-  <link rel="preconnect" href="https://fonts.googleapis.com"/>
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"/>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
-  <style>
-    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-    :root{--o:#E87722;--od:#C4641A;--b:#1B4F91;--bk:#0D0D0D;--w:#fff;--m:rgba(255,255,255,0.5);--br:rgba(255,255,255,0.08)}
-    html{scroll-behavior:smooth}
-    .osm-dark-tiles{filter:invert(100%) hue-rotate(180deg) brightness(95%) contrast(90%)}
-    body{font-family:'Inter',sans-serif;background:var(--bk);color:var(--w);overflow-x:hidden}
-
-    /* NAV */
-    nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:.75rem 1.25rem;background:rgba(13,13,13,0.96);backdrop-filter:blur(12px);border-bottom:1px solid var(--br);gap:8px}
-    .logo{font-family:'Bebas Neue',sans-serif;font-size:20px;color:var(--w);text-decoration:none;white-space:nowrap}
-    .logo span{color:var(--o)}
-    .nav-btn{background:var(--o);color:var(--w);border:none;border-radius:20px;padding:7px 16px;font-size:13px;font-weight:600;text-decoration:none;cursor:pointer;font-family:inherit;transition:background .2s;white-space:nowrap}
-    .nav-btn:hover{background:var(--od)}
-    .nav-links-d{display:flex;gap:1.25rem;list-style:none;flex:1;justify-content:center}
-    .nav-links-d a{font-size:13px;color:var(--m);text-decoration:none}
-    .nav-links-d a:hover{color:var(--o)}
-    @media(max-width:700px){.nav-links-d{display:none}}
-    @media(max-width:480px){
-      nav{padding:.6rem .75rem;gap:6px;flex-wrap:nowrap}
-      .nav-btn{display:none}
-      .lang-btns{padding:2px}
-      .lang-btn{padding:4px 7px;font-size:11px}
-    }
-    .lang-btns{display:flex;gap:1px;border:1px solid rgba(255,255,255,0.15);border-radius:20px;padding:3px}
-    .lang-btn{font-size:12px;font-weight:600;letter-spacing:.03em;padding:5px 10px;cursor:pointer;border:none;background:transparent;color:rgba(255,255,255,0.45);border-radius:16px;line-height:1;transition:background .2s,color .2s;font-family:inherit}
-    .lang-btn:hover{color:rgba(255,255,255,0.8)}
-    .lang-btn.active{background:var(--o);color:#fff}
-
-    /* PWA INSTALL BANNER */
-    #pwa-banner{display:none;position:fixed;bottom:0;left:0;right:0;z-index:200;background:linear-gradient(135deg,#1B4F91,#0D2E5A);border-top:1px solid rgba(255,255,255,0.1);padding:1rem 1.25rem;align-items:center;gap:1rem}
-    #pwa-banner.show{display:flex}
-    .pwa-text{flex:1;font-size:13px;line-height:1.4}
-    .pwa-text strong{display:block;font-size:14px;margin-bottom:2px}
-    .pwa-btn{background:var(--o);color:var(--w);border:none;border-radius:20px;padding:8px 16px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;white-space:nowrap}
-    .pwa-close{background:transparent;border:none;color:rgba(255,255,255,0.4);font-size:20px;cursor:pointer;padding:0 4px;line-height:1}
-
-    /* HERO */
-    .hero{min-height:100svh;padding:5rem 1.25rem 2.5rem;display:flex;flex-direction:column;justify-content:center;position:relative;overflow:hidden}
-    .hero::before{content:'';position:absolute;top:-100px;right:-80px;width:400px;height:400px;border-radius:50%;background:radial-gradient(circle,rgba(232,119,34,0.12),transparent 70%);pointer-events:none}
-    .hero-disclaimer{font-size:10px;letter-spacing:.02em;color:rgba(255,255,255,0.28);margin-top:1.25rem}
-    .hero-eye{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--o);margin-bottom:.6rem;display:flex;align-items:center;gap:8px}
-    .hero-eye::before{content:'';width:18px;height:1px;background:var(--o)}
-    h1{font-family:'Bebas Neue',sans-serif;font-size:clamp(58px,16vw,90px);line-height:.92;margin-bottom:1rem}
-    h1 span{color:var(--o)}
-    .hero-sub{font-size:15px;color:var(--m);line-height:1.65;margin-bottom:1.75rem;max-width:380px}
-    .hero-btns{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:2rem}
-    .btn-p{display:inline-flex;align-items:center;gap:8px;background:var(--o);color:var(--w);font-size:14px;font-weight:600;padding:13px 22px;border-radius:50px;text-decoration:none;border:none;cursor:pointer;font-family:inherit;transition:background .2s}
-    .btn-p:hover{background:var(--od)}
-    .btn-s{display:inline-flex;align-items:center;gap:8px;background:transparent;color:var(--w);font-size:14px;font-weight:500;padding:13px 22px;border-radius:50px;border:1px solid rgba(255,255,255,0.2);text-decoration:none;cursor:pointer;font-family:inherit;transition:border-color .2s}
-    .btn-s:hover{border-color:var(--o);color:var(--o)}
-    .hero-stats{display:flex;gap:2rem}
-    .stat-n{font-family:'Bebas Neue',sans-serif;font-size:30px;color:var(--o);line-height:1}
-    .stat-l{font-size:11px;color:var(--m);margin-top:1px}
-    @media(min-width:768px){
-      .hero{flex-direction:row;align-items:center;gap:3rem;padding:6rem 5rem 4rem}
-      .hero-left{flex:1}.hero-right{flex:0 0 280px;display:flex!important;align-items:center;justify-content:center}
-    }
-    .hero-right{display:none}
-    .sticker-wrap{position:relative}
-    .sticker-wrap img{width:100%;max-width:280px;border-radius:14px;box-shadow:0 20px 60px rgba(0,0,0,0.6),0 0 40px rgba(232,119,34,0.1)}
-    .sticker-badge{position:absolute;bottom:-12px;left:50%;transform:translateX(-50%);background:var(--o);color:var(--w);font-size:11px;font-weight:700;padding:5px 14px;border-radius:20px;white-space:nowrap}
-
-    /* COUNTER */
-    .counter{background:var(--o);padding:1.1rem 1.25rem;display:flex;justify-content:space-around;flex-wrap:wrap;gap:.75rem}
-    .cnt{text-align:center}
-    .cnt-n{font-family:'Bebas Neue',sans-serif;font-size:34px;color:#fff;line-height:1}
-    .cnt-l{font-size:10px;color:rgba(255,255,255,0.8);text-transform:uppercase;letter-spacing:.1em}
-
-    /* UPLOAD */
-    .upload{background:linear-gradient(135deg,#110900,#080f1a);border-top:1px solid rgba(232,119,34,0.2);border-bottom:1px solid rgba(232,119,34,0.1);padding:3rem 1.25rem}
-    .upload-inner{max-width:520px;margin:0 auto}
-    .sec-label{font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--o);margin-bottom:.5rem}
-    .upload-inner h2{font-family:'Bebas Neue',sans-serif;font-size:34px;margin-bottom:.4rem}
-    .upload-inner>p{font-size:13px;color:var(--m);margin-bottom:1.5rem;line-height:1.6}
-    .steps-ind{display:flex;gap:6px;margin-bottom:1.5rem}
-    .step-dot{width:28px;height:4px;border-radius:2px;background:rgba(255,255,255,0.1);transition:background .3s}
-    .step-dot.active{background:var(--o)}
-    .step-block{display:none}
-    .step-block.show{display:block}
-    .photo-area{background:#1a1a1a;border:2px dashed rgba(255,255,255,0.15);border-radius:14px;min-height:180px;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;transition:border-color .2s;overflow:hidden;margin-bottom:1rem;position:relative}
-    .photo-area:hover{border-color:var(--o)}
-    .photo-area img{width:100%;max-height:240px;object-fit:cover;border-radius:12px}
-    .photo-placeholder{text-align:center;padding:2rem 1rem;pointer-events:none}
-    .photo-placeholder .icon{font-size:44px;margin-bottom:.5rem}
-    .photo-placeholder .title{font-size:15px;font-weight:600;margin-bottom:4px}
-    .photo-placeholder .hint{font-size:12px;color:var(--m)}
-    .inp{background:#1a1a1a;border:1px solid rgba(255,255,255,0.1);border-radius:10px;padding:12px 14px;color:var(--w);font-size:14px;font-family:inherit;outline:none;width:100%;transition:border-color .2s;margin-bottom:10px}
-    .inp:focus{border-color:var(--o)}
-    .inp::placeholder{color:rgba(255,255,255,0.3)}
-    .gps-status{display:flex;align-items:center;gap:8px;font-size:12px;padding:8px 12px;border-radius:8px;margin-bottom:10px;background:rgba(27,79,145,0.15);border:1px solid rgba(27,79,145,0.3);color:rgba(255,255,255,0.7);min-height:38px}
-    .gps-status.ok{background:rgba(74,222,128,0.1);border-color:rgba(74,222,128,0.3);color:#4ade80}
-    .gps-status.err{background:rgba(239,68,68,0.1);border-color:rgba(239,68,68,0.3);color:rgba(255,255,255,0.5)}
-    .step-nav{display:flex;gap:8px;margin-top:.5rem}
-    .btn-back{background:rgba(255,255,255,0.08);color:var(--w);border:none;border-radius:50px;padding:12px 20px;font-size:14px;font-weight:500;cursor:pointer;font-family:inherit;flex-shrink:0}
-    .summary-box{background:#1a1a1a;border-radius:12px;padding:1rem;display:flex;gap:1rem;align-items:center;margin-bottom:1rem}
-    .summary-box img{width:72px;height:72px;object-fit:cover;border-radius:8px;flex-shrink:0}
-    .summary-city{font-size:15px;font-weight:600}
-    .summary-loc{font-size:12px;color:var(--m);margin-top:3px}
-    .summary-ig{font-size:12px;color:var(--o);margin-top:3px}
-    .success-box{background:rgba(232,119,34,0.08);border:1px solid rgba(232,119,34,0.25);border-radius:14px;padding:2rem;text-align:center;display:none}
-    .success-box.show{display:block}
-    .success-box h3{font-family:'Bebas Neue',sans-serif;font-size:28px;margin:.5rem 0 .3rem}
-    .success-box p{font-size:13px;color:var(--m);line-height:1.6;margin-bottom:1rem}
-    .share-btns{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:.75rem}
-    .share-btn{padding:9px 16px;border-radius:20px;font-size:13px;font-weight:600;border:none;cursor:pointer;font-family:inherit;transition:opacity .2s}
-    .share-btn:hover{opacity:.85}
-    .share-native{background:var(--o);color:#fff}
-    .share-copy{background:rgba(255,255,255,0.1);color:var(--w);border:1px solid rgba(255,255,255,0.15)}
-    .share-ig{background:linear-gradient(135deg,#f09433,#dc2743,#bc1888);color:#fff}
-
-    /* MAP */
-    .sec{padding:4rem 1.25rem}
-    .sec-dark{background:#111}
-    .sec-mid{background:#161616}
-    .sec h2{font-family:'Bebas Neue',sans-serif;font-size:36px;margin-bottom:.75rem}
-    .sec p.body{font-size:14px;color:var(--m);line-height:1.7;margin-bottom:1.5rem}
-    #portfc-map{height:360px;border-radius:14px;border:1px solid var(--br);margin-bottom:1.25rem}
-    .map-leg{display:flex;gap:1.5rem;margin-bottom:1rem}
-    .map-leg-item{display:flex;align-items:center;gap:7px;font-size:13px;color:var(--m)}
-    .dot{width:11px;height:11px;border-radius:50%}
-    .dot-h{background:var(--o)}
-    .dot-s{background:var(--b)}
-    .slist{display:flex;flex-direction:column;gap:8px;margin-top:1.25rem}
-    .sight{background:#1a1a1a;border:1px solid var(--br);border-radius:12px;padding:.85rem 1rem;display:flex;align-items:center;gap:.9rem}
-    .sight-flag{font-size:22px;flex-shrink:0}
-    .sight-city{font-size:13px;font-weight:500}
-    .sight-loc{font-size:11px;color:var(--m);margin-top:2px}
-    .sight-badge{margin-left:auto;font-size:10px;padding:3px 8px;border-radius:12px;background:rgba(232,119,34,0.12);color:var(--o);flex-shrink:0}
-    .sight-more-btn{width:100%;background:transparent;border:1px dashed var(--br);border-radius:12px;padding:.75rem;color:var(--o);font-size:12px;font-weight:600;font-family:inherit;cursor:pointer;transition:border-color .2s,background .2s}
-    .sight-more-btn:hover{border-color:var(--o);background:rgba(232,119,34,0.06)}
-
-    /* PRINT */
-    .print-tips{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:1rem}
-    .ptip{background:#1a1a1a;border:1px solid var(--br);border-radius:10px;padding:.9rem;font-size:12px;color:var(--m)}
-
-    /* ONBOARDING */
-    .onboarding{padding-top:2.5rem;padding-bottom:2.5rem}
-    .onb-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:1.25rem}
-    .onb-step{background:#161616;border:1px solid var(--br);border-radius:14px;padding:1.25rem;text-decoration:none;color:inherit;transition:border-color .2s,transform .2s;display:block}
-    .onb-step:hover{border-color:rgba(232,119,34,0.4);transform:translateY(-2px)}
-    .onb-num{width:26px;height:26px;border-radius:50%;background:var(--o);color:#000;font-weight:700;font-size:13px;display:flex;align-items:center;justify-content:center;margin-bottom:.7rem}
-    .onb-t{font-size:14px;font-weight:600;margin-bottom:.35rem}
-    .onb-d{font-size:12px;color:var(--m);line-height:1.5}
-    @media(max-width:640px){.onb-grid{grid-template-columns:1fr}}
-
-    /* IG SECTION */
-    .ig-box{background:linear-gradient(135deg,#1B4F91,#0D2E5A);border-radius:14px;padding:2.5rem 1.25rem;text-align:center}
-    .ig-handle{font-family:'Bebas Neue',sans-serif;font-size:36px;margin-bottom:.4rem}
-    .ig-sub{font-size:14px;color:rgba(255,255,255,0.6);margin-bottom:1.25rem;line-height:1.5}
-    .tags{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin-bottom:1.25rem}
-    .tag{font-size:11px;padding:4px 10px;border-radius:20px;border:1px solid rgba(255,255,255,0.2);color:rgba(255,255,255,0.65)}
-    .ig-posts{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:.25rem 0 1.25rem;border-radius:10px}
-    .ig-posts .instagram-media{width:100% !important;min-width:0 !important;margin:0 !important}
-    .ig-post{aspect-ratio:1;background:rgba(255,255,255,0.06);display:flex;align-items:center;justify-content:center;font-size:22px;cursor:pointer;transition:background .2s}
-    .ig-post:hover{background:rgba(255,255,255,0.1)}
-    /* On phones, three full Instagram embeds stacked vertically turn into a
-       very long, messy scroll. Swipeable horizontal cards read much cleaner. */
-    @media(max-width:640px){
-      .ig-posts{display:flex;grid-template-columns:none;overflow-x:auto;scroll-snap-type:x mandatory;gap:12px;padding-bottom:4px;-webkit-overflow-scrolling:touch;scrollbar-width:none}
-      .ig-posts::-webkit-scrollbar{display:none}
-      .ig-posts>*{scroll-snap-align:center;flex:0 0 85%;max-width:340px}
-    }
-
-    /* FOUNDED */
-    .founded{padding:2rem 1.25rem;border-top:1px solid var(--br)}
-    .founded-lbl{font-size:10px;letter-spacing:.15em;text-transform:uppercase;color:rgba(255,255,255,0.25);margin-bottom:.75rem}
-    .founder-card{display:inline-flex;align-items:center;gap:1rem;text-decoration:none;background:#1a1a1a;border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:.9rem 1.1rem;transition:border-color .2s}
-    .founder-card:hover{border-color:var(--o)}
-    .ig-icon{width:40px;height:40px;background:linear-gradient(135deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888);border-radius:9px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
-    .founder-name{font-size:14px;font-weight:600;color:var(--w)}
-    .founder-sub{font-size:11px;color:var(--m);margin-top:1px}
-
-    /* ADMIN */
-    #admin-overlay{display:none;position:fixed;inset:0;z-index:300;background:rgba(0,0,0,0.95);overflow-y:auto;padding:2rem 1.25rem}
-    #admin-overlay.show{display:block}
-    .admin-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem}
-    .admin-close{background:transparent;border:1px solid rgba(255,255,255,0.2);color:var(--w);border-radius:20px;padding:6px 16px;cursor:pointer;font-family:inherit;font-size:13px}
-    .admin-table{width:100%;border-collapse:collapse;font-size:12px}
-    .admin-table th{text-align:left;padding:.5rem .75rem;color:var(--o);border-bottom:1px solid var(--br);font-size:10px;letter-spacing:.1em;text-transform:uppercase}
-    .admin-table td{padding:.6rem .75rem;border-bottom:1px solid rgba(255,255,255,0.04);vertical-align:middle}
-    .admin-table tr:hover td{background:rgba(255,255,255,0.02)}
-    .admin-photo{width:44px;height:44px;object-fit:cover;border-radius:6px;background:#222}
-
-    /* FOOTER */
-    footer{background:#080808;padding:2.5rem 1.25rem 2rem;border-top:1px solid var(--br)}
-    .footer-grid{display:grid;grid-template-columns:1fr 1fr;gap:2rem;margin-bottom:1.25rem}
-    .footer-logo{font-family:'Bebas Neue',sans-serif;font-size:24px;margin-bottom:.4rem}
-    .footer-logo span{color:var(--o)}
-    footer p,footer a{font-size:11px;color:rgba(255,255,255,0.3);line-height:1.8;text-decoration:none}
-    footer a:hover{color:var(--o)}
-    .footer-col h5{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,0.35);margin-bottom:.6rem}
-    .footer-col ul{list-style:none;display:flex;flex-direction:column;gap:2px}
-    hr.fd{border:none;border-top:1px solid var(--br);margin:1.25rem 0}
-    .legal{padding:3rem 1.25rem}
-    .legal h2{font-family:'Bebas Neue',sans-serif;font-size:24px;margin-bottom:.75rem}
-    .legal h3{font-size:13px;font-weight:600;color:rgba(255,255,255,0.5);margin:1rem 0 .25rem}
-    .legal p{font-size:11px;color:rgba(255,255,255,0.3);line-height:1.8}
-    .legal a{color:var(--o);text-decoration:none}
-    hr.ld{border:none;border-top:1px solid var(--br);margin:2rem 0}
-
-    @media(min-width:640px){.sec,.upload,.founded{padding-left:2.5rem;padding-right:2.5rem}}
-    @media(min-width:1024px){.sec,.upload,.founded{padding-left:5rem;padding-right:5rem}}
-  </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <title>Port FC on Tour — Stickers from Khlong Toei, spotted worldwide</title>
+  <meta name="description" content="Port FC Bangkok fan project. Found a Port FC sticker somewhere in the world? Snap it, pin it on the map, get reposted on @portfc_tour.">
+  <meta name="theme-color" content="#0B1A2E">
+  <link rel="canonical" href="https://portfc-on-tour.com/">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://portfc-on-tour.com/">
+  <meta property="og:title" content="Port FC on Tour">
+  <meta property="og:description" content="Stickers from Khlong Toei, spotted worldwide. Found one? Put it on the map.">
+  <meta property="og:image" content="https://portfc-on-tour.com/assets/og-image.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" type="image/png" sizes="48x48" href="/favicon-48.png">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="manifest" href="/manifest.json">
+  <link rel="preload" href="/assets/fonts/barlow-condensed-latin-800-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="/assets/fonts/ibm-plex-sans-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preconnect" href="https://tiles.openfreemap.org" crossorigin>
+  <link rel="preconnect" href="https://res.cloudinary.com">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/maplibre-gl@5.24.0/dist/maplibre-gl.css">
+  <link rel="stylesheet" href="/assets/css/site.css?v=20260925c">
+  <script>document.documentElement.classList.add('js')</script>
 </head>
 <body>
 
-<!-- PWA INSTALL BANNER -->
-<div id="pwa-banner">
-  <div class="pwa-text">
-    <strong>📲 Add to Home Screen</strong>
-    <span data-i18n="pwa_hint">Get the Port FC app for faster spot reporting</span>
-  </div>
-  <button class="pwa-btn" id="pwaInstallBtn" data-i18n="pwa_install">Install</button>
-  <button class="pwa-close" onclick="dismissPWA()">✕</button>
-</div>
+<!-- icon sprite -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-camera" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h3l2-3h6l2 3h3a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1z"/><circle cx="12" cy="13.5" r="3.5"/></symbol>
+  <symbol id="i-globe" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.6 3.8 5.6 3.8 9s-1.3 6.4-3.8 9c-2.5-2.6-3.8-5.6-3.8-9S9.5 5.6 12 3z"/></symbol>
+  <symbol id="i-expand" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></symbol>
+  <symbol id="i-close" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></symbol>
+  <symbol id="i-back" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></symbol>
+  <symbol id="i-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></symbol>
+  <symbol id="i-locate" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="7"/><circle cx="12" cy="12" r="2.5" fill="currentColor"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></symbol>
+  <symbol id="i-search" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="6.5"/><path d="M20 20l-4.2-4.2"/></symbol>
+  <symbol id="i-share" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15V3M7 8l5-5 5 5"/><path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7"/></symbol>
+  <symbol id="i-story" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="2.5" width="12" height="19" rx="2.5"/><path d="M10 18.5h4"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9.5" stroke-width="2"/><path d="M8 12.5l2.7 2.7L16 9.8"/></symbol>
+  <symbol id="i-info" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9.5"/><path d="M12 11v6M12 7.5v.5"/></symbol>
+  <symbol id="i-ig" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4.2"/><circle cx="17.3" cy="6.7" r=".6" fill="currentColor"/></symbol>
+  <symbol id="i-pin" viewBox="0 0 40 52"><path d="M20 51C20 51 37 30.5 37 18.5 37 8.8 29.4 1.5 20 1.5S3 8.8 3 18.5C3 30.5 20 51 20 51z" fill="#EE7D2B" stroke="#0B1A2E" stroke-width="2.5"/><circle cx="20" cy="18.5" r="6.5" fill="#0B1A2E"/></symbol>
+</svg>
 
-<!-- ADMIN OVERLAY -->
-<div id="admin-overlay">
-  <div class="admin-header">
-    <div>
-      <div style="font-family:'Bebas Neue',sans-serif;font-size:28px">🔒 Admin Dashboard</div>
-      <div style="font-size:11px;color:var(--m);margin-top:2px">All submitted spots — private</div>
-    </div>
-    <button class="admin-close" onclick="closeAdmin()">Close ✕</button>
-  </div>
-  <div id="admin-content"></div>
-</div>
-
-<!-- NAV -->
-<nav>
-  <a href="#" class="logo">Port FC <span>on Tour</span></a>
-  <ul class="nav-links-d">
-    <li><a href="#upload" data-i18n="nav_spot">📍 Report Spot</a></li>
-    <li><a href="#map" data-i18n="nav_map">Map</a></li>
-    <li><a href="#impressum" data-i18n="nav_legal">Legal</a></li>
-    <li><a href="javascript:openAdmin()" style="color:rgba(255,255,255,0.2);font-size:11px">⚙️</a></li>
-  </ul>
-  <a href="https://instagram.com/portfc_tour" class="nav-btn" target="_blank" rel="noopener">@portfc_tour</a>
-  <div class="lang-btns">
-    <button onclick="setLang('en')" id="btn-en" class="lang-btn active" title="English">EN</button>
-    <button onclick="setLang('de')" id="btn-de" class="lang-btn" title="Deutsch">DE</button>
-    <button onclick="setLang('th')" id="btn-th" class="lang-btn" title="ภาษาไทย">TH</button>
-  </div>
-</nav>
-
-<!-- HERO -->
-<section class="hero">
-  <div class="hero-left">
-    <div class="hero-eye">Bangkok · Klong Toei · Worldwide</div>
-    <h1>Port FC<br><span>on Tour</span></h1>
-    <p class="hero-sub" data-i18n="hero_sub">Scan the sticker. Upload a photo. Get on the map. Port FC Bangkok travels with you — from Klong Toei to the world.</p>
-    <div class="hero-btns">
-      <a href="#upload" class="btn-p" data-i18n="hero_cta1">📍 Report Your Spot →</a>
-    </div>
-    <div class="hero-stats">
-      <div><div class="stat-n" id="statSpots">–</div><div class="stat-l" data-i18n="stat_spots">Spots</div></div>
-      <div><div class="stat-n">50+</div><div class="stat-l" data-i18n="stat_stickers">Stickers</div></div>
-      <div><div class="stat-n">1967</div><div class="stat-l" data-i18n="stat_founded">Founded</div></div>
-    </div>
-    <div class="hero-disclaimer" data-i18n="disclaimer">Unofficial Fan Community · Not affiliated with Port FC or PAT</div>
-  </div>
-  <div class="hero-right">
-    <div class="sticker-wrap">
-      <img src="assets/sticker-design.jpg" alt="Port FC on Tour Sticker"/>
-      <div class="sticker-badge">🟠 Scan · Share · Drop</div>
-    </div>
-  </div>
-</section>
-
-<!-- ONBOARDING -->
-<section class="sec onboarding">
-  <div class="sec-label" data-i18n="onb_label">How it works</div>
-  <h2 data-i18n="onb_title">Three steps. That's it.</h2>
-  <div class="onb-grid">
-    <a href="#map" class="onb-step">
-      <div class="onb-num">1</div>
-      <div class="onb-t" data-i18n="onb_step1_t">1 · Explore the map</div>
-      <div class="onb-d" data-i18n="onb_step1_d">See every sticker sighting worldwide — Bangkok is Home, everywhere else is an away game.</div>
+<header class="topbar">
+  <div class="wrap">
+    <a class="brand" href="/" aria-label="Port FC on Tour, home">
+      <img src="/assets/lion.webp" alt="" width="34" height="37">
+      <span class="brand-word"><span class="o">Port FC</span><span class="b">On Tour</span></span>
     </a>
-    <a href="#upload" class="onb-step">
-      <div class="onb-num">2</div>
-      <div class="onb-t" data-i18n="onb_step2_t">2 · Report your spot</div>
-      <div class="onb-d" data-i18n="onb_step2_d">Snap a photo and share your location. No GPS access? No problem — enter your city manually any time, even after saying no.</div>
-    </a>
-    <a href="https://instagram.com/portfc_tour" target="_blank" class="onb-step">
-      <div class="onb-num">3</div>
-      <div class="onb-t" data-i18n="onb_step3_t">3 · Follow on Instagram</div>
-      <div class="onb-d" data-i18n="onb_step3_d">Every spot gets reposted on @portfc_tour — see the community grow in real time.</div>
-    </a>
-  </div>
-</section>
-
-<!-- COUNTER BAR -->
-<div class="counter">
-  <div class="cnt"><div class="cnt-n" id="cntSpots">–</div><div class="cnt-l" data-i18n="cnt_spots">Spots</div></div>
-  <div class="cnt"><div class="cnt-n">50+</div><div class="cnt-l" data-i18n="cnt_stickers">Stickers Dropped</div></div>
-  <div class="cnt"><div class="cnt-n">1967</div><div class="cnt-l">Est. Klong Toei</div></div>
-  <div class="cnt"><div class="cnt-n">∞</div><div class="cnt-l" data-i18n="cnt_away">Away Games</div></div>
-</div>
-
-<!-- UPLOAD -->
-<section class="sec" id="upload">
-  <div class="upload-inner">
-    <div class="sec-label">Community</div>
-    <h2 data-i18n="upload_title">Spotted a Sticker?</h2>
-    <p data-i18n="upload_sub">Take a photo · Share your location · Get on the map. Takes 30 seconds.</p>
-
-    <div class="steps-ind">
-      <div class="step-dot active" id="dot1"></div>
-      <div class="step-dot" id="dot2"></div>
+    <div class="lang" role="group" aria-label="Language">
+      <button type="button" data-lang="en" aria-pressed="true">EN</button>
+      <button type="button" data-lang="de" aria-pressed="false">DE</button>
+      <button type="button" data-lang="th" aria-pressed="false">TH</button>
     </div>
+  </div>
+</header>
 
-    <!-- STEP 1 -->
-    <div class="step-block show" id="s1">
-      <div class="photo-area" id="photoArea" onclick="document.getElementById('photoInput').click()">
-        <img id="photoPreview" src="" alt="" style="display:none"/>
-        <div class="photo-placeholder" id="photoPlaceholder">
-          <div class="icon">📸</div>
-          <div class="title" data-i18n="photo_title">Photo of the Sticker</div>
-          <div class="hint" data-i18n="photo_hint">Tap to take a photo or choose from gallery</div>
+<main>
+  <!-- HERO -->
+  <section class="hero" aria-labelledby="hero-title">
+    <div class="wrap">
+      <div class="hero-copy">
+        <div class="eyebrow" data-i18n="hero_eyebrow">Fan project · <b>Est. Khlong Toei 1967</b></div>
+        <h1 id="hero-title"><span class="o">Port FC</span><span class="b">On Tour</span></h1>
+        <p class="lede" data-i18n="hero_lede">Port FC stickers leave Khlong Toei and turn up all over the world. Found one? Snap it and put it on the map.</p>
+        <div class="hero-ctas" id="heroCtas">
+          <button type="button" class="btn btn-primary" data-action="report"><svg><use href="#i-camera"/></svg><span data-i18n="cta_found">I found a sticker</span></button>
         </div>
       </div>
-      <input type="file" id="photoInput" accept="image/*" style="display:none"/>
-      <!-- Honeypot: hidden from real visitors via CSS + tabindex/autocomplete off; a bot filling every field will fill this too -->
-      <input type="text" id="inpWebsite" name="website" autocomplete="off" tabindex="-1" style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0" aria-hidden="true"/>
-      <div class="gps-status" id="gpsStatus">
-        <span id="gpsIcon">📡</span>
-        <span id="gpsText" data-i18n="gps_detecting">Detecting your location… (optional)</span>
-        <button type="button" id="gpsManualBtn" onclick="showManualCity()" data-i18n="gps_manual_btn" style="background:none;border:none;color:var(--o);font-size:11px;text-decoration:underline;cursor:pointer;padding:0;margin-left:auto;white-space:nowrap">Enter manually</button>
+      <div class="globe-stage">
+        <div id="map" role="region" aria-label="World map of sticker finds"></div>
+        <div class="globe-hint">
+          <div class="homeport"><span data-i18n="home_port">Home port</span><br><b>PAT Stadium</b><br><span class="mono">13.7150°N 100.5597°E</span></div>
+          <button type="button" class="globe-open" data-action="map"><svg><use href="#i-expand"/></svg><span data-i18n="open_map">Open map</span></button>
+        </div>
       </div>
-      <input type="text" class="inp" id="inpName" data-i18n-ph="ph_name" placeholder="Your name / nickname *" required/>
-      <input type="text" class="inp" id="inpIg" placeholder="@instagram (optional)"/>
-      <input type="text" class="inp" id="inpCity" data-i18n-ph="ph_city" placeholder="City (auto-detected or type manually)" style="display:none"/>
-      <button class="btn-p" id="btn1" onclick="goStep(2)" style="width:100%;justify-content:center" disabled data-i18n="btn_next">Next → Review</button>
     </div>
+  </section>
 
-    <!-- STEP 2 -->
-    <div class="step-block" id="s2">
-      <div class="summary-box">
-        <img id="summaryImg" src="" alt=""/>
+  <!-- DEPARTURES BOARD -->
+  <section class="board" aria-label="Tour in numbers">
+    <div class="wrap">
+      <div class="stat"><div class="stat-k" data-i18n="stat_spots">Spots</div><div class="stat-v" data-flap="spots">–</div></div>
+      <div class="stat"><div class="stat-k" data-i18n="stat_countries">Countries</div><div class="stat-v" data-flap="countries">–</div></div>
+      <div class="stat accent"><div class="stat-k" data-i18n="stat_farthest">Farthest</div><div class="stat-v" data-flap="farthest" data-unit="km">–</div></div>
+      <div class="stat"><div class="stat-k" data-i18n="stat_total">Total distance</div><div class="stat-v" data-flap="total" data-unit="km">–</div></div>
+    </div>
+  </section>
+
+  <!-- LATEST ARRIVALS -->
+  <section class="section" id="latest" aria-labelledby="latest-title">
+    <div class="wrap">
+      <div class="section-head">
         <div>
-          <div class="summary-city" id="summaryCity"></div>
-          <div class="summary-loc" id="summaryLoc"></div>
-          <div class="summary-ig" id="summaryIg"></div>
+          <div class="eyebrow" data-i18n="latest_eyebrow">Latest arrivals</div>
+          <h2 class="h-section" id="latest-title" data-i18n="latest_title">From Khlong Toei to the world</h2>
+          <div class="th-sub" lang="th">คลองเตย → ทั่วโลก</div>
         </div>
+        <button type="button" class="link-btn" data-action="map" data-i18n="see_all">See all on the map</button>
       </div>
-      <div class="step-nav">
-        <button class="btn-back" onclick="goStep(1)" data-i18n="btn_back">← Back</button>
-        <button class="btn-p" id="submitBtn" onclick="submitSighting()" style="flex:1;justify-content:center" data-i18n="btn_submit">🟠 Add to Map!</button>
-      </div>
-      <p style="font-size:11px;color:rgba(255,255,255,0.25);margin-top:.75rem;text-align:center" data-i18n="submit_note">We'll repost your spot on @portfc_tour within 48h.</p>
-    </div>
-
-    <!-- SUCCESS -->
-    <div class="success-box" id="successBox">
-      <div style="font-size:36px">🟠</div>
-      <h3 data-i18n="success_title">Spot received!</h3>
-      <p data-i18n="success_sub">Your spot is on the map.<br>We'll repost you on @portfc_tour!</p>
-      <div class="share-btns">
-        <button class="share-btn share-native" onclick="shareSpot()" data-i18n="share_native">📤 Share Spot</button>
-        <button class="share-btn share-ig" onclick="window.open('https://instagram.com/portfc_tour','_blank')" data-i18n="share_ig">📷 @portfc_tour</button>
-        <button class="share-btn share-copy" onclick="copySpotLink()" id="copyBtn" data-i18n="share_copy">🔗 Copy Link</button>
+      <div class="rail" id="latestRail" aria-live="polite">
+        <div class="tag skeleton"></div><div class="tag skeleton"></div><div class="tag skeleton"></div>
       </div>
     </div>
-  </div>
-</section>
+  </section>
 
-<!-- MAP -->
-<section class="sec sec-dark" id="map">
-  <div class="sec-label">Sightings Map</div>
-  <h2>Port FC Worldwide</h2>
-  <p class="body" data-i18n="map_sub">Bangkok is Home. Everything else is an away game. 🟠</p>
-  <div class="map-leg">
-    <div class="map-leg-item"><div class="dot dot-h"></div> <span data-i18n="leg_hq">Bangkok HQ</span></div>
-    <div class="map-leg-item"><div class="dot dot-s"></div> <span data-i18n="leg_spot">Sticker spotted</span></div>
-  </div>
-  <div id="portfc-map"></div>
-  <div class="slist" id="sightingsList">
-    <div class="sight">
-      <div class="sight-flag">🇹🇭</div>
-      <div>
-        <div class="sight-city">Bangkok, Thailand</div>
-        <div class="sight-loc">Klong Toei · PAT Stadium · Home 🟠</div>
+  <!-- HOW IT WORKS -->
+  <section class="section" id="how" aria-labelledby="how-title">
+    <div class="wrap">
+      <div class="eyebrow" data-i18n="how_eyebrow">How it works</div>
+      <h2 class="h-section" id="how-title" data-i18n="how_title">Three legs. Thirty seconds.</h2>
+      <ol class="route">
+        <li class="leg"><div class="leg-n">1</div><div><h3 data-i18n="how1_t">Find a sticker</h3><p data-i18n="how1_d"></p></div></li>
+        <li class="leg"><div class="leg-n">2</div><div><h3 data-i18n="how2_t">Snap it and pin it</h3><p data-i18n="how2_d"></p></div></li>
+        <li class="leg"><div class="leg-n">3</div><div><h3 data-i18n="how3_t">Get reposted</h3><p data-i18n="how3_d"></p></div></li>
+      </ol>
+      <a class="ig-strip" href="https://instagram.com/portfc_tour" target="_blank" rel="noopener">
+        <span class="ig-avatar"><img src="/assets/lion.webp" alt="" width="47" height="47"></span>
+        <span style="min-width:0"><span class="ig-handle" style="display:block">@portfc_tour</span><span class="ig-sub" data-i18n="ig_sub" style="display:block">Every find gets reposted on Instagram.</span></span>
+        <span class="btn btn-primary" data-i18n="follow">Follow</span>
+      </a>
+    </div>
+  </section>
+
+  <!-- MANIFEST / RANKS -->
+  <section class="section" id="ranks" aria-labelledby="ranks-title">
+    <div class="wrap">
+      <div class="eyebrow" data-i18n="ranks_eyebrow">The manifest</div>
+      <h2 class="h-section" id="ranks-title" data-i18n="ranks_title">Khlong Toei Army worldwide</h2>
+      <div class="th-sub" lang="th">กองทัพคลองเตย</div>
+      <div class="ranks-grid">
+        <div class="manifest">
+          <div class="tabs" role="tablist">
+            <button type="button" role="tab" id="tab-countries" aria-selected="true" data-tab="countries" data-i18n="tab_countries">Countries</button>
+            <button type="button" role="tab" id="tab-spotters" aria-selected="false" data-tab="spotters" data-i18n="tab_spotters">Spotters</button>
+          </div>
+          <ol class="rows" id="rankRows" role="tabpanel"></ol>
+        </div>
+        <div id="recordBox"></div>
       </div>
-      <div class="sight-badge">HQ</div>
     </div>
-    <div id="dynamicSightings"></div>
-  </div>
-</section>
+  </section>
 
-<!-- INSTAGRAM CTA -->
-<section class="sec sec-dark">
-  <div class="ig-box">
-    <div class="ig-handle">@portfc_tour</div>
-    <p class="ig-sub" data-i18n="ig_sub">Follow for live sightings, reposts and community drops.<br>Every fan post gets reposted — guaranteed.</p>
-    <div class="ig-posts" id="igPosts">
-      <div class="ig-post" onclick="window.open('https://instagram.com/portfc_tour','_blank')" title="View on Instagram">📸</div>
-      <div class="ig-post" onclick="window.open('https://instagram.com/portfc_tour','_blank')" title="View on Instagram">🟠</div>
-      <div class="ig-post" onclick="window.open('https://instagram.com/portfc_tour','_blank')" title="View on Instagram">🌍</div>
-    </div>
-    <div class="tags">
-      <span class="tag">#PortFConTour</span>
-      <span class="tag">#PortFCBangkok</span>
-      <span class="tag">#ThaiFootball</span>
-      <span class="tag">#ท่าเรือ</span>
-      <span class="tag">#KhlongToeiArmy</span>
-    </div>
-    <a href="https://instagram.com/portfc_tour" class="btn-p" target="_blank" style="display:inline-flex" data-i18n="ig_btn">Follow on Instagram →</a>
-  </div>
-</section>
+</main>
 
-<!-- FOUNDED BY -->
-<div class="founded">
-  <div class="founded-lbl">Founded by</div>
-  <a href="https://instagram.com/lukas.zolly" target="_blank" rel="noopener" class="founder-card">
-    <div class="ig-icon">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="5"/><circle cx="17.5" cy="6.5" r="1.5" fill="white" stroke="none"/></svg>
+<footer class="site-foot">
+  <div class="wrap">
+    <div class="foot-grid">
+      <div style="display:grid;gap:14px">
+        <div class="foot-brand"><img src="/assets/lion.webp" alt="" width="44" height="48"><span class="brand-word"><span class="o">Port FC</span><span class="b">On Tour</span></span></div>
+        <p class="foot-note" data-i18n="foot_note">Unofficial fan project.</p>
+        <nav class="foot-links" aria-label="Footer">
+          <a href="https://instagram.com/portfc_tour" target="_blank" rel="noopener">@portfc_tour</a>
+          <a href="https://instagram.com/lukas.zolly" target="_blank" rel="noopener">@lukas.zolly</a>
+          <a href="mailto:lukasfra437@gmail.com" data-i18n="contact">Contact</a>
+          <a href="#impressum" data-i18n="imprint">Imprint</a>
+          <a href="#datenschutz" data-i18n="privacy">Privacy</a>
+          <a href="#sticker-nutzung" data-i18n="sticker_rules">Sticker rules</a>
+        </nav>
+      </div>
+      <div class="legal">
+        <details id="impressum">
+          <summary>Impressum</summary>
+          <div class="body">
+            <h4>Angaben gemäß § 5 DDG</h4>
+            <p>Lukas Nico Schäfer<br>Kielberger Straße 15<br>50969 Köln-Zollstock</p>
+            <h4>Kontakt</h4>
+            <p><a href="mailto:lukasfra437@gmail.com">lukasfra437@gmail.com</a></p>
+            <h4>Hinweis</h4>
+            <p>Privates, nicht-kommerzielles Fan-Projekt. Keine Verbindung zu Port FC, der Port Authority of Thailand (PAT) oder deren Sponsoren.</p>
+          </div>
+        </details>
+        <details id="datenschutz">
+          <summary>Datenschutz</summary>
+          <div class="body">
+            <h4>Hosting</h4>
+            <p>Die Seite wird bei Netlify (Netlify Inc., USA) gehostet. Beim Aufruf verarbeitet Netlify technisch notwendige Daten wie IP-Adresse und Zeitpunkt (Server-Logs).</p>
+            <h4>Spot melden</h4>
+            <p>Wenn du einen Fund meldest, verarbeiten wir: dein Foto, deinen Namen/Spitznamen, optional deinen Instagram-Namen und den von dir auf der Karte markierten Ort (Koordinaten und Ortsname). Fotos werden bei Cloudinary (Cloudinary Ltd.) gespeichert, die übrigen Angaben in Airtable (Airtable Inc., USA). Eine Kopie geht per Formspree (Formspree Inc., USA) als E-Mail an den Betreiber. Foto, Name, Instagram-Name und Ort erscheinen öffentlich auf dieser Seite und können auf @portfc_tour gerepostet werden. Rechtsgrundlage ist deine Einwilligung (Art. 6 Abs. 1 lit. a DSGVO), die du jederzeit per E-Mail widerrufen kannst.</p>
+            <h4>Standort</h4>
+            <p>Den Standort nutzen wir nur, wenn du ihn selbst festlegst: per Ortssuche, durch Verschieben der Karte, per „Mein Standort“ (Browser-Freigabe) oder über im Foto gespeicherte GPS-Daten. Für die Ortssuche und die Umwandlung von Koordinaten in Ortsnamen werden Suchbegriffe bzw. Koordinaten an Photon (komoot GmbH, Deutschland) und ersatzweise an Nominatim (OpenStreetMap Foundation, UK) übermittelt.</p>
+            <h4>Karte &amp; Bibliotheken</h4>
+            <p>Kartendaten: OpenStreetMap, Kacheln von OpenFreeMap. Programmbibliotheken (MapLibre, Ländergrenzen) werden über jsDelivr geladen. Dabei wird deine IP-Adresse an diese Anbieter übertragen. Schriften sind lokal eingebunden. Wir setzen keine Tracking- oder Werbe-Cookies.</p>
+            <h4>Instagram</h4>
+            <p>Diese Seite bindet keine Instagram-Inhalte ein, sondern verlinkt nur auf @portfc_tour. Erst beim Anklicken gelangst du zu Instagram (Meta Platforms Ireland Ltd.).</p>
+            <h4>Deine Rechte</h4>
+            <p>Du hast das Recht auf Auskunft, Berichtigung, Löschung und Widerruf. Eine Mail an <a href="mailto:lukasfra437@gmail.com">lukasfra437@gmail.com</a> genügt, um einen gemeldeten Spot entfernen zu lassen. Beschwerden: Landesbeauftragte für Datenschutz und Informationsfreiheit NRW.</p>
+          </div>
+        </details>
+        <details id="sticker-nutzung">
+          <summary>Sticker usage notice / Sticker-Nutzung</summary>
+          <div class="body">
+            <p>Stickers from Port FC on Tour may only be placed with the explicit permission of the property owner or the relevant authority. Placing stickers without permission may be an offence. The operator accepts no liability for actions of third parties in connection with distributing or placing stickers.</p>
+            <p>Sticker von Port FC on Tour dürfen nur mit ausdrücklicher Erlaubnis des Eigentümers bzw. der zuständigen Stelle angebracht werden. Unerlaubtes Anbringen kann eine Ordnungswidrigkeit oder Straftat sein. Der Betreiber übernimmt keine Haftung für Handlungen Dritter im Zusammenhang mit der Verbreitung oder Anbringung von Stickern.</p>
+          </div>
+        </details>
+      </div>
     </div>
-    <div>
-      <div class="founder-name">@lukas.zolly</div>
-      <div class="founder-sub" data-i18n="founder_sub">Follow on Instagram →</div>
-    </div>
-  </a>
-</div>
-
-<!-- FOOTER -->
-<footer>
-  <div class="footer-grid">
-    <div>
-      <div class="footer-logo">Port FC <span>on Tour</span></div>
-      <p data-i18n="footer_note">Unofficial fan project. Not affiliated with Port FC Bangkok or PAT.</p>
-    </div>
-    <div class="footer-col">
-      <h5>Links</h5>
-      <ul>
-        <li><a href="https://instagram.com/portfc_tour" target="_blank">@portfc_tour</a></li>
-        <li><a href="https://instagram.com/lukas.zolly" target="_blank">@lukas.zolly</a></li>
-        <li><a href="https://github.com/lukaszoll9/portfc-on-tour" target="_blank">GitHub</a></li>
-        <li><a href="mailto:lukasfra437@gmail.com" data-i18n="footer_contact">Contact</a></li>
-        <li><a href="#impressum">Impressum</a></li>
-        <li><a href="#datenschutz">Datenschutz</a></li>
-      </ul>
-    </div>
+    <div class="copyright">PORT FC ON TOUR · KHLONG TOEI → WORLDWIDE · © <span id="year">2026</span></div>
   </div>
-  <hr class="fd"/>
-  <p>Founded by <a href="https://instagram.com/lukas.zolly" target="_blank">@lukas.zolly</a> · Port FC Bangkok · Khlong Toei · Est. 1967 · © 2025</p>
 </footer>
 
-<!-- LEGAL -->
-<section class="legal" id="impressum">
-  <h2>Impressum</h2>
-  <h3>§ 5 TMG</h3>
-  <p>Lukas Nico Schäfer<br>Kielberger Straße 15<br>50969 Köln-Zollstock</p>
-  <h3>Kontakt</h3>
-  <p><a href="mailto:lukasfra437@gmail.com">lukasfra437@gmail.com</a></p>
-  <h3>Hinweis</h3>
-  <p>Privates Fan-Projekt. Keine Verbindung zu Port FC Bangkok, der PAT oder deren Sponsoren.</p>
-  <hr class="ld" id="datenschutz"/>
-  <h2>Datenschutz</h2>
-  <h3>Hosting &amp; Verarbeitung</h3>
-  <p>Diese Seite wird bei Netlify (Netlify Inc., USA) gehostet. Wenn du einen Spot meldest, verarbeiten wir dabei: deinen angegebenen Namen/Spitznamen, optional deinen Instagram-Namen, den von dir angegebenen oder per Browser-Standort ermittelten Ort (Stadt sowie GPS-Koordinaten, sofern du dem Standortzugriff zustimmst), sowie das hochgeladene Foto. Standortzugriff ist immer optional — ohne Zustimmung kannst du trotzdem einen Spot mit manuell eingegebener Stadt melden.</p>
-  <p>Fotos werden bei Cloudinary (Cloudinary Ltd.) gespeichert. Die Sichtungsdaten (Name, Ort, Koordinaten, Instagram, Foto-Link) werden in Airtable (Airtable Inc., USA) gespeichert und über eine eigene Serverfunktion (Netlify Functions) abgerufen bzw. veröffentlicht — sie erscheinen dadurch öffentlich sichtbar auf der Karte und in der Sichtungsliste dieser Seite. Zusätzlich wird eine Kopie deiner Angaben per Formspree (Formspree Inc., USA) als E-Mail-Benachrichtigung an den Betreiber gesendet.</p>
-  <h3>Karte</h3>
-  <p>Leaflet + OpenStreetMap zur Kartendarstellung. Keine eigenen Cookies, kein Tracking-Skript durch uns.</p>
-  <h3>Ihre Rechte</h3>
-  <p>Du hast das Recht auf Auskunft, Berichtigung und Löschung deiner Daten nach DSGVO. Da gemeldete Spots (Name, Ort, Foto) öffentlich auf der Karte erscheinen, kannst du jederzeit die Löschung eines von dir gemeldeten Spots per E-Mail an <a href="mailto:lukasfra437@gmail.com">lukasfra437@gmail.com</a> verlangen. Beschwerde: Landesbeauftragte für Datenschutz NRW.</p>
-  <hr class="ld" id="sticker-nutzung"/>
-  <h2>Sticker Usage Notice</h2>
-  <p>Stickers from Port FC on Tour may only be placed with the explicit permission of the property owner or relevant authority. Placing stickers without permission may constitute a legal offence. The operator assumes no liability for actions of third parties in connection with the distribution or placement of stickers.</p>
-</section>
+<!-- sticky report dock (mobile) -->
+<div class="dock" id="dock"><button type="button" class="btn btn-primary" data-action="report"><svg><use href="#i-camera"/></svg><span data-i18n="dock_cta">Found a sticker? Put it on the map</span></button></div>
 
-<script>
-// ─────────────────────────────────────────────
-// SEED DATA (demo pins shown alongside real submissions; also
-// used by the admin dashboard's submission list)
-// ─────────────────────────────────────────────
-const RANK_KEY = 'portfc_ranking_v2';
-
-const SEED_SPOTS = [
-  { name:'Lukas', city:'Köln, Germany', ig:'@lukas.zolly', time:'2025-01-01T00:00:00Z' },
-  { name:'Lukas', city:'Fuerteventura, Spain', ig:'@lukas.zolly', time:'2025-02-01T00:00:00Z' },
-];
-
-// ─────────────────────────────────────────────
-// TRANSLATIONS
-// ─────────────────────────────────────────────
-const TRANSLATIONS = {
-  en: {
-    nav_spot:'📍 Report Spot', nav_map:'Map', nav_sticker:'Sticker', nav_legal:'Legal',
-    disclaimer:'Unofficial Fan Community · Not affiliated with Port FC or PAT',
-    hero_sub:'Scan the sticker. Upload a photo. Get on the map. Port FC Bangkok travels with you — from Klong Toei to the world.',
-    hero_cta1:'📍 Report Your Spot →', hero_cta2:'Print Sticker',
-    stat_spots:'Spots', stat_stickers:'Stickers', stat_founded:'Founded',
-    cnt_spots:'Spots', cnt_stickers:'Stickers Dropped', cnt_away:'Away Games',
-    upload_title:'Spotted a Sticker?',
-    upload_sub:'Take a photo · Share your location · Get on the map. Takes 30 seconds.',
-    photo_title:'Photo of the Sticker', photo_hint:'Tap to take a photo or choose from gallery',
-    gps_detecting:'Detecting your location… (optional)', gps_manual_btn:'Enter manually',
-    ph_name:'Your name / nickname *', ph_city:'City (auto-detected or type manually)',
-    btn_next:'Next → Review', btn_back:'← Back',
-    btn_submit:'🟠 Add to Map!', submit_note:"We'll repost your spot on @portfc_tour within 48h.",
-    success_title:'Spot received!', success_sub:"Your spot is on the map.<br>We'll repost you on @portfc_tour!",
-    share_native:'📤 Share Spot', share_ig:'📷 @portfc_tour', share_copy:'🔗 Copy Link',
-    map_sub:'Bangkok is Home. Everything else is an away game. 🟠',
-    leg_hq:'Bangkok HQ', leg_spot:'Sticker spotted',
-    print_title:'Print &amp; Drop.', print_sub:'Download the PNG, print at your local copy shop and stick it anywhere you travel.',
-    print_dl:'Download PNG →',
-    tip1:'8–10 cm recommended', tip2:'Laminate for weatherproofing', tip3:'Any local print shop', tip4:'Post your drop: @portfc_tour',
-    ig_sub:'Follow for live sightings, reposts and community drops.<br>Every fan post gets reposted — guaranteed.',
-    ig_btn:'Follow on Instagram →', founder_sub:'Follow on Instagram →',
-    footer_note:'Unofficial fan project. Not affiliated with Port FC Bangkok or PAT.', footer_contact:'Contact',
-    pwa_hint:'Get the Port FC app for faster spot reporting', pwa_install:'Install',
-    onb_label:'How it works', onb_title:'Three steps. That\'s it.',
-    onb_step1_t:'1 · Explore the map', onb_step1_d:'See every sticker sighting worldwide — Bangkok is Home, everywhere else is an away game.',
-    onb_step2_t:'2 · Report your spot', onb_step2_d:'Snap a photo and share your location. No GPS access? No problem — enter your city manually any time, even after saying no.',
-    onb_step3_t:'3 · Follow on Instagram', onb_step3_d:'Every spot gets reposted on @portfc_tour — see the community grow in real time.'
-  },
-  de: {
-    nav_spot:'📍 Spot melden', nav_map:'Karte', nav_sticker:'Sticker', nav_legal:'Impressum',
-    disclaimer:'Inoffizielles Fan-Projekt · Nicht verbunden mit Port FC oder PAT',
-    hero_sub:'Sticker scannen. Foto hochladen. Spot auf die Karte. Port FC Bangkok reist mit dir — von Klong Toei in die Welt.',
-    hero_cta1:'📍 Spot jetzt melden →', hero_cta2:'Sticker drucken',
-    stat_spots:'Spots', stat_stickers:'Sticker', stat_founded:'Gegründet',
-    cnt_spots:'Spots', cnt_stickers:'Sticker gedropt', cnt_away:'Auswärtsspiele',
-    upload_title:'Sticker gesehen?',
-    upload_sub:'Foto machen · Standort teilen · auf die Karte kommen. Dauert 30 Sekunden.',
-    photo_title:'Foto vom Sticker', photo_hint:'Tippen für Kamera oder Galerie',
-    gps_detecting:'Standort wird ermittelt… (optional)', gps_manual_btn:'Manuell eingeben',
-    ph_name:'Dein Name / Spitzname *', ph_city:'Stadt (automatisch erkannt oder manuell eingeben)',
-    btn_next:'Weiter → Prüfen', btn_back:'← Zurück',
-    btn_submit:'🟠 Auf die Karte!', submit_note:'Wir reposten deinen Spot auf @portfc_tour innerhalb 48h.',
-    success_title:'Spot erhalten!', success_sub:'Dein Spot kommt auf die Karte.<br>Wir reposten dich auf @portfc_tour!',
-    share_native:'📤 Spot teilen', share_ig:'📷 @portfc_tour', share_copy:'🔗 Link kopieren',
-    map_sub:'Bangkok ist Home. Alles andere ist Auswärtsspiel. 🟠',
-    leg_hq:'Bangkok HQ', leg_spot:'Sticker gesichtet',
-    print_title:'Sticker drucken &amp; droppen.', print_sub:'Einfach PNG downloaden, beim Druckshop ausdrucken und loskleben.',
-    print_dl:'Download PNG →',
-    tip1:'8–10 cm empfohlen', tip2:'Wetterfest laminieren', tip3:'Lokaler Copyshop', tip4:'Foto melden: @portfc_tour',
-    ig_sub:'Folge für Live-Sightings, Reposts und Community-Drops.<br>Jeder Fan-Post wird gerepostet — garantiert.',
-    ig_btn:'Auf Instagram folgen →', founder_sub:'Auf Instagram folgen →',
-    footer_note:'Privates Fan-Projekt. Keine Verbindung zu Port FC Bangkok oder PAT.', footer_contact:'Kontakt',
-    pwa_hint:'Port FC App installieren für schnelleres Spot-Melden', pwa_install:'Installieren',
-    onb_label:'So funktioniert\'s', onb_title:'Drei Schritte. Das war\'s.',
-    onb_step1_t:'1 · Karte entdecken', onb_step1_d:'Alle Sticker-Sichtungen weltweit auf einen Blick — Bangkok ist Home, alles andere Auswärtsspiel.',
-    onb_step2_t:'2 · Deinen Spot melden', onb_step2_d:'Foto machen und Standort teilen. Kein GPS-Zugriff? Kein Problem — du kannst deine Stadt jederzeit manuell eingeben, auch wenn du zuerst abgelehnt hast.',
-    onb_step3_t:'3 · Auf Instagram folgen', onb_step3_d:'Jeder Spot wird auf @portfc_tour reposted — sieh live, wie die Community wächst.'
-  },
-  th: {
-    nav_spot:'📍 แจ้ง Spot', nav_map:'แผนที่', nav_sticker:'สติ๊กเกอร์', nav_legal:'กฎหมาย',
-    disclaimer:'ชุมชนแฟนอิสระ ไม่เกี่ยวข้องกับพอร์ต เอฟซี หรือ PAT',
-    hero_sub:'สแกนสติ๊กเกอร์ · อัปโหลดรูป · ขึ้นแผนที่ พอร์ต เอฟซี แบงค็อกเดินทางไปพร้อมคุณ — จากคลองเตยสู่โลก',
-    hero_cta1:'📍 แจ้ง Spot ของคุณ →', hero_cta2:'พิมพ์สติ๊กเกอร์',
-    stat_spots:'Spots', stat_stickers:'สติ๊กเกอร์', stat_founded:'ก่อตั้ง',
-    cnt_spots:'Spots', cnt_stickers:'สติ๊กเกอร์ที่ปล่อย', cnt_away:'เกมเยือน',
-    upload_title:'เห็นสติ๊กเกอร์ไหม?',
-    upload_sub:'ถ่ายรูป · แชร์ตำแหน่ง · ขึ้นแผนที่ ใช้เวลาแค่ 30 วินาที',
-    photo_title:'รูปของสติ๊กเกอร์', photo_hint:'แตะเพื่อถ่ายภาพหรือเลือกจากคลังภาพ',
-    gps_detecting:'กำลังตรวจจับตำแหน่ง… (ไม่บังคับ)', gps_manual_btn:'พิมพ์เอง',
-    ph_name:'ชื่อ / ชื่อเล่นของคุณ *', ph_city:'เมือง (ตรวจจับอัตโนมัติหรือพิมพ์เอง)',
-    btn_next:'ต่อไป → ตรวจสอบ', btn_back:'← กลับ',
-    btn_submit:'🟠 เพิ่มลงแผนที่!', submit_note:'เราจะรีโพสต์ spot ของคุณบน @portfc_tour ภายใน 48 ชั่วโมง',
-    success_title:'ได้รับ Spot แล้ว!', success_sub:'Spot ของคุณอยู่บนแผนที่แล้ว<br>เราจะรีโพสต์คุณบน @portfc_tour!',
-    share_native:'📤 แชร์ Spot', share_ig:'📷 @portfc_tour', share_copy:'🔗 คัดลอกลิงก์',
-    map_sub:'แบงค็อกคือบ้าน ที่อื่นคือเกมเยือน 🟠',
-    leg_hq:'สำนักงานใหญ่แบงค็อก', leg_spot:'พบสติ๊กเกอร์',
-    print_title:'พิมพ์ &amp; ปล่อย', print_sub:'ดาวน์โหลด PNG พิมพ์ที่ร้านก็อปปี้ แล้วแปะได้ทุกที่ที่คุณไป',
-    print_dl:'ดาวน์โหลด PNG →',
-    tip1:'ขนาดแนะนำ 8–10 ซม.', tip2:'เคลือบกันน้ำ', tip3:'ร้านก็อปปี้ใกล้บ้าน', tip4:'โพสต์ที่ปล่อย: @portfc_tour',
-    ig_sub:'ติดตามสำหรับการพบสติ๊กเกอร์สด รีโพสต์ และ community drops<br>ทุก Fan Post จะได้รับการรีโพสต์ — รับประกัน',
-    ig_btn:'ติดตามบน Instagram →', founder_sub:'ติดตามบน Instagram →',
-    footer_note:'โปรเจกต์แฟนส่วนตัว ไม่เกี่ยวข้องกับพอร์ต เอฟซี แบงค็อก หรือ PAT', footer_contact:'ติดต่อ',
-    pwa_hint:'ติดตั้งแอป Port FC สำหรับการรายงาน Spot ที่เร็วขึ้น', pwa_install:'ติดตั้ง',
-    onb_label:'วิธีใช้งาน', onb_title:'แค่ 3 ขั้นตอน',
-    onb_step1_t:'1 · สำรวจแผนที่', onb_step1_d:'ดูทุกจุดที่พบสติ๊กเกอร์ทั่วโลก — แบงค็อกคือบ้าน ที่อื่นคือเกมเยือน',
-    onb_step2_t:'2 · แจ้ง Spot ของคุณ', onb_step2_d:'ถ่ายรูปและแชร์ตำแหน่ง ไม่มี GPS ก็ไม่เป็นไร — พิมพ์ชื่อเมืองเองได้ทุกเมื่อ แม้จะปฏิเสธไปก่อนหน้านี้',
-    onb_step3_t:'3 · ติดตามบน Instagram', onb_step3_d:'ทุก Spot จะถูกรีโพสต์บน @portfc_tour — ดูชุมชนเติบโตแบบเรียลไทม์'
-  }
-};
-
-let currentLang = 'en';
-
-function setLang(lang) {
-  if (!TRANSLATIONS[lang]) return;
-  currentLang = lang;
-  const t = TRANSLATIONS[lang];
-  document.querySelectorAll('[data-i18n]').forEach(el => {
-    const k = el.getAttribute('data-i18n');
-    if (t[k] !== undefined) el.innerHTML = t[k];
-  });
-  document.querySelectorAll('[data-i18n-ph]').forEach(el => {
-    const k = el.getAttribute('data-i18n-ph');
-    if (t[k] !== undefined) el.placeholder = t[k];
-  });
-  ['en','de','th'].forEach(l => {
-    const b = document.getElementById('btn-'+l);
-    if (b) b.classList.toggle('active', l === lang);
-  });
-  document.documentElement.lang = lang;
-  try { localStorage.setItem('portfc_lang', lang); } catch(e){}
-}
-
-(function(){
-  let lang = 'en';
-  try { lang = localStorage.getItem('portfc_lang') || 'en'; } catch(e){}
-  setLang(lang);
-})();
-
-// ─────────────────────────────────────────────
-// PWA INSTALL BANNER
-// ─────────────────────────────────────────────
-let deferredPWAPrompt = null;
-window.addEventListener('beforeinstallprompt', (e) => {
-  e.preventDefault();
-  deferredPWAPrompt = e;
-  try {
-    const dismissed = localStorage.getItem('portfc_pwa_dismissed');
-    if (!dismissed) {
-      setTimeout(() => document.getElementById('pwa-banner').classList.add('show'), 3000);
-    }
-  } catch(err){}
-});
-
-document.getElementById('pwaInstallBtn').addEventListener('click', async () => {
-  if (!deferredPWAPrompt) return;
-  deferredPWAPrompt.prompt();
-  const { outcome } = await deferredPWAPrompt.userChoice;
-  deferredPWAPrompt = null;
-  document.getElementById('pwa-banner').classList.remove('show');
-  if (outcome === 'accepted') {
-    try { localStorage.setItem('portfc_pwa_dismissed', '1'); } catch(e){}
-  }
-});
-
-function dismissPWA() {
-  document.getElementById('pwa-banner').classList.remove('show');
-  try { localStorage.setItem('portfc_pwa_dismissed', '1'); } catch(e){}
-}
-
-window.addEventListener('appinstalled', () => {
-  document.getElementById('pwa-banner').classList.remove('show');
-});
-
-// ─────────────────────────────────────────────
-// UPLOAD FLOW
-// ─────────────────────────────────────────────
-let photoFile = null;
-let detectedLat = null;
-let detectedLng = null;
-let detectedCity = '';
-let gpsReady = false;
-let lastSubmittedCity = '';
-let lastSubmittedName = '';
-
-let gpsSettled = false;
-
-function showManualCity() {
-  document.getElementById('inpCity').style.display = '';
-  document.getElementById('inpCity').focus();
-  const statusEl = document.getElementById('gpsStatus');
-  const iconEl = document.getElementById('gpsIcon');
-  const textEl = document.getElementById('gpsText');
-  if (!gpsReady) {
-    statusEl.className = 'gps-status err';
-    iconEl.textContent = '📍';
-    textEl.textContent = 'Please type your city below — location is optional';
-    document.getElementById('gpsManualBtn').style.display = 'none';
-  }
-}
-
-function startGPS() {
-  const statusEl = document.getElementById('gpsStatus');
-  const iconEl = document.getElementById('gpsIcon');
-  const textEl = document.getElementById('gpsText');
-
-  // Hard fallback: no matter what the browser's geolocation API does (some
-  // browsers/devices never fire either callback, e.g. when Location
-  // Services is off at the OS level), switch to manual entry after 8s so
-  // the form is never stuck. Uploading a photo never requires GPS.
-  const fallbackTimer = setTimeout(() => {
-    if (gpsSettled) return;
-    gpsSettled = true;
-    statusEl.className = 'gps-status err';
-    iconEl.textContent = '📍';
-    textEl.textContent = 'Location not detected — please type your city (optional)';
-    document.getElementById('inpCity').style.display = '';
-    document.getElementById('gpsManualBtn').style.display = 'none';
-  }, 8000);
-
-  if (!navigator.geolocation) {
-    clearTimeout(fallbackTimer);
-    gpsSettled = true;
-    statusEl.className = 'gps-status err';
-    iconEl.textContent = '📍';
-    textEl.textContent = 'GPS not available — enter city manually (optional)';
-    document.getElementById('inpCity').style.display = '';
-    document.getElementById('gpsManualBtn').style.display = 'none';
-    return;
-  }
-
-  navigator.geolocation.getCurrentPosition(
-    async (pos) => {
-      if (gpsSettled) return;
-      gpsSettled = true;
-      clearTimeout(fallbackTimer);
-      detectedLat = pos.coords.latitude;
-      detectedLng = pos.coords.longitude;
-      try {
-        const res = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${detectedLat}&lon=${detectedLng}&format=json&accept-language=en`);
-        const data = await res.json();
-        const a = data.address;
-        const city = a.city || a.town || a.village || a.municipality || '';
-        const country = a.country || '';
-        detectedCity = city && country ? `${city}, ${country}` : (city || country || '');
-        document.getElementById('inpCity').value = detectedCity;
-      } catch(e) {
-        detectedCity = `${detectedLat.toFixed(2)}, ${detectedLng.toFixed(2)}`;
-      }
-      statusEl.className = 'gps-status ok';
-      iconEl.textContent = '✅';
-      textEl.textContent = '📍 ' + (detectedCity || `${detectedLat.toFixed(3)}, ${detectedLng.toFixed(3)}`);
-      document.getElementById('gpsManualBtn').style.display = 'none';
-      gpsReady = true;
-    },
-    () => {
-      if (gpsSettled) return;
-      gpsSettled = true;
-      clearTimeout(fallbackTimer);
-      statusEl.className = 'gps-status err';
-      iconEl.textContent = '📍';
-      textEl.textContent = 'Location not detected — please enter city manually (optional)';
-      document.getElementById('inpCity').style.display = '';
-      document.getElementById('gpsManualBtn').style.display = 'none';
-    },
-    { timeout: 7500, maximumAge: 60000, enableHighAccuracy: false }
-  );
-}
-startGPS();
-
-document.getElementById('photoInput').addEventListener('change', function() {
-  if (!this.files || !this.files[0]) return;
-  photoFile = this.files[0];
-  const url = URL.createObjectURL(photoFile);
-  const preview = document.getElementById('photoPreview');
-  preview.src = url;
-  preview.style.display = 'block';
-  document.getElementById('photoPlaceholder').style.display = 'none';
-  checkBtn1();
-});
-
-document.getElementById('inpName').addEventListener('input', checkBtn1);
-
-function checkBtn1() {
-  const hasPhoto = !!photoFile;
-  const hasName = document.getElementById('inpName').value.trim().length > 0;
-  document.getElementById('btn1').disabled = !(hasPhoto && hasName);
-}
-
-function goStep(n) {
-  if (n === 2) {
-    const name = document.getElementById('inpName').value.trim();
-    const city = document.getElementById('inpCity').value.trim() || detectedCity;
-    if (!name) {
-      document.getElementById('inpName').style.borderColor = '#E87722';
-      document.getElementById('inpName').focus();
-      return;
-    }
-    document.getElementById('summaryImg').src = document.getElementById('photoPreview').src;
-    const displayCity = city || (detectedLat ? `${detectedLat.toFixed(2)}, ${detectedLng.toFixed(2)}` : '—');
-    document.getElementById('summaryCity').textContent = '📍 ' + displayCity;
-    document.getElementById('summaryLoc').textContent = '👤 ' + name + (gpsReady ? ' · 🛰️ GPS' : '');
-    const ig = document.getElementById('inpIg').value;
-    document.getElementById('summaryIg').textContent = ig || '';
-  }
-  ['s1','s2'].forEach(id => document.getElementById(id).classList.remove('show'));
-  ['dot1','dot2'].forEach(id => document.getElementById(id).classList.remove('active'));
-  document.getElementById('s' + n).classList.add('show');
-  document.getElementById('dot' + n).classList.add('active');
-}
-
-async function submitSighting() {
-  const btn = document.getElementById('submitBtn');
-  btn.textContent = '⏳ Uploading…';
-  btn.disabled = true;
-
-  try {
-    let photoUrl = '';
-    if (photoFile) {
-      const fd = new FormData();
-      fd.append('file', photoFile);
-      fd.append('upload_preset', 'portfc_sightings');
-      const res = await fetch('https://api.cloudinary.com/v1_1/nwrw8zei/image/upload', { method:'POST', body:fd });
-      const data = await res.json();
-      photoUrl = data.secure_url || '';
-    }
-
-    const name = document.getElementById('inpName').value.trim();
-    const city = document.getElementById('inpCity').value.trim() || detectedCity;
-    const ig = document.getElementById('inpIg').value.trim();
-
-    lastSubmittedCity = city;
-    lastSubmittedName = name;
-
-    // Formspree email notification
-    const fd2 = new FormData();
-    fd2.append('name', name);
-    fd2.append('city', city);
-    fd2.append('instagram', ig);
-    fd2.append('photo_url', photoUrl);
-    fd2.append('lat', detectedLat || '');
-    fd2.append('lng', detectedLng || '');
-    fd2.append('_subject', '🟠 New Port FC Spot by ' + name + ' — ' + city);
-    await fetch('https://formspree.io/f/xwlewgne', {
-      method:'POST', body:fd2, headers:{'Accept':'application/json'}
-    });
-
-    // Airtable via Netlify Function (if available)
-    try {
-      await fetch('/.netlify/functions/submit-spot', {
-        method: 'POST',
-        headers: {'Content-Type':'application/json'},
-        body: JSON.stringify({ name, city, ig, photoUrl, lat: detectedLat, lng: detectedLng, website: document.getElementById('inpWebsite').value })
-      });
-    } catch(e) { /* Airtable optional — Formspree is the backup */ }
-
-    // Local ranking
-    saveToRanking(name, city, ig, photoUrl);
-
-    // Map marker
-    if (detectedLat && detectedLng) {
-      addSpotToMap(detectedLat, detectedLng, name, city);
-    }
-
-    // Show success
-    ['s1','s2'].forEach(id => document.getElementById(id).classList.remove('show'));
-    document.getElementById('successBox').classList.add('show');
-
-    const sl = document.getElementById('dynamicSightings');
-    const el = document.createElement('div');
-    el.className = 'sight';
-    el.innerHTML = `<div class="sight-flag">🌍</div><div><div class="sight-city">${escapeHtml(city)}</div><div class="sight-loc">by ${escapeHtml(name)}${ig ? ' · '+escapeHtml(ig) : ''}</div></div><div class="sight-badge">New</div>`;
-    sl.prepend(el);
-    updateSpotCount(1);
-
-  } catch(err) {
-    const t = TRANSLATIONS[currentLang];
-    btn.textContent = t.btn_submit || '🟠 Add to Map!';
-    btn.disabled = false;
-    alert('Upload error. Please check your connection and try again.');
-  }
-}
-
-// ─────────────────────────────────────────────
-// SHARE FUNCTIONS
-// ─────────────────────────────────────────────
-async function shareSpot() {
-  const city = lastSubmittedCity || 'a new location';
-  const name = lastSubmittedName || 'A fan';
-  const text = `🟠 ${name} spotted a Port FC sticker in ${city}! Follow the tour → portfc-on-tour.com #PortFConTour`;
-  const url = 'https://portfc-on-tour.com';
-
-  if (navigator.share) {
-    try {
-      await navigator.share({ title: 'Port FC on Tour', text, url });
-    } catch(e) {}
-  } else {
-    copySpotLink();
-  }
-}
-
-async function copySpotLink() {
-  const btn = document.getElementById('copyBtn');
-  try {
-    await navigator.clipboard.writeText('https://portfc-on-tour.com #PortFConTour');
-    btn.textContent = '✅ Copied!';
-    setTimeout(() => {
-      const t = TRANSLATIONS[currentLang];
-      btn.textContent = t.share_copy || '🔗 Copy Link';
-    }, 2000);
-  } catch(e) {
-    btn.textContent = '⚠️ Failed';
-  }
-}
-
-// ─────────────────────────────────────────────
-// RANKING
-// ─────────────────────────────────────────────
-function saveToRanking(name, city, ig, photoUrl) {
-  try {
-    const data = JSON.parse(localStorage.getItem(RANK_KEY) || '[]');
-    data.push({ name, city, ig, photoUrl, time: new Date().toISOString() });
-    localStorage.setItem(RANK_KEY, JSON.stringify(data));
-  } catch(e){}
-}
-
-// ─────────────────────────────────────────────
-// ADMIN DASHBOARD
-// ─────────────────────────────────────────────
-const ADMIN_PASS = 'portfc2025';
-
-function openAdmin() {
-  const pw = prompt('🔒 Admin Password:');
-  if (pw !== ADMIN_PASS) {
-    if (pw !== null) alert('Wrong password');
-    return;
-  }
-
-  let userSpots = [];
-  try { userSpots = JSON.parse(localStorage.getItem(RANK_KEY) || '[]'); } catch(e){}
-  const all = [...SEED_SPOTS, ...userSpots];
-
-  const rows = all.map((s, i) => `
-    <tr>
-      <td>${i+1}</td>
-      <td>${s.photoUrl ? `<img src="${s.photoUrl}" class="admin-photo" alt=""/>` : '—'}</td>
-      <td><strong>${s.name || '—'}</strong></td>
-      <td>${s.city || '—'}</td>
-      <td style="color:#E87722">${s.ig || '—'}</td>
-      <td style="color:rgba(255,255,255,0.4)">${s.time ? new Date(s.time).toLocaleDateString() : '—'}</td>
-    </tr>
-  `).join('');
-
-  document.getElementById('admin-content').innerHTML = `
-    <div style="background:#1a1a1a;border-radius:12px;overflow:auto;margin-bottom:1rem">
-      <table class="admin-table">
-        <thead><tr>
-          <th>#</th><th>Photo</th><th>Name</th><th>City</th><th>Instagram</th><th>Date</th>
-        </tr></thead>
-        <tbody>${rows}</tbody>
-      </table>
+<!-- fullscreen map UI -->
+<div class="mapui" id="mapui" hidden>
+  <div class="mapui-top">
+    <button type="button" class="chip-btn" id="mapClose"><svg><use href="#i-back"/></svg><span data-i18n="back">Back</span></button>
+    <button type="button" class="chip-btn" data-action="report"><svg><use href="#i-camera"/></svg><span data-i18n="cta_found">I found a sticker</span></button>
+  </div>
+  <div class="mapui-rail">
+    <div class="sort-toggle" role="group">
+      <button type="button" data-sort="newest" aria-pressed="true" data-i18n="newest">Newest</button>
+      <button type="button" data-sort="farthest" aria-pressed="false" data-i18n="farthest">Farthest</button>
     </div>
-    <div style="font-size:12px;color:rgba(255,255,255,0.3);text-align:center">${all.length} total submissions · From localStorage + seed data</div>
-  `;
+    <div class="mini-rail" id="miniRail"></div>
+  </div>
+</div>
 
-  document.getElementById('admin-overlay').classList.add('show');
-}
+<div class="scrim" id="scrim" hidden></div>
 
-function closeAdmin() {
-  document.getElementById('admin-overlay').classList.remove('show');
-}
+<!-- spot detail sheet -->
+<div class="sheet" id="spotSheet" role="dialog" aria-modal="true" aria-labelledby="spotCity" hidden>
+  <div class="sheet-grab"></div>
+  <div class="sheet-head">
+    <div class="spot-code" id="spotCode"></div>
+    <button type="button" class="icon-btn" data-close aria-label="Close"><svg><use href="#i-close"/></svg></button>
+  </div>
+  <div class="sheet-body">
+    <div class="spot-photo" id="spotPhoto"></div>
+    <div class="spot-meta">
+      <div class="spot-city" id="spotCity"></div>
+      <div class="spot-km" id="spotKm"></div>
+      <div class="spot-by" id="spotBy"></div>
+    </div>
+    <div class="spot-actions">
+      <button type="button" class="btn btn-quiet" id="spotShare"><svg><use href="#i-share"/></svg><span data-i18n="share">Share</span></button>
+      <button type="button" class="btn btn-quiet" id="spotStory"><svg><use href="#i-story"/></svg><span data-i18n="share_story">Story image</span></button>
+      <button type="button" class="btn btn-ghost" id="spotMap" style="grid-column:1/-1"><svg><use href="#i-globe"/></svg><span data-i18n="show_on_map">Show on map</span></button>
+    </div>
+  </div>
+</div>
 
-// ─────────────────────────────────────────────
-// MAP
-// ─────────────────────────────────────────────
-const portfcMap = L.map('portfc-map', { center:[13.7151, 100.5597], zoom:5, scrollWheelZoom:false });
-L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-  attribution:'© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
-  maxZoom:19, className:'osm-dark-tiles'
-}).addTo(portfcMap);
+<!-- report sheet -->
+<div class="sheet" id="reportSheet" role="dialog" aria-modal="true" aria-labelledby="reportTitle" hidden>
+  <div class="sheet-grab"></div>
+  <div class="sheet-head">
+    <button type="button" class="icon-btn" id="rBack" aria-label="Back" style="visibility:hidden"><svg><use href="#i-back"/></svg></button>
+    <div class="sheet-title" id="reportTitle" data-i18n="r_title">Report a find</div>
+    <button type="button" class="icon-btn" data-close aria-label="Close"><svg><use href="#i-close"/></svg></button>
+  </div>
+  <div class="steps" id="rSteps"><i class="on"></i><i></i><i></i></div>
+  <div class="sheet-body">
+    <form id="reportForm" novalidate>
+      <!-- 1 · photo -->
+      <div class="step" data-step="1">
+        <h3 data-i18n="r_step1">Photo of the sticker</h3>
+        <p class="hint" data-i18n="r_step1_hint">The sticker should be easy to see.</p>
+        <label class="drop" id="drop" for="photoInput">
+          <span class="drop-inner" id="dropInner"><svg><use href="#i-camera"/></svg><strong data-i18n="r_pick">Take or choose a photo</strong><span data-i18n="r_pick_sub">Camera or gallery</span></span>
+          <img id="photoPreview" alt="" hidden>
+          <span class="swap" id="photoSwap" hidden data-i18n="r_swap">Change photo</span>
+        </label>
+        <input type="file" id="photoInput" accept="image/*" class="sr-only">
+        <button type="button" class="btn btn-primary btn-block" id="r1Next" disabled><span data-i18n="r_next">Next</span><svg><use href="#i-arrow"/></svg></button>
+      </div>
 
-const hiIcon = L.divIcon({ className:'', html:'<div style="width:16px;height:16px;background:#E87722;border-radius:50%;border:3px solid white;box-shadow:0 0 12px rgba(232,119,34,0.9)"></div>', iconSize:[16,16], iconAnchor:[8,8] });
-const siIcon = L.divIcon({ className:'', html:'<div style="width:12px;height:12px;background:#1B4F91;border-radius:50%;border:2px solid rgba(255,255,255,0.6);box-shadow:0 0 7px rgba(27,79,145,0.8)"></div>', iconSize:[12,12], iconAnchor:[6,6] });
+      <!-- 2 · location -->
+      <div class="step" data-step="2" hidden>
+        <h3 data-i18n="r_step2">Where did you find it?</h3>
+        <p class="hint" data-i18n="r_step2_hint">Move the map until the pin sits on the spot.</p>
+        <div class="loc-tools">
+          <div class="search">
+            <svg><use href="#i-search"/></svg>
+            <input class="inp" id="placeSearch" type="search" autocomplete="off" enterkeyhint="search" data-i18n-ph="r_search_ph" placeholder="Search city, bar, street…" aria-label="Search place">
+            <div class="results" id="placeResults" hidden></div>
+          </div>
+          <button type="button" class="btn btn-quiet locate-btn" id="locateBtn"><svg><use href="#i-locate"/></svg><span data-i18n="r_use_loc">My location</span></button>
+        </div>
+        <div class="picker" id="picker">
+          <div id="pickMap"></div>
+          <div class="pin-shadow"></div>
+          <div class="pin"><svg><use href="#i-pin"/></svg></div>
+          <div class="pin-label" id="pinLabel" hidden></div>
+          <div class="picker-empty" id="pickerEmpty" data-i18n="r_loc_empty">Search for the place or tap “My location”</div>
+        </div>
+        <div class="note" id="locNote" hidden></div>
+        <button type="button" class="btn btn-primary btn-block" id="r2Next" disabled><span data-i18n="r_next">Next</span><svg><use href="#i-arrow"/></svg></button>
+      </div>
 
-L.marker([13.7151, 100.5597], { icon:hiIcon })
-  .addTo(portfcMap)
-  .bindPopup('<strong style="color:#E87722">Bangkok 🟠</strong><br><span style="font-size:11px">Home — PAT Stadium, Klong Toei</span>');
+      <!-- 3 · who -->
+      <div class="step" data-step="3" hidden>
+        <h3 data-i18n="r_step3">Who found it?</h3>
+        <p class="hint" data-i18n="r_step3_hint">Shown on the map next to your find.</p>
+        <div class="summary" id="rSummary"></div>
+        <div class="field">
+          <label for="inpName"><span data-i18n="r_name" style="color:inherit;font-weight:600">Name or nickname</span></label>
+          <input class="inp" id="inpName" maxlength="40" autocomplete="nickname" data-i18n-ph="r_name_ph" placeholder="e.g. Nils" required>
+        </div>
+        <div class="field">
+          <label for="inpIg"><span data-i18n="r_ig" style="color:inherit;font-weight:600">Instagram</span> <span data-i18n="r_optional">(optional)</span></label>
+          <input class="inp" id="inpIg" maxlength="31" autocomplete="off" autocapitalize="off" spellcheck="false" data-i18n-ph="r_ig_ph" placeholder="@yourname">
+        </div>
+        <input type="text" id="inpWebsite" name="website" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
+        <p class="fine" data-i18n="r_public"></p>
+        <div class="note err" id="submitErr" hidden></div>
+        <button type="submit" class="btn btn-primary btn-block" id="rSubmit" disabled><svg><use href="#i-check"/></svg><span data-i18n="r_submit">Put it on the map</span></button>
+      </div>
 
-const REAL_SPOTS = [
-  { lat:50.938, lng:6.959, name:'Köln', label:'Köln, Germany — @lukas.zolly' },
-  { lat:28.358, lng:-14.053, name:'Fuerteventura', label:'Fuerteventura, Spain — @lukas.zolly' },
-];
+      <!-- 4 · done -->
+      <div class="step done" data-step="4" hidden>
+        <div id="doneTag"></div>
+        <h3 data-i18n="r_done_title">You're on the map</h3>
+        <p data-i18n="r_done_text"></p>
+        <div class="done-actions">
+          <button type="button" class="btn btn-primary" id="doneStory"><svg><use href="#i-story"/></svg><span data-i18n="share_story">Story image</span></button>
+          <button type="button" class="btn btn-quiet" id="doneShare"><svg><use href="#i-share"/></svg><span data-i18n="share">Share</span></button>
+          <button type="button" class="btn btn-ghost" id="doneView"><svg><use href="#i-globe"/></svg><span data-i18n="r_view">See it on the map</span></button>
+          <button type="button" class="link-btn" id="doneAgain" data-i18n="r_again" style="justify-self:center;margin-top:4px">Report another find</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
 
-REAL_SPOTS.forEach(s => {
-  L.marker([s.lat, s.lng], { icon:siIcon })
-    .addTo(portfcMap)
-    .bindPopup(`<strong style="color:#E87722">${s.name}</strong><br><span style="font-size:11px">${s.label}</span>`);
-});
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
 
-const dynList = document.getElementById('dynamicSightings');
-REAL_SPOTS.forEach(s => {
-  const el = document.createElement('div');
-  el.className = 'sight';
-  el.innerHTML = `<div class="sight-flag">🌍</div><div><div class="sight-city">${s.name}</div><div class="sight-loc">${s.label}</div></div><div class="sight-badge">✓</div>`;
-  dynList.appendChild(el);
-});
-
-function addSpotToMap(lat, lng, name, city) {
-  L.marker([lat, lng], { icon:siIcon })
-    .addTo(portfcMap)
-    .bindPopup(`<strong style="color:#E87722">${escapeHtml(city)}</strong><br><span style="font-size:11px">by ${escapeHtml(name)}</span>`);
-}
-
-let remoteSpotCount = 0;
-function updateSpotCount(add) {
-  try {
-    let data = JSON.parse(localStorage.getItem(RANK_KEY) || '[]');
-    const total = REAL_SPOTS.length + 1 + data.length + remoteSpotCount + (add || 0);
-    document.getElementById('statSpots').textContent = total;
-    document.getElementById('cntSpots').textContent = total;
-  } catch(e){}
-}
-updateSpotCount(0);
-
-// ─────────────────────────────────────────────
-// LOAD COMMUNITY SIGHTINGS FROM AIRTABLE
-// ─────────────────────────────────────────────
-function escapeHtml(str) {
-  return String(str || '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-}
-
-async function loadRemoteSightings() {
-  try {
-    const res = await fetch('/.netlify/functions/get-spots');
-    if (!res.ok) return;
-    const spots = await res.json();
-    if (!Array.isArray(spots)) return;
-
-    // One map marker per real spot — the map should show every location.
-    spots.forEach(s => {
-      if (typeof s.lat !== 'number' || typeof s.lng !== 'number') return;
-      L.marker([s.lat, s.lng], { icon:siIcon })
-        .addTo(portfcMap)
-        .bindPopup(`<strong style="color:#E87722">${escapeHtml(s.city || '')}</strong><br><span style="font-size:11px">by ${escapeHtml(s.name || 'Fan')}${s.ig ? ' · '+escapeHtml(s.ig) : ''}</span>`);
-    });
-
-    // The list, however, is grouped by person — otherwise one fan who
-    // reports many spots turns the whole page into a 100-row scroll.
-    const groups = {};
-    const order = [];
-    spots.forEach(s => {
-      const key = (s.name || 'Fan').trim() || 'Fan';
-      if (!groups[key]) { groups[key] = { count: 0, cities: [], ig: s.ig || '' }; order.push(key); }
-      groups[key].count++;
-      if (s.city && !groups[key].cities.includes(s.city)) groups[key].cities.push(s.city);
-    });
-    // Most active fans first, then most recently seen — makes the list read
-    // like a ranked feed instead of a random dump in API-return order.
-    order.sort((a, b) => groups[b].count - groups[a].count);
-
-    function renderRow(name) {
-      const g = groups[name];
-      const el = document.createElement('div');
-      el.className = 'sight';
-      // Show just the first city, plus a "+N more" count — listing every
-      // single city a person has dropped a sticker in made the row wrap
-      // into a wall of text once someone had more than 2-3 spots.
-      const cityLabel = g.cities.length > 1
-        ? `${g.cities[0]} +${g.cities.length - 1} weitere`
-        : (g.cities[0] || '');
-      const badge = g.count > 1 ? `${g.count}×` : '✓';
-      el.innerHTML = `<div class="sight-flag">🌍</div><div><div class="sight-city">${escapeHtml(name)}</div><div class="sight-loc">${escapeHtml(cityLabel)}${g.ig ? ' · '+escapeHtml(g.ig) : ''}</div></div><div class="sight-badge">${badge}</div>`;
-      return el;
-    }
-
-    // Only the top 3 spotters show by default — with 20-30+ contributors
-    // this list would otherwise turn into an endless, unstructured scroll.
-    // Everyone else is one tap away behind "Show more".
-    const TOP_N = 3;
-    order.slice(0, TOP_N).forEach(name => dynList.appendChild(renderRow(name)));
-
-    if (order.length > TOP_N) {
-      const rest = order.slice(TOP_N);
-      const moreBtn = document.createElement('button');
-      moreBtn.type = 'button';
-      moreBtn.className = 'sight-more-btn';
-      moreBtn.textContent = `+ ${rest.length} weitere Spotter anzeigen`;
-      moreBtn.onclick = () => {
-        rest.forEach(name => dynList.insertBefore(renderRow(name), moreBtn));
-        moreBtn.remove();
-      };
-      dynList.appendChild(moreBtn);
-    }
-
-    remoteSpotCount = spots.length;
-    updateSpotCount(0);
-  } catch (e) { /* Airtable optional — map still works without it */ }
-}
-loadRemoteSightings();
-
-// ─────────────────────────────────────────────
-// INSTAGRAM EMBED
-// ─────────────────────────────────────────────
-// Uses Instagram's official public embed (the "Embed" option under any
-// post's ••• menu) — no API key, no Meta App, no login required. Just
-// paste real post permalinks below once @portfc_tour has a few posts up;
-// as long as this list is empty, the page quietly keeps the placeholder
-// icons that were already there, so nothing looks broken in the meantime.
-const IG_POST_URLS = [
-  'https://www.instagram.com/p/DcgE7NoKJ_P/',
-  'https://www.instagram.com/p/DdWZNckiYmS/',
-  'https://www.instagram.com/p/DdgyDpxmlD_/',
-];
-
-function loadInstagramEmbeds() {
-  if (!IG_POST_URLS.length) return;
-  const grid = document.getElementById('igPosts');
-  if (!grid) return;
-
-  // Layout (3-across on desktop, swipeable row on mobile) is handled by
-  // CSS (.ig-posts) so it responds correctly to screen size — no inline
-  // style here to fight with it.
-  grid.innerHTML = IG_POST_URLS.map(url => `
-    <blockquote class="instagram-media" data-instgrm-permalink="${url}" data-instgrm-version="14" style="margin:0;width:100%"></blockquote>
-  `).join('');
-
-  const s = document.createElement('script');
-  s.async = true;
-  s.src = 'https://www.instagram.com/embed.js';
-  s.onload = () => { if (window.instgrm) window.instgrm.Embeds.process(); };
-  document.body.appendChild(s);
-}
-loadInstagramEmbeds();
-
-// ─────────────────────────────────────────────
-// STICKER DOWNLOAD
-// ─────────────────────────────────────────────
-function downloadStickerPNG() {
-  const img = new Image();
-  img.crossOrigin = 'anonymous';
-  img.onload = function() {
-    const c = document.createElement('canvas');
-    c.width = img.naturalWidth; c.height = img.naturalHeight;
-    c.getContext('2d').drawImage(img, 0, 0);
-    const a = document.createElement('a');
-    a.download = 'portfc-sticker.png';
-    a.href = c.toDataURL('image/png');
-    document.body.appendChild(a); a.click(); document.body.removeChild(a);
-  };
-  img.src = 'assets/sticker-design.jpg?t=' + Date.now();
-}
-
-</script>
+<script src="https://cdn.jsdelivr.net/npm/maplibre-gl@5.24.0/dist/maplibre-gl.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/topojson-client@3.1.0/dist/topojson-client.min.js"></script>
+<script src="/assets/js/i18n.js?v=20260925c"></script>
+<script src="/assets/js/geo.js?v=20260925c"></script>
+<script src="/assets/js/app.js?v=20260925c"></script>
 </body>
 </html>
