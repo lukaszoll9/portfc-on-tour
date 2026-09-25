@@ -15,11 +15,6 @@
     cloudinary: { url: "https://api.cloudinary.com/v1_1/nwrw8zei/image/upload", preset: "portfc_sightings" },
     formspree: "https://formspree.io/f/xwlewgne",
     exifr: "https://cdn.jsdelivr.net/npm/exifr@7.1.3/dist/lite.umd.js",
-    igPosts: [
-      "https://www.instagram.com/p/DcgE7NoKJ_P/",
-      "https://www.instagram.com/p/DdWZNckiYmS/",
-      "https://www.instagram.com/p/DdgyDpxmlD_/"
-    ],
     site: "https://portfc-on-tour.com"
   };
 
@@ -147,9 +142,8 @@
     const stamp = s.cc ? `<span class="stamp">${esc(s.cc)}</span>` : "";
     return `<button type="button" class="tag ${extra}" data-spot="${esc(s.id)}" aria-label="${esc(placeLabel(s))}">
       <div class="tag-photo">${img ? `<img src="${esc(img)}" alt="" loading="lazy" decoding="async" onerror="this.remove()">` : ""}<span class="noimg">${t("no_photo")}</span>${stamp}</div>
-      <div class="tag-code">${esc(s.code || "")}</div>
       <div class="tag-city">${esc(placeLabel(s))}</div>
-      <div class="tag-km">${esc(kmLabel(s) || s.country || "")}</div>
+      <div class="tag-km">${esc(kmLabel(s) || s.country || "") || "&nbsp;"}</div>
       <div class="tag-foot"><span>${esc(t("by", { name: s.name }))}</span><span class="mono">${esc(P.fmtDate(s.time, lang))}</span></div>
     </button>`;
   }
@@ -190,7 +184,7 @@
   $$(".tabs button").forEach(b => b.addEventListener("click", () => { rankTab = b.dataset.tab; renderRanks(); }));
 
   function renderAll(animate) {
-    renderBoard(animate); renderRail(); renderRanks(); renderMini(); updateMapData(); fillIgGate();
+    renderBoard(animate); renderRail(); renderRanks(); renderMini(); updateMapData();
   }
 
   /* ======================= click delegation ======================= */
@@ -430,7 +424,7 @@
   async function makeStory(s) {
     toast("…");
     try {
-      await Promise.all(['900 120px "Big Shoulders Stencil"', '700 60px "IBM Plex Sans"', '500 30px "IBM Plex Mono"', '600 30px "IBM Plex Mono"'].map(f => document.fonts.load(f)));
+      await Promise.all(['800 120px "Barlow Condensed"', '700 60px "IBM Plex Sans"', '500 30px "IBM Plex Mono"', '600 30px "IBM Plex Mono"'].map(f => document.fonts.load(f)));
     } catch (e) {}
     const photo = await loadImg(s.localPhoto || P.photo(s.photoUrl, 420, 480));
     const W = 1080, H = 1920, c = document.createElement("canvas"); c.width = W; c.height = H;
@@ -441,7 +435,7 @@
     for (let y = 0; y <= H; y += 72) { g.beginPath(); g.moveTo(0, y); g.lineTo(W, y); g.stroke(); }
     if (lionImg.complete && lionImg.naturalWidth) g.drawImage(lionImg, 80, 96, 170, 187);
     g.textBaseline = "alphabetic";
-    g.font = '900 150px "Big Shoulders Stencil", Impact, sans-serif';
+    g.font = '800 150px "Barlow Condensed", "Arial Narrow", sans-serif';
     g.fillStyle = "#EE7D2B"; g.fillText("PORT FC", 280, 208);
     g.fillStyle = "#3A86D0"; g.fillText("ON TOUR", 280, 336);
     // cargo tag
@@ -711,26 +705,6 @@
   $("#doneView").addEventListener("click", () => { const s = R_.submitted; closeTop(); setTimeout(() => openMap(s), 80); });
   $("#doneAgain").addEventListener("click", () => { resetReport(); goStep(1); });
 
-  /* ======================= INSTAGRAM (2-click) ======================= */
-  function fillIgGate() {
-    const ph = $$("#igGate .ph"); const withPhoto = spots.filter(s => s.photoUrl).slice(0, 3);
-    ph.forEach((p, i) => { const s = withPhoto[i]; p.innerHTML = s ? `<img src="${esc(P.photo(s.photoUrl, 120, 120))}" alt="" loading="lazy">` : ""; });
-  }
-  function loadIg() {
-    store.set("portfc_ig_ok", "1");
-    $("#igGate").hidden = true;
-    const box = $("#igPosts"); box.hidden = false;
-    box.innerHTML = CONFIG.igPosts.map(u => `<div class="ig-post"><blockquote class="instagram-media" data-instgrm-permalink="${esc(u)}" data-instgrm-version="14"><a href="${esc(u)}" target="_blank" rel="noopener">Instagram</a></blockquote></div>`).join("");
-    if (window.instgrm) window.instgrm.Embeds.process();
-    else loadScript("https://www.instagram.com/embed.js").then(() => window.instgrm && window.instgrm.Embeds.process()).catch(() => {});
-  }
-  $("#igLoad").addEventListener("click", loadIg);
-  if (store.get("portfc_ig_ok") === "1") {
-    const io = new IntersectionObserver(es => { if (es[0].isIntersecting) { io.disconnect(); loadIg(); } }, { rootMargin: "400px" });
-    io.observe($("#instagram"));
-  }
-  $("#copyTags").addEventListener("click", () => copyText("#PortFConTour #PortFC #KhlongToeiArmy #การท่าเรือ @portfc_tour"));
-
   /* ======================= dock + reveal ======================= */
   let ctasVisible = true;
   function updateDock() { $("#dock").classList.toggle("show", !ctasVisible && !layers.length); }
@@ -748,7 +722,7 @@
     renderAll(true);
     const want = new URLSearchParams(location.search).get("spot");
     if (want) { const s = spots.find(x => x.id === want); if (s) openSpotSheet(s); }
-    if (location.hash === "#report") openReport();
+    if (location.hash === "#report" || new URLSearchParams(location.search).has("report")) openReport();
   });
   // PWA: register nothing new; keep install banner out of the way (native prompt still works)
 })();
