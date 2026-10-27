@@ -27,7 +27,7 @@ exports.handler = async (event) => {
 
   if (!name) return json(400, { error: 'Name required' });
   if (URL_PATTERN.test(name) || URL_PATTERN.test(city) || URL_PATTERN.test(ig)) return json(400, { error: 'Links are not allowed' });
-  if (photoUrl && !/^https:\/\/res\.cloudinary\.com\//.test(photoUrl)) return json(400, { error: 'Unexpected photo host' });
+  if (photoUrl && !/^https:\/\/res\.cloudinary\.com\/nwrw8zei\/image\/upload\//.test(photoUrl)) return json(400, { error: 'Unexpected photo host' });
 
   const toNum = v => (v === undefined || v === null || v === '' ? null : Number(v));
   const lat = toNum(body.lat), lng = toNum(body.lng);
