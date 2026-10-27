@@ -284,6 +284,7 @@ body.map-open{overflow:hidden}
 /* map markers */
 .home-mk{position:relative;width:46px;height:46px;cursor:pointer}
 .home-mk img{position:relative;z-index:2;width:46px;height:46px;border-radius:50%;background:var(--deck);border:2px solid var(--orange);padding:4px;object-fit:contain}
+.home-badge{position:absolute;z-index:3;top:-6px;right:-10px;min-width:22px;height:22px;padding:0 6px;border-radius:11px;background:var(--orange);color:#1A0D02;font:700 12px/22px var(--f-body);text-align:center;box-shadow:0 0 0 2px var(--night)}
 .home-mk::before,.home-mk::after{content:"";position:absolute;inset:0;border-radius:50%;border:2px solid var(--orange);animation:ping 2.6s var(--ease) infinite;opacity:0}
 .home-mk::after{animation-delay:1.3s}
 @keyframes ping{0%{transform:scale(1);opacity:.7}100%{transform:scale(2.6);opacity:0}}
