@@ -55,7 +55,8 @@
     if (s.km == null) return "";
     return s.km < 30 ? t("at_home") : t("km_from_home", { km: P.fmtKm(s.km, lang) });
   }
-  function placeLabel(s) { return s.city || s.cityRaw || t("geo_unknown"); }
+  function placeLabel(s) { return s.city || s.cityRaw || (s.km != null && s.km < HOME_KM_LABEL ? "Khlong Toei" : s.country) || t("geo_unknown"); }
+  const HOME_KM_LABEL = 30;
   function loadScript(src) {
     return new Promise((res, rej) => { const s = document.createElement("script"); s.src = src; s.async = true; s.onload = res; s.onerror = rej; document.head.appendChild(s); });
   }
@@ -224,7 +225,8 @@
 
   /* ======================= MAP ======================= */
   let map = null, mapReady = false, full = false, stageVisible = true, activeId = null;
-  let arcs = [], arcStart = 0, rotBase = 80, rafId = 0;
+  let arcs = [], arcStart = 0, rotBase = 80, rotLat = 24, rafId = 0, homeBadge = null;
+  const HOME_KM = 30;
   const heroZoom = () => (innerWidth < 500 ? 1.3 : innerWidth < 960 ? 1.6 : 1.9);
 
   function initMap() {
@@ -243,17 +245,23 @@
       map.addSource("arcs", { type: "geojson", data: fc([]) });
       map.addSource("ships", { type: "geojson", data: fc([]) });
       map.addSource("spots", { type: "geojson", data: fc([]), cluster: true, clusterRadius: 38, clusterMaxZoom: 11 });
+      map.addSource("spots-home", { type: "geojson", data: fc([]) });
       map.addLayer({ id: "arcs-glow", type: "line", source: "arcs", layout: { "line-cap": "round" }, paint: { "line-color": "#EE7D2B", "line-width": ["interpolate", ["linear"], ["zoom"], 1, ["*", 4, ["get", "w"]], 6, ["*", 6, ["get", "w"]]], "line-blur": 4, "line-opacity": ["interpolate", ["linear"], ["zoom"], 2, .22, 7, .06] } });
       map.addLayer({ id: "arcs", type: "line", source: "arcs", layout: { "line-cap": "round" }, paint: { "line-color": "#EE7D2B", "line-width": ["interpolate", ["linear"], ["zoom"], 1, ["*", 1.2, ["get", "w"]], 6, ["*", 2, ["get", "w"]]], "line-opacity": ["interpolate", ["linear"], ["zoom"], 2, .9, 8, .25] } });
       map.addLayer({ id: "ships", type: "circle", source: "ships", paint: { "circle-radius": 3, "circle-color": "#FFD7B0", "circle-blur": .3, "circle-opacity": ["interpolate", ["linear"], ["zoom"], 3, 1, 6, 0] } });
       map.addLayer({ id: "cluster", type: "circle", source: "spots", filter: ["has", "point_count"], paint: { "circle-color": "#EE7D2B", "circle-stroke-color": "#0B1A2E", "circle-stroke-width": 2.5, "circle-radius": ["step", ["get", "point_count"], 12, 5, 15, 15, 19] } });
       map.addLayer({ id: "cluster-n", type: "symbol", source: "spots", filter: ["has", "point_count"], layout: { "text-field": ["get", "point_count_abbreviated"], "text-font": ["Noto Sans Bold"], "text-size": 12, "text-allow-overlap": true }, paint: { "text-color": "#1A0D02" } });
       map.addLayer({ id: "spot", type: "circle", source: "spots", filter: ["!", ["has", "point_count"]], paint: { "circle-color": "#EE7D2B", "circle-stroke-color": "#0B1A2E", "circle-stroke-width": 2, "circle-radius": ["interpolate", ["linear"], ["zoom"], 1, 5, 10, 8] } });
+      map.addLayer({ id: "spot-active-home", type: "circle", source: "spots-home", minzoom: 8, filter: ["==", ["get", "id"], "__none"], paint: { "circle-color": "rgba(0,0,0,0)", "circle-stroke-color": "#FFFFFF", "circle-stroke-width": 2.5, "circle-radius": 14 } });
+      // home-ground finds: hidden behind the lion badge until you zoom into Bangkok
+      map.addLayer({ id: "spot-home", type: "circle", source: "spots-home", minzoom: 8, paint: { "circle-color": "#EE7D2B", "circle-stroke-color": "#0B1A2E", "circle-stroke-width": 2, "circle-radius": ["interpolate", ["linear"], ["zoom"], 8, 5, 14, 8] } });
       map.addLayer({ id: "spot-active", type: "circle", source: "spots", filter: ["==", ["get", "id"], "__none"], paint: { "circle-color": "rgba(0,0,0,0)", "circle-stroke-color": "#FFFFFF", "circle-stroke-width": 2.5, "circle-radius": 14 } });
 
       // home port marker
       const el = document.createElement("div");
-      el.className = "home-mk"; el.innerHTML = '<img src="/assets/lion.webp" alt="Home port: PAT Stadium">';
+      el.className = "home-mk"; el.innerHTML = '<img src="/assets/lion.webp" alt="Home port: PAT Stadium"><span class="home-badge" hidden></span>';
+      homeBadge = el.querySelector(".home-badge");
+      el.addEventListener("click", ev => { if (!full) return; ev.stopPropagation(); map.flyTo({ center: [P.HOME.lng, P.HOME.lat], zoom: 11, essential: true }); });
       new maplibregl.Marker({ element: el }).setLngLat([P.HOME.lng, P.HOME.lat]).setPopup(new maplibregl.Popup({ offset: 26, closeButton: false }).setHTML(t("home_popup"))).addTo(map);
 
       map.on("click", "cluster", e => {
@@ -261,8 +269,9 @@
         const f = e.features[0];
         map.getSource("spots").getClusterExpansionZoom(f.properties.cluster_id).then(z => map.easeTo({ center: f.geometry.coordinates, zoom: z + .5 }));
       });
+      map.on("click", "spot-home", e => { if (!full) return; const s = spots.find(x => x.id === e.features[0].properties.id); if (s) { setActive(s.id, true); openSpotSheet(s); } });
       map.on("click", "spot", e => { if (!full) return; const s = spots.find(x => x.id === e.features[0].properties.id); if (s) { setActive(s.id, true); openSpotSheet(s); } });
-      ["cluster", "spot"].forEach(l => { map.on("mouseenter", l, () => { if (full) map.getCanvas().style.cursor = "pointer"; }); map.on("mouseleave", l, () => map.getCanvas().style.cursor = ""); });
+      ["cluster", "spot", "spot-home"].forEach(l => { map.on("mouseenter", l, () => { if (full) map.getCanvas().style.cursor = "pointer"; }); map.on("mouseleave", l, () => map.getCanvas().style.cursor = ""); });
       map.on("click", () => { if (!full) openMap(); });
       ["dragstart", "zoomstart", "rotatestart"].forEach(ev => map.on(ev, e => { if (e.originalEvent) userMoved = true; }));
 
@@ -284,35 +293,40 @@
   function updateMapData() {
     if (!mapReady) return;
     const pos = spots.filter(s => s.hasPos);
-    map.getSource("spots").setData(fc(pos.map(s => ({ type: "Feature", properties: { id: s.id }, geometry: { type: "Point", coordinates: [s.lng, s.lat] } }))));
+    const feat = s => ({ type: "Feature", properties: { id: s.id }, geometry: { type: "Point", coordinates: [s.lng, s.lat] } });
+    const homeSpots = pos.filter(s => s.km < HOME_KM), away = pos.filter(s => s.km >= HOME_KM);
+    map.getSource("spots").setData(fc(away.map(feat)));
+    map.getSource("spots-home").setData(fc(homeSpots.map(feat)));
+    if (homeBadge) { homeBadge.textContent = homeSpots.length; homeBadge.hidden = !homeSpots.length; }
     arcs = bundleRoutes(pos);
     arcStart = performance.now();
-    // centre the hero globe between home and the finds
-    if (pos.length) {
-      const lngs = pos.map(s => { let l = s.lng; while (l - P.HOME.lng > 180) l -= 360; while (l - P.HOME.lng < -180) l += 360; return l; });
-      const mean = lngs.reduce((a, b) => a + b, 0) / lngs.length;
-      rotBase = (mean + P.HOME.lng) / 2;
-    }
-    if (!full && !userMoved) map.jumpTo({ center: [rotBase, 24] });
+    // centre the hero globe so that home AND every route end are on the visible side
+    if (arcs.length) {
+      const lngs = [P.HOME.lng, ...arcs.map(a => { let l = a.to.lng; while (l - P.HOME.lng > 180) l -= 360; while (l - P.HOME.lng < -180) l += 360; return l; })];
+      const lats = [P.HOME.lat, ...arcs.map(a => a.to.lat)];
+      const span = Math.max(...lngs) - Math.min(...lngs);
+      rotBase = span <= 200 ? (Math.max(...lngs) + Math.min(...lngs)) / 2 : lngs.reduce((a, b) => a + b, 0) / lngs.length;
+      rotLat = Math.max(0, Math.min(40, (Math.max(...lats) + Math.min(...lats)) / 2));
+    } else { rotBase = P.HOME.lng; rotLat = 18; }
+    if (!full && !userMoved) map.jumpTo({ center: [rotBase, rotLat] });
     drawArcs(REDUCED ? 1 : 0);
     loop();
   }
-  // Routes are bundled: every find inside a ~300 km grid cell shares ONE route to the cell's
-  // centre, and the line gets thicker with more finds. Keeps the globe readable with hundreds of spots.
-  const ROUTE_CELL = 6, MAX_ROUTES = 40;
+  // Routes are bundled: finds within ~500 km of each other share ONE route, and the line gets
+  // thicker with more finds. Every route ends on a REAL find (the group's first one), never on an
+  // empty average point. Finds closer than 150 km to the stadium get no route (they would only be
+  // scribbles under the home marker) – they show up as the home badge / dots when zoomed in.
+  const ROUTE_MIN_KM = 150, GROUP_KM = 500, MAX_ROUTES = 40;
   function bundleRoutes(pos) {
-    const cells = new Map();
-    pos.forEach(s => {
-      if (s.km < 30) return;
-      let lng = s.lng; while (lng - P.HOME.lng > 180) lng -= 360; while (lng - P.HOME.lng < -180) lng += 360;
-      const k = Math.round(s.lat / ROUTE_CELL) + ":" + Math.round(lng / ROUTE_CELL);
-      const c = cells.get(k) || { n: 0, lat: 0, lng: 0 };
-      c.n++; c.lat += s.lat; c.lng += lng; cells.set(k, c);
+    const groups = [];
+    pos.filter(s => s.km >= ROUTE_MIN_KM).sort((a, b) => (a.time || "").localeCompare(b.time || "")).forEach(s => {
+      const g = groups.find(g => P.km(g.anchor, s) <= GROUP_KM);
+      if (g) g.n++; else groups.push({ anchor: { lat: s.lat, lng: s.lng }, n: 1 });
     });
-    return [...cells.values()].sort((a, b) => b.n - a.n).slice(0, MAX_ROUTES).map((c, i) => {
-      const to = { lat: c.lat / c.n, lng: c.lng / c.n };
-      return { coords: P.greatCircle(P.HOME, to, 80), km: P.km(P.HOME, to), n: c.n, w: 1 + Math.log2(c.n) * 0.3, phase: (i * 0.37) % 1 };
-    });
+    return groups.sort((a, b) => b.n - a.n).slice(0, MAX_ROUTES).map((g, i) => ({
+      coords: P.greatCircle(P.HOME, g.anchor, 80), km: P.km(P.HOME, g.anchor), n: g.n, to: g.anchor,
+      w: 1 + Math.log2(g.n) * 0.3, phase: (i * 0.37) % 1
+    }));
   }
   function drawArcs(progress) {
     const feats = arcs.map(a => {
@@ -343,7 +357,7 @@
         map.getSource("ships").setData(fc(pts));
       }
       // slow drift of the hero globe
-      if (!full && !userMoved) map.jumpTo({ center: [rotBase + Math.sin(now / 9000) * 22, 24 + Math.sin(now / 13000) * 4] });
+      if (!full && !userMoved) map.jumpTo({ center: [rotBase + Math.sin(now / 9000) * 10, rotLat + Math.sin(now / 13000) * 3] });
       rafId = requestAnimationFrame(frame);
     };
     rafId = requestAnimationFrame(frame);
@@ -376,7 +390,7 @@
     map.stop(); setInteractive(false);
     map.setPadding({ top: 0, bottom: 0, left: 0, right: 0 });
     map.resize(); requestAnimationFrame(() => map.resize());
-    map.jumpTo({ center: [rotBase, 24], zoom: heroZoom(), bearing: 0, pitch: 0 });
+    map.jumpTo({ center: [rotBase, rotLat], zoom: heroZoom(), bearing: 0, pitch: 0 });
     loop();
   }
   $("#mapClose").addEventListener("click", () => closeTop());
@@ -386,7 +400,11 @@
   }
   function setActive(id, scrollRail) {
     activeId = id;
-    if (mapReady) map.setFilter("spot-active", ["==", ["get", "id"], id || "__none"]);
+    if (mapReady) {
+      const s = spots.find(x => x.id === id);
+      map.setFilter("spot-active", ["==", ["get", "id"], id || "__none"]);
+      if (map.getLayer("spot-active-home")) map.setFilter("spot-active-home", ["==", ["get", "id"], id || "__none"]);
+    }
     $$("#miniRail .mini").forEach(m => m.classList.toggle("active", m.dataset.id === id));
     if (scrollRail && id) { const el = $(`#miniRail .mini[data-id="${CSS.escape(id)}"]`); el && el.scrollIntoView({ inline: "center", block: "nearest", behavior: "smooth" }); }
   }
@@ -700,6 +718,7 @@
       if (!up.ok || !upj.secure_url) throw new Error("upload");
 
       btnLabel.textContent = t("r_saving");
+      if (!R_.place || !R_.place.city) { try { R_.place = await P.reverse(R_.pos.lat, R_.pos.lng) || R_.place; } catch (x) {} }
       const d = draftSpot();
       const cityStr = [d.city || (R_.place && R_.place.city) || "", (R_.place && R_.place.country) || (d.cc ? P.countryName(d.cc, "en", "") : "")].filter(Boolean).join(", ");
       const body = { name, ig, city: cityStr, photoUrl: upj.secure_url, lat: +R_.pos.lat.toFixed(5), lng: +R_.pos.lng.toFixed(5), website: $("#inpWebsite").value };
